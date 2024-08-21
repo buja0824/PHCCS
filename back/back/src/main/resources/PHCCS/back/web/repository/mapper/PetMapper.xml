@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="PHCCS.back.web.repository.mapper.PetMapper">
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+        insert into pet(pet_name, pet_breed, pet_age, pet_gender, pet_reg_no)
+        values (#{name}, #{species}, #{age}, #{gender}, #{regNo})
+
+    </insert>
+
+</mapper>
