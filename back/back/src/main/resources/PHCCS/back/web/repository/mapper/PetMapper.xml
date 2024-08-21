@@ -19,7 +19,10 @@
     <delete id="deletePet">
         delete
         from pet
-        where mb_no = #{memberId} and pet_no = ${petId}
+        where mb_no = #{memberId} and pet_no in
+        <foreach item="petId" collection="petIds" open="(" separator="," close=")">
+            #{petId}
+        </foreach>
     </delete>
 
 

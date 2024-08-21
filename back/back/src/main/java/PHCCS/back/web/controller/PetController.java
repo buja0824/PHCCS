@@ -40,18 +40,27 @@ public class PetController {
         return ResponseEntity.ok(pets);
     }
 
-    @DeleteMapping("/pet/delete/{id}")
+    @DeleteMapping("/pet/delete")
     public ResponseEntity<?> petDelete(
             @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
-            @PathVariable("id") Long deletePetId){
+            @RequestBody List<Long> petIds){
 
         log.info("petDelete()");
+
         if(loginMember == null){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요 합니다.");
         }
-        service.deletePet(loginMember.getId(), deletePetId);
-        return ResponseEntity.ok("삭제");
+        try{
+            service.deletePet(loginMember.getId(), petIds);
+            return ResponseEntity.ok("삭제 완료");
+        }catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("반려동물을 선택해주세요");
+        }
+//        catch (Exception e){
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("내부 오류가 발생하였습니다.");
+//        }
     }
+
     @Data
     static class Member {
         private Long id;

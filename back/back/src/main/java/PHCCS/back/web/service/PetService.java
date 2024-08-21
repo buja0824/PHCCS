@@ -31,8 +31,11 @@ public class PetService {
         return repository.findPetsByMember(id);
     }
 
-    public void deletePet(Long petId, Long memberId){
-        repository.deletePet(petId, memberId);
+    public void deletePet(Long memberId, List<Long> petIds){
+        if(petIds.isEmpty() || petIds == null){
+            throw new IllegalArgumentException("삭제할 데이터가 없습니다.");
+        }
+        repository.deletePet(memberId, petIds);
     }
 
 }

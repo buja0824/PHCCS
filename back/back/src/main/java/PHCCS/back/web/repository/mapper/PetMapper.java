@@ -12,5 +12,5 @@ public interface PetMapper {
 
     List<Pet> findPetsByMember(Long id);
 
-    void deletePet(@Param("petId") Long petId, @Param("memberId") Long memberId);
+    void deletePet(@Param("memberId") Long memberId, @Param("petIds") List<Long> petIds);
 }
