@@ -2,15 +2,13 @@ package PHCCS.back.web.service;
 
 import PHCCS.back.domain.Pet;
 import PHCCS.back.web.repository.PetRepository;
+import PHCCS.back.web.repository.domain.PetmodifyParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.sql.SQLException;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -29,6 +27,14 @@ public class PetService {
 
     public List<Pet> findPetsByMember(Long id){
         return repository.findPetsByMember(id);
+    }
+
+    public Pet findById(Long id){
+        return repository.findById(id);
+    }
+
+    public void modifyPet(Long memberId, Long id, PetmodifyParam modifyParam){
+        repository.modifyPet(memberId, id, modifyParam);
     }
 
     public void deletePet(Long memberId, List<Long> petIds){

@@ -3,13 +3,12 @@ package PHCCS.back.web.controller;
 
 import PHCCS.back.SessionConst;
 import PHCCS.back.domain.Pet;
-import PHCCS.back.web.repository.PetRepository;
+import PHCCS.back.web.repository.domain.PetmodifyParam;
 import PHCCS.back.web.service.PetService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,7 +31,7 @@ public class PetController {
     @GetMapping("/pet/showAll")
     public ResponseEntity<?> showMyPet(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember){
         log.info("showMyPet()");
-        if(loginMember == null){
+        if(!isLogin(loginMember)){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요 합니다.");
         }
         List<Pet> pets = service.findPetsByMember(/*loginMember.getId()*/ 2L);
@@ -47,7 +46,7 @@ public class PetController {
 
         log.info("petDelete()");
 
-        if(loginMember == null){
+        if(!isLogin(loginMember)){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요 합니다.");
         }
         try{
@@ -60,6 +59,31 @@ public class PetController {
 //            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("내부 오류가 발생하였습니다.");
 //        }
     }
+
+    @PutMapping("/pet/modify/{id}")
+    public ResponseEntity<?> modifyPet(
+            /*@SessionAttribute(name = SessionConst.LOGIN_MEMBER,required = false) Member loginMember,*/
+            @PathVariable("id") Long petId,
+            @RequestBody PetmodifyParam modifyParam){
+
+        log.info("modifyPet()");
+//        if(!isLogin(loginMember)) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요 합니다.");
+//        }
+        Pet findPet = service.findById(petId);
+        if(findPet == null){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("등록되지 않은 반려동물 입니다.");
+        }
+        service.modifyPet(/*loginMember.getId()*/2L, petId, modifyParam);
+
+        return ResponseEntity.ok("수정 완료");
+    }
+
+    public static boolean isLogin(Member loginMember){
+        if(loginMember == null) return false;
+        else return true;
+    }
+
 
     @Data
     static class Member {
