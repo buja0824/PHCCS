@@ -36,19 +36,21 @@ public class MemberController {
 //        member.setName(name);
 //        member.setPassword(password);
 //        Optional<Member> existMember = memberRepository.findByLoginId(memberId);
-        Optional<Member> existMember = memberRepository.findByLoginId(member.getLoginId());
+        Optional<Member> existMember = memberRepository.findByLoginId(member.getEmail());
         if(!existMember.isEmpty()){
             log.info("존재하는 id");
             throw new MemberAlreadyExistsException("이미 존재하는 ID 입니다." + member.getLoginId());
         }
         log.info("id = {}", member.getId());
         log.info("name = {}", member.getName());
-        log.info("memberId = {}", member.getLoginId());
+        log.info("memberId = {}", member.getEmail());
         log.info("password = {}", member.getPassword());
         log.info("getPhoNo = {}", member.getPhoNo());
-        log.info("getEmail = {}", member.getEmail());
-        log.info("getBirthDate = {}", member.getBirthdate());
         log.info("getNickName = {}", member.getNickName());
+        log.info("getAddress = {}", member.getAddress());
+        log.info("getCreated = {}", member.getCreated());
+        // log.info("getEmail = {}", member.getEmail());
+        // log.info("getBirthDate = {}", member.getBirthdate());
 
         log.info("세이브 한다");
         memberRepository.save(member);
@@ -57,6 +59,7 @@ public class MemberController {
         return "멤버 저장 완료 이름 : " + member.getName(); // 상태코드 반환
     }
 
+    /**
     @GetMapping("/find-id")
     public String findMemberLoginId(@RequestBody MemberSearchCon memberSearchCon){
         log.info("id 찾기");
@@ -69,6 +72,7 @@ public class MemberController {
         emailService.sendSimpleEmail(memberSearchCon.getEmail(), "아이디 찾은 결과 입니다.", "찾은 아이디 입니다." + loginIdByNameAndEmail);
         return loginIdByNameAndEmail;
     }
+    */
 
     @GetMapping("/find-pwd")
     public String findMemberPwd(@RequestBody MemberSearchCon memberSearchCon){
@@ -102,8 +106,9 @@ public class MemberController {
         log.info("updatename = {}", updateMember.getName());
         log.info("updatepassword = {}", updateMember.getPassword());
         log.info("updategetPhoNo = {}", updateMember.getPhoNo());
-        log.info("updategetEmail = {}", updateMember.getEmail());
-        log.info("updategetNickName = {}", updateMember.getNickName());
+        log.info("updateNickName = {}", updateMember.getNickName());
+        log.info("updateAddress = {}", updateMember.getAddress());
+        // log.info("updategetEmail = {}", updateMember.getEmail());
         if(member.getName() == null){
             member.setName(updateMember.getName());
         }
@@ -113,9 +118,11 @@ public class MemberController {
         if(member.getPhoNo() == null){
             member.setPhoNo(updateMember.getPhoNo());
         }
-        if(member.getEmail() == null){
+        /**
+         if(member.getEmail() == null){
             member.setEmail(updateMember.getEmail());
         }
+         */
         if(member.getNickName() == null){
             member.setNickName(updateMember.getNickName());
         }
