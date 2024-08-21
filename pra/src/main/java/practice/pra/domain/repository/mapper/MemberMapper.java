@@ -18,7 +18,7 @@ public interface MemberMapper {
 
     Optional<Member> findById(Long id);
 
-    Optional<Member> findByLoginId(String loginId);
+    Optional<Member> findByEmail(String email);
 
     String findLoginIdByNameAndEmail(@Param("name") String name, @Param("email")String email);
 
