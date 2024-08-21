@@ -13,14 +13,13 @@ public class DBConnectionTest {
     private static final String PASSWORD = "0000";
 
     @Test
-    public void testConnection() throws Exception{
+    public void testConnection() throws Exception {
         Class.forName(DRIVER);
 
-        try(Connection con = DriverManager.getConnection(URL, USER, PASSWORD)){
+        try (Connection con = DriverManager.getConnection(URL, USER, PASSWORD)) {
             System.out.println(con);
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
 }

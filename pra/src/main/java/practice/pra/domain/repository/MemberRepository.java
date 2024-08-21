@@ -28,19 +28,15 @@ public class MemberRepository {
         return member;
     }
 
-
     public Optional<Member> findByLoginId(String id){
         Optional<Member> findMember = mapper.findByLoginId(id);
         return findMember;
     }
 
-
-    /**
     public String findLoginIdByNameAndEmail(String name, String email) {
         String loginIdByNameAndEmail = mapper.findLoginIdByNameAndEmail(name, email);
         return loginIdByNameAndEmail;
     }
-    */
 
     public Optional<Member> findPwdByIdAndEmail(String id, String email) {
         Optional<Member> pwdByIdAndEmail = mapper.findPwdByIdAndEmail(id, email);
