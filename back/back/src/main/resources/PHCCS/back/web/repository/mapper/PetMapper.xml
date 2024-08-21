@@ -8,7 +8,19 @@
     <insert id="save" useGeneratedKeys="true" keyProperty="id">
         insert into pet(pet_name, pet_breed, pet_age, pet_gender, pet_reg_no)
         values (#{name}, #{species}, #{age}, #{gender}, #{regNo})
-
     </insert>
+
+    <select id="findPetsByMember" resultType="Pet">
+        select pet_name as name, pet_breed as species, pet_age as age, pet_gender as gender, pet_reg_no as regNo
+        from pet
+        where mb_no = #{id}
+    </select>
+
+    <delete id="deletePet">
+        delete
+        from pet
+        where mb_no = #{memberId} and pet_no = ${petId}
+    </delete>
+
 
 </mapper>

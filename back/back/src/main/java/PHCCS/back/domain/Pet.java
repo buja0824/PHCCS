@@ -13,15 +13,5 @@ public class Pet {
     private String gender;
     private String regNo;// 반려동물 등록 번호
 
-    public Pet() {
-    }
 
-    public Pet(Long id, String name, String species, String age, String gender, String regNo) {
-        this.id = id;
-        this.name = name;
-        this.species = species;
-        this.age = age;
-        this.gender = gender;
-        this.regNo = regNo;
-    }
 }

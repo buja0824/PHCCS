@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -19,11 +20,19 @@ public class PetService {
     private final PetRepository repository;
 
     public ResponseEntity<?> save(Pet pet) {
-
         int resultRow = repository.save(pet);
         if (resultRow < 0) {
             return ResponseEntity.badRequest().body("펫 등록에 실패하였습니다.");
         }
         return ResponseEntity.ok("정상적으로 등록 되었습니다.");
     }
+
+    public List<Pet> findPetsByMember(Long id){
+        return repository.findPetsByMember(id);
+    }
+
+    public void deletePet(Long petId, Long memberId){
+        repository.deletePet(petId, memberId);
+    }
+
 }

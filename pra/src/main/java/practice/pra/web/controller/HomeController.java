@@ -23,6 +23,7 @@ public class HomeController {
         return "로그인 안된 사람의 홈 접속 완료";
     }
 
+    @ResponseBody
     @GetMapping("/home")
     public String loginHome(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember){
         log.info("home 접속");
@@ -33,6 +34,7 @@ public class HomeController {
             return "redirect:/";
         }
         log.info("로그인 했군요");
+
         return "홈 접속 완료 " + loginMember;
     }
 

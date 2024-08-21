@@ -44,7 +44,7 @@ public class LoginController {
 
 
 
-        return "로그인 완료 " + request.getSession();
+        return "로그인 완료 " + session.getAttribute(SessionConst.LOGIN_MEMBER);
     }
 
     @GetMapping("/logout")
