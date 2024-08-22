@@ -2,6 +2,7 @@ package PHCCS.back.web.controller;
 
 
 import PHCCS.back.SessionConst;
+import PHCCS.back.domain.Member;
 import PHCCS.back.domain.Pet;
 import PHCCS.back.web.repository.domain.PetmodifyParam;
 import PHCCS.back.web.service.PetService;
@@ -84,10 +85,5 @@ public class PetController {
         else return true;
     }
 
-
-    @Data
-    static class Member {
-        private Long id;
-    }
 
 }
