@@ -13,9 +13,9 @@ public class LoginService {
 
     private final MemberRepository repository;
 
-    public Member findLoginMember(String loginId){
+    public Member findLoginMember(String email){
 
-        Member findMember = repository.findByLoginId(loginId).get();
+        Member findMember = repository.findByEmail(email).get();
 
         return findMember;
     }
