@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="PHCCS.web.repository.mapper.PetMapper">
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+        insert into pet(pet_name, pet_breed, pet_age, pet_gender, pet_reg_no)
+        values (#{petName}, #{petBreed}, #{petAge}, #{petGender}, #{petRegNo})
+    </insert>
+
+    <select id="findPetsByMember" resultType="Pet">
+        select *
+        from pet
+        where mb_no = #{id}
+    </select>
+
+    <select id="findById" resultType="Pet">
+        select *
+        from pet
+        where pet_no = #{id}
+    </select>
+
+    <update id="modifyPet">
+        update pet
+        set pet_name = #{modifyParam.petName},
+            pet_age = #{modifyParam.petAge},
+            pet_breed = #{modifyParam.petBreed},
+            pet_gender = #{modifyParam.petGender}
+        where mb_no = #{memberId} and pet_no = #{id}
+    </update>
+
+    <delete id="deletePet">
+        delete
+        from pet
+        where mb_no = #{memberId} and pet_no in
+        <foreach item="petId" collection="petIds" open="(" separator="," close=")">
+            #{petId}
+        </foreach>
+    </delete>
+
+
+</mapper>
