@@ -12,7 +12,7 @@ import java.util.Optional;
 @Mapper
 public interface MemberMapper {
 
-    void save(Member member);
+    void save(Member member); // 회원가입의 인터페이스
 
     void update(@Param("id") Long id, @Param("updateParam") MemberUpdateDto updateParam);
 

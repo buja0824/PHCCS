@@ -18,6 +18,7 @@ public class Member {
     private String password;    // 회원 비밀번호
     private String phoNo;     // 회원 전화번호
     private String address; // 회원 주소
+    private String nickname;
    // private Date birthdate;     // 생일
 
 }

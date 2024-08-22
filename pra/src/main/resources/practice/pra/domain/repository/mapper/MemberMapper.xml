@@ -6,8 +6,8 @@
 <mapper namespace="practice.pra.domain.repository.mapper.MemberMapper">
 
     <insert id="save" useGeneratedKeys="true" keyProperty="id">
-        insert into member(name, login_id, password, pho_no, email, birthdate, nick_name)
-        values (#{name}, #{loginId}, #{password}, #{phoNo}, #{email}, #{birthdate}, #{nickName})
+        insert into member(mb_no, mb_id, mb_password, mb_name, mb_nick, mb_addr, mb_pno)
+        values (#{id}, #{email}, #{password}, #{name}, #{nickname}, #{address}, #{phoNo})
     </insert>
 
     <update id="update">
