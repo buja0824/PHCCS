@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="practice.pra.domain.repository.mapper.MemberMapper">
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+        insert into member(mb_no, mb_id, mb_password, mb_name, mb_nick, mb_addr, mb_pno)
+        values (#{id}, #{email}, #{password}, #{name}, #{nickname}, #{address}, #{phoNo})
+    </insert>
+
+    <update id="update">
+        update member
+        set name = #{updateParam.name},
+            password = #{updateParam.password},
+            pho_no = #{updateParam.phoNo},
+            email = #{updateParam.email},
+            nick_name = #{updateParam.nickName}
+        where id = #{id}
+    </update>
+
+    <select id="findById" resultType="Member">
+        select name, login_id, password, pho_no, email, nick_name
+        from member
+        where id = #{id}
+    </select>
+
+    <select id="findByLoginId" resultType="Member">
+        select id, name, login_id, password
+        from member
+        where login_id = #{id}
+    </select>
+
+    <select id="findLoginIdByNameAndEmail" resultType="String">
+        select login_id
+        from member
+        where name = #{name} and email = #{email};
+    </select>
+
+    <select id="findPwdByIdAndEmail" resultType="Member">
+        select id, password
+        from member
+        where login_id = #{id} and email = #{email};
+    </select>
+
+</mapper>
