@@ -17,8 +17,8 @@ public class PetService {
 
     private final PetRepository repository;
 
-    public ResponseEntity<?> save(Pet pet) {
-        int resultRow = repository.save(pet);
+    public ResponseEntity<?> save(Long id, Pet pet) {
+        int resultRow = repository.save(id, pet);
         if (resultRow < 0) {
             return ResponseEntity.badRequest().body("펫 등록에 실패하였습니다.");
         }
@@ -33,15 +33,16 @@ public class PetService {
         return repository.findById(id);
     }
 
-    public void modifyPet(Long memberId, Long id, PetmodifyParam modifyParam){
-        repository.modifyPet(memberId, id, modifyParam);
+    public void modifyPet(Long memberId, String name, PetmodifyParam modifyParam){
+        log.info("service modifyPet()");
+        repository.modifyPet(memberId, name, modifyParam);
     }
 
-    public void deletePet(Long memberId, List<Long> petIds){
-        if(petIds.isEmpty() || petIds == null){
+    public void deletePet(Long memberId, List<String> petNames){
+        if(petNames.isEmpty() || petNames == null){
             throw new IllegalArgumentException("삭제할 데이터가 없습니다.");
         }
-        repository.deletePet(memberId, petIds);
+        repository.deletePet(memberId, petNames);
     }
 
 }

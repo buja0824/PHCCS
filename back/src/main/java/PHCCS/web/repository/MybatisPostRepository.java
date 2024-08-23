@@ -8,9 +8,8 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor
 public class MybatisPostRepository implements PostRepository{
 
-
     @Override
-    public int save(Post post) {
+    public int save(Long id, Post post) {
         return 0;
     }
 }
