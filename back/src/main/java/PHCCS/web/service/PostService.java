@@ -13,7 +13,12 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class PostService {
 
+<<<<<<< HEAD
+    /**
+    public ResponseEntity<?> save(Post post){
+=======
     private final PostRepository repository;
+>>>>>>> back
 
     public ResponseEntity<?> save(Long id, Post post){
         int resultRow = repository.save(id, post);
@@ -22,5 +27,6 @@ public class PostService {
         }
         return ResponseEntity.ok("게시글을 등록 하였습니다.");
     }
+     */
 
 }
