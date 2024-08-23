@@ -6,8 +6,7 @@
 <mapper namespace="PHCCS.web.repository.mapper.PostMapper">
 
     <insert id="save" keyProperty="id" useGeneratedKeys="true">
-
-
+        insert into post (author, category, title, content, write_itme)
     </insert>
 
 
