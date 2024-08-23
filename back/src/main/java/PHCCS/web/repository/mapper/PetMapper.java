@@ -9,13 +9,13 @@ import java.util.List;
 
 @Mapper
 public interface PetMapper {
-    int save(Pet pet);
+    int save(@Param("memberId") Long id, @Param("pet") Pet pet);
 
     List<Pet> findPetsByMember(Long id);
 
     Pet findById(Long id);
 
-    void modifyPet(@Param("memberId") Long memberId, @Param("id") Long id, @Param("modifyParam") PetmodifyParam modifyParam);
+    void modifyPet(@Param("memberId") Long memberId, @Param("name") String name, @Param("modifyParam") PetmodifyParam modifyParam);
 
-    void deletePet(@Param("memberId") Long memberId, @Param("petIds") List<Long> petIds);
+    void deletePet(@Param("memberId") Long memberId, @Param("petNames") List<String> petNames);
 }

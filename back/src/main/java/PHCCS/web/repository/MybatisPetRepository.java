@@ -4,10 +4,11 @@ import PHCCS.domain.Pet;
 import PHCCS.web.repository.domain.PetmodifyParam;
 import PHCCS.web.repository.mapper.PetMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-
+@Slf4j
 @Repository
 @RequiredArgsConstructor
 public class MybatisPetRepository implements PetRepository{
@@ -15,8 +16,8 @@ public class MybatisPetRepository implements PetRepository{
     private final PetMapper mapper;
 
     @Override
-    public int save(Pet pet) {
-        int save = mapper.save(pet);
+    public int save(Long id,Pet pet) {
+        int save = mapper.save(id, pet);
         return save;
     }
 
@@ -31,12 +32,13 @@ public class MybatisPetRepository implements PetRepository{
     }
 
     @Override
-    public void modifyPet(Long memberId, Long id, PetmodifyParam modifyParam) {
-        mapper.modifyPet(memberId, id, modifyParam);
+    public void modifyPet(Long memberId, String name, PetmodifyParam modifyParam) {
+        log.info("MybatisPetRepository modifyPet()");
+        mapper.modifyPet(memberId, name, modifyParam);
     }
 
     @Override
-    public void deletePet(Long memberId, List<Long> petIds ) {
-        mapper.deletePet(memberId,petIds);
+    public void deletePet(Long memberId, List<String> petNames ) {
+        mapper.deletePet(memberId, petNames);
     }
 }
