@@ -35,11 +35,15 @@ public class BoardController {
 //            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인하지 않은 사용자는 접근할 수 없습니다.");
 //        }
         //TODO
+
+        // 업로드한 이미지 저장
         List<UploadFile> storeImgs = fileStore.storeFiles(dto.getImageFiles(),
                 loginMember.getId(),
                 dto.getTitle(),
                 dto.getCategory());
-        List<UploadFile> storeVids = fileStore.storeFiles(dto.getImageFiles(),
+
+        // 업로드한 동영상 저장
+        List<UploadFile> storeVids = fileStore.storeFiles(dto.getVideoFiles(),
                 loginMember.getId(),
                 dto.getTitle(),
                 dto.getCategory());
@@ -52,8 +56,8 @@ public class BoardController {
         post.setWriteTime(dto.getWriteTime());
         post.setImageFiles(storeImgs);
         post.setVideoFiles(storeVids);
-        ResponseEntity<?> save = service.save(/*loginMember.getId()*/2L, post);
 
+        ResponseEntity<?> save = service.save(/*loginMember.getId()*/2L, post);
         return save;
     }
 

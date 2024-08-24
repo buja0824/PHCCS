@@ -22,8 +22,8 @@ public class MybatisPetRepository implements PetRepository{
     }
 
     @Override
-    public Pet findById(Long id) {
-        return mapper.findById(id);
+    public Pet findByRegNo(String regNo) {
+        return mapper.findByRegNo(regNo);
     }
 
     @Override
@@ -40,5 +40,10 @@ public class MybatisPetRepository implements PetRepository{
     @Override
     public void deletePet(Long memberId, List<String> petNames ) {
         mapper.deletePet(memberId, petNames);
+    }
+
+    @Override
+    public void testDelete() {
+        mapper.testDelete();
     }
 }

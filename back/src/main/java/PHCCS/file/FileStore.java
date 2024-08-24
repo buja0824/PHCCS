@@ -13,7 +13,7 @@ import java.util.List;
 @Component
 public class FileStore {
 
-    @Value("${file.dir")
+    @Value("${file.dir}")
     private String fileDir;
 
     /**
