@@ -6,7 +6,7 @@
 <mapper namespace="PHCCS.web.repository.mapper.MemberMapper">
 
     <insert id="save" useGeneratedKeys="true" keyProperty="id">
-        insert into pet(email, pwd, name, nick_name, pho_no, created, role)
+        insert into member(email, pwd, name, nick_name, pho_no, created, role)
         values (#{email}, #{pwd}, #{name}, #{nickName}, #{phoNo}, #{created}, #{role})
     </insert>
 

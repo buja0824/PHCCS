@@ -1,9 +1,7 @@
 package PHCCS.web.repository;
 
 import PHCCS.domain.Member;
-import PHCCS.domain.Pet;
 import PHCCS.web.repository.mapper.MemberMapper;
-import PHCCS.web.repository.mapper.PetMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
