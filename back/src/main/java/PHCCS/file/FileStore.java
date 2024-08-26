@@ -1,6 +1,7 @@
 package PHCCS.file;
 
 import PHCCS.domain.UploadFile;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -10,6 +11,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Component
 public class FileStore {
 
@@ -21,20 +23,26 @@ public class FileStore {
      * 기본 경로는 fileDir입니다.
      * 사용자의 id(PK)를 폴더 경로로 생성
      * + 사용자가 업로드하는데 사용한 게시판(예를 들어, community_board)을 하위 폴더로 생성
-     * fileDir/사용자의PK/community_board 가 fullPath로 생성 됩니다.
+     * fileDir/게시판의타입/사용자의PK 가 fullPath로 생성 됩니다.
      * 그 폴더에 파일을 저장합니다. 파일 이름은 fileName
      */
-    public String getFullPath(String fileName, Long memberId, String boardType){
-        return fileDir + "/" + memberId + "/" + boardType + "/" + fileName;
+    public String getFullPath(String boardType, Long memberId, String postTitle, String fileName){
+        return fileDir + boardType + "/" + memberId + "/" + postTitle + "/" + fileName;
     }
 
     public List<UploadFile> storeFiles(
             List<MultipartFile> multipartFiles,
             Long memberId, String title, String boardType) throws IOException {
 
+        log.info("multipartFiles = {}", multipartFiles);
+        log.info("memberId = {}", memberId);
+        log.info("title = {}", title);
+        log.info("boardType = {}", boardType);
+
         List<UploadFile> storeFileResult = new ArrayList<>();
         for (MultipartFile multipartFile : multipartFiles) {
             if(!multipartFile.isEmpty()){
+                log.info("multipartFile = {}", multipartFile);
                 storeFileResult.add(storeFile(multipartFile, memberId, title, boardType));
             }
         }
@@ -47,23 +55,33 @@ public class FileStore {
      */
     public UploadFile storeFile(
             MultipartFile multipartFile,
-            Long memberId, String title, String boardType) throws IOException {
+            Long memberId, String postTitle, String boardType) throws IOException {
 
         if(multipartFile.isEmpty()) return null;
         // 파일 이름.확장자
         String originalFileName = multipartFile.getOriginalFilename();
-        String storeFileName = createStoreFileName(title, originalFileName);
+        log.info("originalFileName = {}", originalFileName);
+        String storeFileName = createStoreFileName(postTitle, originalFileName);
+        log.info("storeFileName = {}", storeFileName);
 
         // 디렉터리에 저장하기
-        multipartFile.transferTo(new File(getFullPath(storeFileName, memberId, boardType)));
-        return new UploadFile(originalFileName, storeFileName, getFullPath(storeFileName, memberId, boardType));
+        File file = new File(getFullPath(boardType, memberId, postTitle, storeFileName));
+        File parentFile = file.getParentFile();
+        if(!parentFile.exists()) {
+            if(!parentFile.mkdirs()){
+                throw new IOException("파일 저장 실패");
+            }
+        }
+
+        multipartFile.transferTo(file);
+        return new UploadFile(originalFileName, storeFileName, getFullPath(boardType, memberId, postTitle, storeFileName));
     }
 
     private static String createStoreFileName(String title, String originalFileName) {
         // 확장자 추출
         String ext = extractExt(originalFileName);
         // 서버에 저장할 파일 이름 만들기
-        return title + originalFileName + "." + ext;
+        return originalFileName + "." + ext;
     }
 
     private static String extractExt(String originalFileName) {
