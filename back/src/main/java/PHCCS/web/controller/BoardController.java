@@ -28,13 +28,14 @@ public class BoardController {
     @PostMapping("/post")
     public ResponseEntity<?> createPost(
             @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
-            @RequestBody PostDto dto) throws IOException {
+            @RequestBody PostDto dto,
+            @RequestPart) throws IOException {
 
         log.info("createPost()");
 //        if(!isLogin(loginMember)){
 //            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인하지 않은 사용자는 접근할 수 없습니다.");
 //        }
-        //TODO
+
 
         // 업로드한 이미지 저장
         List<UploadFile> storeImgs = fileStore.storeFiles(dto.getImageFiles(),
