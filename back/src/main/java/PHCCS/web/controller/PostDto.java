@@ -18,6 +18,7 @@ public class PostDto {
     private LocalDateTime writeTime = LocalDateTime.now(); // 게시글 작성날짜와 시간
 
     //file 관련 멤버변수
+    private String fileDir;
 //    private List<MultipartFile> imageFiles;
 //    private List<MultipartFile> videoFiles;
 

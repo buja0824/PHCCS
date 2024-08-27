@@ -49,7 +49,7 @@ public class BoardController {
                     /*loginMember.getId()*/2L,
                     dto.getTitle(),
                     dto.getCategory());
-            fileDir = storeImgs.stream().findAny().get().getFileDir();
+            fileDir = "C:/spring/" + dto.getCategory() + "/" + /*loginMember.getId()*/2L + "/" + dto.getTitle() +"/";
             log.info("storeImgs: {}", storeImgs);
         }
 
@@ -59,16 +59,17 @@ public class BoardController {
                     /*loginMember.getId()*/2L,
                     dto.getTitle(),
                     dto.getCategory());
-
-            fileDir = storeVids.stream().findAny().get().getFileDir();
+            fileDir = "C:/spring/" + dto.getCategory() + "/" + /*loginMember.getId()*/2L + "/" + dto.getTitle() +"/";
             log.info("storeVids: {}", storeVids);
         }
+        log.info("fileDir = {}", fileDir);
         Post post = new Post();
         post.setCategory(dto.getCategory());
         post.setTitle(dto.getTitle());
         post.setContent(dto.getContent());
         post.setAuthor(dto.getAuthor());
         post.setWriteTime(dto.getWriteTime());
+        post.setFileDir(fileDir);
 //        post.setImageFiles(storeImgs);
 //        post.setVideoFiles(storeVids);
 

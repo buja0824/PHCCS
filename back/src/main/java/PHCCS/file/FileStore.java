@@ -34,11 +34,6 @@ public class FileStore {
             List<MultipartFile> multipartFiles,
             Long memberId, String title, String boardType) throws IOException {
 
-        log.info("multipartFiles = {}", multipartFiles);
-        log.info("memberId = {}", memberId);
-        log.info("title = {}", title);
-        log.info("boardType = {}", boardType);
-
         List<UploadFile> storeFileResult = new ArrayList<>();
         for (MultipartFile multipartFile : multipartFiles) {
             if(!multipartFile.isEmpty()){
@@ -72,9 +67,8 @@ public class FileStore {
             if(!parentFile.mkdirs()){
                 throw new IOException("파일 저장 실패");
             }
+            multipartFile.transferTo(file); // 파일 저장
         }
-
-        multipartFile.transferTo(file);
         return new UploadFile(originalFileName, storeFileName, getFullPath(boardType, memberId, postTitle, storeFileName));
     }
 
