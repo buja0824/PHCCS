@@ -33,6 +33,8 @@ public class BoardController {
             @RequestPart(value = "imageFiles", required = false) List<MultipartFile> imageFiles,
             @RequestPart(value = "videoFiles", required = false) List<MultipartFile> videoFiles)  throws IOException {
 
+        String fileDir = null;
+
         log.info("createPost()");
         log.info("dto: {}", dto);
         log.info("imageFiles: {}", imageFiles);
@@ -44,9 +46,10 @@ public class BoardController {
         // 업로드한 이미지 저장
         if(imageFiles != null && !imageFiles.isEmpty()) {
             List<UploadFile> storeImgs = fileStore.storeFiles(imageFiles,
-                    /*loginMember.getId()*/1L,
+                    /*loginMember.getId()*/2L,
                     dto.getTitle(),
                     dto.getCategory());
+            fileDir = storeImgs.stream().findAny().get().getFileDir();
             log.info("storeImgs: {}", storeImgs);
         }
 
@@ -56,6 +59,8 @@ public class BoardController {
                     /*loginMember.getId()*/2L,
                     dto.getTitle(),
                     dto.getCategory());
+
+            fileDir = storeVids.stream().findAny().get().getFileDir();
             log.info("storeVids: {}", storeVids);
         }
         Post post = new Post();

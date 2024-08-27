@@ -46,6 +46,7 @@ public class FileStore {
                 storeFileResult.add(storeFile(multipartFile, memberId, title, boardType));
             }
         }
+        log.info("storeFileResult = {}", storeFileResult);
         return storeFileResult;
     }
     /**
