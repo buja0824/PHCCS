@@ -13,9 +13,11 @@ public interface PetMapper {
 
     List<Pet> findPetsByMember(Long id);
 
-    Pet findById(Long id);
+    Pet findByRegNo(String regNo);
 
     void modifyPet(@Param("memberId") Long memberId, @Param("name") String name, @Param("modifyParam") PetmodifyParam modifyParam);
 
     void deletePet(@Param("memberId") Long memberId, @Param("petNames") List<String> petNames);
+
+    void testDelete();
 }

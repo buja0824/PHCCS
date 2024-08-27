@@ -29,13 +29,13 @@ public class PetService {
         return repository.findPetsByMember(id);
     }
 
-    public Pet findById(Long id){
-        return repository.findById(id);
+    public Pet findByRegNo(String regNo){
+        return repository.findByRegNo(regNo);
     }
 
-    public void modifyPet(Long memberId, String name, PetmodifyParam modifyParam){
+    public void modifyPet(Long memberId, String petName, PetmodifyParam modifyParam){
         log.info("service modifyPet()");
-        repository.modifyPet(memberId, name, modifyParam);
+        repository.modifyPet(memberId, petName, modifyParam);
     }
 
     public void deletePet(Long memberId, List<String> petNames){
@@ -43,6 +43,10 @@ public class PetService {
             throw new IllegalArgumentException("삭제할 데이터가 없습니다.");
         }
         repository.deletePet(memberId, petNames);
+    }
+
+    public void testDelete(){
+        repository.testDelete();
     }
 
 }

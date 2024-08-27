@@ -5,8 +5,19 @@
 
 <mapper namespace="PHCCS.web.repository.mapper.PostMapper">
 
-    <insert id="save" keyProperty="id" useGeneratedKeys="true">
-        insert into post (author, category, title, content, write_itme)
+    <insert id="communitySave" keyProperty="post.id" useGeneratedKeys="true">
+        insert into vet_board (member_id, author, title, content, create_date, file_dir)
+        values (#{memberId}, #{post.author}, #{post.title}, #{post.content}, #{post.writeTime}, #{post.fileDir})
+    </insert>
+
+    <insert id="qnaSave" keyProperty="post.id" useGeneratedKeys="true">
+        insert into vet_board (member_id, author, title, content, create_date, file_dir)
+        values (#{memberId}, #{post.author}, #{post.title}, #{post.content}, #{post.writeTime}, #{post.fileDir})
+    </insert>
+
+    <insert id="vetSave" keyProperty="post.id" useGeneratedKeys="true">
+        insert into vet_board (member_id, author, title, content, create_date, file_dir)
+        values (#{memberId}, #{post.author}, #{post.title}, #{post.content}, #{post.writeTime}, #{post.fileDir})
     </insert>
 
 
