@@ -48,4 +48,13 @@ public class MemberController {
         //2-2. 못 찾았다면 다음 문장 실행
         }else{return ResponseEntity.badRequest().body("없는 회원입니다.");}
     }
+
+    @PostMapping("/auth/logout")
+    public ResponseEntity<?> logout(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if(session != null) {
+            session.invalidate();
+            return ResponseEntity.ok("로그아웃 되었습니다.");
+        }else {return ResponseEntity.badRequest().body("잘못된 접근.");}
+    }
 }
