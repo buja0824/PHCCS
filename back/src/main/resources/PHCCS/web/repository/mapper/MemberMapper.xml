@@ -9,5 +9,11 @@
         insert into member(email, pwd, name, nick_name, pho_no, created, role)
         values (#{email}, #{pwd}, #{name}, #{nickName}, #{phoNo}, #{created}, #{role})
     </insert>
+    
+    <select id="findMemberByEmail" resultType="member">
+        select *
+        from member
+        where email = #{email}
+    </select>
 
 </mapper>

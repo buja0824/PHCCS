@@ -1,14 +1,15 @@
 package PHCCS.web.service;
 
 import PHCCS.domain.Member;
-import PHCCS.domain.Pet;
 import PHCCS.web.repository.MemberRepository;
+import PHCCS.web.repository.domain.MemberDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -28,5 +29,17 @@ public class MemberService {
         }
         return ResponseEntity.ok("정상적으로 가입 되었습니다.");
     }
-    
+
+    public ResponseEntity<?> login(MemberDto memberDto) {
+        Optional<Member> findMemberOptional = repository.findMemberByEmail(memberDto.getEmail());
+        if (findMemberOptional.isPresent()) {
+            Member m = findMemberOptional.get();
+            // 비밀번호가 일치하는지 확인
+            if (m.getPwd().equals(memberDto.getPwd())) {
+                return ResponseEntity.ok("정상적으로 로그인 되었습니다.");
+            }
+            else{return ResponseEntity.badRequest().body("비밀번호를 다시 입력해주세요.");}
+        }
+        return ResponseEntity.badRequest().body("없는 아이디입니다.");
+    }
 }
