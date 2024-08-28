@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberController {
     private final MemberService service;
 
-    @PostMapping("/auth/sighup")
+    @PostMapping("/auth/signup")
     public ResponseEntity<?> add(@RequestBody Member member) {
         ResponseEntity<?> save = service.save(member);
         return save;
