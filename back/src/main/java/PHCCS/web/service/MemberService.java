@@ -3,6 +3,8 @@ package PHCCS.web.service;
 import PHCCS.domain.Member;
 import PHCCS.web.repository.MemberRepository;
 import PHCCS.web.repository.domain.MemberDto;
+import PHCCS.web.repository.domain.SessionMemberDTO;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -31,19 +33,26 @@ public class MemberService {
         return ResponseEntity.ok("정상적으로 가입 되었습니다.");
     }
 
-    public Member findMemberByEmail(String email){
+    public Optional<Member> findMemberByEmail(String email){
         Optional<Member> findMemberOptional = repository.findMemberByEmail(email);
         if (findMemberOptional.isPresent()) {
-            return findMemberOptional.get();}
-        else {return null;}
+            return Optional.of(findMemberOptional.get());}
+        else {return Optional.empty();}
     }
+// service 계층에서 ResponseBody 반환하는것을 최대한 제한하고자 함
+    public Optional<SessionMemberDTO> login(Member member, MemberDto memberDto) {
 
-    public ResponseEntity<?> login(Member member, MemberDto memberDto) {
-            // 비밀번호가 일치하는지 확인
-            if (member.getPwd().equals(memberDto.getPwd())) {
-                return new ResponseEntity<>(HttpStatus.OK);
-            }
-            else{return new ResponseEntity<>(HttpStatus.BAD_REQUEST);}
+            SessionMemberDTO sessionMember = new SessionMemberDTO();
+
+            //비밀번호 확인
+        if (member.getPwd().equals(memberDto.getPwd())) {
+            // 맞다면 sessionMember 필드값 설정
+            sessionMember.setEmail(member.getEmail());
+            sessionMember.setPwd(member.getPwd());
+            sessionMember.setRole(member.getRole());
+            return Optional.of(sessionMember);
+        }
+        return Optional.empty();
     }
 }
 

@@ -8,6 +8,8 @@ public class SessionMemberDTO {
     private String pwd;
     private int role;
 
+    public SessionMemberDTO(){}
+
     public SessionMemberDTO(String email, String pwd, int role) {
         this.email = email;
         this.pwd = pwd;

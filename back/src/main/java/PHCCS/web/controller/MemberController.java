@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Optional;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -28,19 +30,22 @@ public class MemberController {
     @PostMapping("/auth/signin")
     public ResponseEntity<?> login(@RequestBody MemberDto memberDto
     , HttpServletRequest request) {
-
-        Member member = service.findMemberByEmail(memberDto.getEmail());
-
-        if(member != null){
-            ResponseEntity<?> login = service.login(member, memberDto);
-
-            if(login.getStatusCode().is2xxSuccessful()){
-                SessionMemberDTO sessionMember = new SessionMemberDTO(member.getEmail(), member.getPwd(), member.getRole());
+        //1. POST 요청으로 받은 email과 일치하는 멤버 객체를 찾음
+        Optional<Member> optionalMember = service.findMemberByEmail(memberDto.getEmail());
+        //2-1. 찾았다면 3 이행
+        if(optionalMember.isPresent()){
+            //3. MermerSevice 계층의 login 메서드에서 sessionMember 객체 호출
+            Optional<SessionMemberDTO> sessionMember = service.login(optionalMember.get(), memberDto);
+            //4-1. 필드값이 설정되어있는 sessionMember를 받았다면 5 이행
+            if(sessionMember.isPresent()){
+                //5. 세션 설정
                 HttpSession session = request.getSession();
                 session.setAttribute("loginMember", sessionMember);
                 return ResponseEntity.ok("로그인 되었습니다.");
-            }else{return ResponseEntity.badRequest().body("비밀번호를 다시 입력해주세요.");}
-        }
-        return ResponseEntity.badRequest().body("없는 회원입니다.");
+            }
+            //4-2. 못 찾았다면 다음 문장 실행
+            else{return ResponseEntity.badRequest().body("비밀번호를 다시 입력해주세요.");}
+        //2-2. 못 찾았다면 다음 문장 실행
+        }else{return ResponseEntity.badRequest().body("없는 회원입니다.");}
     }
 }
