@@ -6,12 +6,12 @@
 <mapper namespace="PHCCS.web.repository.mapper.PostMapper">
 
     <insert id="communitySave" keyProperty="post.id" useGeneratedKeys="true">
-        insert into vet_board (member_id, author, title, content, create_date, file_dir)
+        insert into community_board (member_id, author, title, content, create_date, file_dir)
         values (#{memberId}, #{post.author}, #{post.title}, #{post.content}, #{post.writeTime}, #{post.fileDir})
     </insert>
 
     <insert id="qnaSave" keyProperty="post.id" useGeneratedKeys="true">
-        insert into vet_board (member_id, author, title, content, create_date, file_dir)
+        insert into qna_board (member_id, author, title, content, create_date, file_dir)
         values (#{memberId}, #{post.author}, #{post.title}, #{post.content}, #{post.writeTime}, #{post.fileDir})
     </insert>
 
@@ -20,6 +20,39 @@
         values (#{memberId}, #{post.author}, #{post.title}, #{post.content}, #{post.writeTime}, #{post.fileDir})
     </insert>
 
+    <select id="showPost" resultType="Post">
+        select id, author, title, content, view_cnt, create_date, file_dir
+        from
+        <choose>
+            <when test= "category == 'qna_board'">
+                qna_board
+            </when>
+            <when test= "category == 'community_board'">
+                community_board
+            </when>
+            <when test= "category == 'vet_board'">
+                vet_board
+            </when>
+        </choose>
+        where id = #{id}
+
+    </select>
+
+    <select id="showAllPost" resultType="Post">
+        select id, author, title, view_cnt, create_date as writeTime
+        from
+        <choose>
+            <when test= "category == 'qna_board'">
+                qna_board
+            </when>
+            <when test= "category == 'community_board'">
+                community_board
+            </when>
+            <when test= "category == 'vet_board'">
+                vet_board
+            </when>
+        </choose>
+    </select>
 
 </mapper>
 

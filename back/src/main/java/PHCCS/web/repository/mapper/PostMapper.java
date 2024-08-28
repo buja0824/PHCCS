@@ -4,6 +4,8 @@ import PHCCS.domain.Post;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 @Mapper
 public interface PostMapper {
     /**
@@ -24,4 +26,10 @@ public interface PostMapper {
      */
     int vetSave(@Param("memberId")Long memberId, @Param("post")Post post);
 
+    Post showPost(@Param("category") String category, @Param("id") Long id);
+
+    /**
+     *  카테고리별 모든 게시글을 가져온다
+     */
+    List<Post> showAllPost(@Param("category") String category);
 }
