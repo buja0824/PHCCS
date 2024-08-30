@@ -1,11 +1,12 @@
 package PHCCS.web.controller;
 
-import PHCCS.SessionConst;
 import PHCCS.domain.Member;
 import PHCCS.web.repository.domain.PostModifyParam;
 import PHCCS.web.service.PostService;
 import PHCCS.web.service.domain.FileDto;
+
 import PHCCS.web.service.domain.PostDto;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
@@ -13,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.List;

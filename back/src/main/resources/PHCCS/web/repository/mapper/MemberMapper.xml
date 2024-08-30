@@ -6,8 +6,29 @@
 <mapper namespace="PHCCS.web.repository.mapper.MemberMapper">
 
     <insert id="save" useGeneratedKeys="true" keyProperty="id">
-        insert into pet(email, pwd, name, nick_name, pho_no, )
-        values (#{petName}, #{petBreed}, #{petAge}, #{petGender}, #{petRegNo})
+        insert into member(email, pwd, name, nick_name, pho_no, created, role)
+        values (#{email}, #{pwd}, #{name}, #{nickName}, #{phoNo}, #{created}, #{role})
     </insert>
+    
+    <select id="findMemberByEmail" resultType="member">
+        select *
+        from member
+        where email = #{email}
+    </select>
+
+    <update id="modifyMember">
+        update member
+        set pwd = #{memberModifyParam.pwd},
+        name = #{memberModifyParam.name},
+        nick_name = #{memberModifyParam.nickName},
+        pho_no = #{memberModifyParam.phoNo}
+        where id = #{id}
+    </update>
+
+    <select id="findMemberById" resultType="member">
+        select *
+        from member
+        where id = #{id}
+    </select>
 
 </mapper>

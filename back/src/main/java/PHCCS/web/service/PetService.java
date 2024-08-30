@@ -2,7 +2,7 @@ package PHCCS.web.service;
 
 import PHCCS.domain.Pet;
 import PHCCS.web.repository.PetRepository;
-import PHCCS.web.repository.domain.PetDto;
+import PHCCS.web.service.domain.PetDto;
 import PHCCS.web.repository.domain.PetmodifyParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
