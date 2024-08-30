@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface PetRepository {
 
-    int save(Long id, Pet pet);
+    int save(Pet pet);
 
     Pet findByRegNo(String regNo);
 

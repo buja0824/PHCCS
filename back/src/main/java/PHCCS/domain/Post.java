@@ -10,6 +10,7 @@ public class Post { // 회원과 게시판은 1:N 관계일듯
 
     private Long id; // 게시판의 pk
 
+    private Long memberId; // 멤버의 기본키 : FK이다
     private String category; // 게시판 종류
     private String title; // 게시글 제목
     private String content; // 게시글 내용

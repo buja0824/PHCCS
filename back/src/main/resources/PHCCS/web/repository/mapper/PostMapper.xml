@@ -7,17 +7,17 @@
 
     <insert id="communitySave" keyProperty="post.id" useGeneratedKeys="true">
         insert into community_board (member_id, author, title, content, create_date, file_dir)
-        values (#{memberId}, #{post.author}, #{post.title}, #{post.content}, #{post.writeTime}, #{post.fileDir})
+        values (#{post.memberId}, #{post.author}, #{post.title}, #{post.content}, #{post.writeTime}, #{post.fileDir})
     </insert>
 
     <insert id="qnaSave" keyProperty="post.id" useGeneratedKeys="true">
         insert into qna_board (member_id, author, title, content, create_date, file_dir)
-        values (#{memberId}, #{post.author}, #{post.title}, #{post.content}, #{post.writeTime}, #{post.fileDir})
+        values (#{post.memberId}, #{post.author}, #{post.title}, #{post.content}, #{post.writeTime}, #{post.fileDir})
     </insert>
 
     <insert id="vetSave" keyProperty="post.id" useGeneratedKeys="true">
         insert into vet_board (member_id, author, title, content, create_date, file_dir)
-        values (#{memberId}, #{post.author}, #{post.title}, #{post.content}, #{post.writeTime}, #{post.fileDir})
+        values (#{post.memberId}, #{post.author}, #{post.title}, #{post.content}, #{post.writeTime}, #{post.fileDir})
     </insert>
 
     <select id="showPost" resultType="Post">
@@ -54,5 +54,57 @@
         </choose>
     </select>
 
+    <update id="modifyPost">
+        update
+        <choose>
+            <when test="param.category == 'qna_board'">
+                qna_board
+            </when>
+            <when test="param.category == 'vet_board'">
+                vet_board
+            </when>
+            <when test="param.category == 'community_board'">
+                community_board
+            </when>
+        </choose>
+        set title = #{param.title},
+            content = #{param.content},
+            update_date = #{param.modifyTime},
+            file_dir = #{dir}
+        where member_id = #{memberId} and id = #{postId}
+    </update>
+
+    <delete id="deletePost">
+        delete from
+        <choose>
+            <when test= "category == 'qna_board'">
+                qna_board
+            </when>
+            <when test= "category == 'community_board'">
+                community_board
+            </when>
+            <when test= "category == 'vet_board'">
+                vet_board
+            </when>
+        </choose>
+        where member_id = #{memberId} and id = #{postId}
+    </delete>
+
+    <select id="findPostDir" resultType="String">
+        select file_dir
+        from
+        <choose>
+            <when test="category == 'qna_board'">
+                qna_board
+            </when>
+            <when test="category == 'vet_board'">
+                vet_board
+            </when>
+            <when test="category == 'community_board'">
+                community_board
+            </when>
+        </choose>
+        where id = #{id}
+    </select>
 </mapper>
 

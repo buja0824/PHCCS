@@ -50,7 +50,7 @@ public class FileStore {
      * 서버에 저장하는 파일명은 저장 폴더에 간 후
      * UUID + 파일 확장자로 한다
      */
-    public UploadFile storeFile(
+    private UploadFile storeFile(
             MultipartFile multipartFile,
             Long memberId, String postTitle, String boardType) throws IOException {
 
@@ -89,6 +89,18 @@ public class FileStore {
             return null;
         }
         return fileList;
+    }
+
+    public void deleteFiles(String fileDir){
+        File endPoint = new File(fileDir);
+        if(!endPoint.exists()) return;
+
+        File[] files = endPoint.listFiles();
+        if(files == null) return;
+        for (File file : files) {
+            file.delete();
+        }
+        endPoint.delete();
     }
 
     private static String createStoreFileName(String originalFileName) {

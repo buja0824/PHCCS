@@ -7,7 +7,7 @@
 
     <insert id="save">
         insert into member_pet(member_id, name, breed, age, gender, reg_no)
-        values (#{memberId}, #{pet.petName}, #{pet.petBreed}, #{pet.petAge}, #{pet.petGender}, #{pet.petRegNo})
+        values (#{pet.memberId}, #{pet.petName}, #{pet.petBreed}, #{pet.petAge}, #{pet.petGender}, #{pet.petRegNo})
     </insert>
 
     <select id="findPetsByMember" resultType="Pet">

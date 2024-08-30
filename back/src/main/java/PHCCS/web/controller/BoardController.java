@@ -6,8 +6,8 @@ import PHCCS.web.repository.domain.PostModifyParam;
 import PHCCS.web.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +31,7 @@ public class BoardController {
             @RequestPart("dto") PostDto dto,
             @RequestPart(value = "imageFiles", required = false) List<MultipartFile> imageFiles,
             @RequestPart(value = "videoFiles", required = false) List<MultipartFile> videoFiles)  throws IOException {
-
+        log.info("|co|createPost()");
 //        if(!isLogin(loginMember)){
 //            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인하지 않은 사용자는 접근할 수 없습니다.");
 //        }
@@ -64,13 +64,51 @@ public class BoardController {
                 .body(resource);
     }
     @GetMapping("/video/{uuid}")
-    public Resource sendVidFile(
+    public ResponseEntity<Resource> sendVidFile(
             @PathVariable("uuid") String filename,
             @RequestBody FileDto dto) throws MalformedURLException {
         Resource resource = service.sendFile(filename, dto);
+        MediaType mediaType = determineVideoMediaType(filename);
 
-        return null;
+        return ResponseEntity.ok()
+                .contentType(mediaType)
+                .body(resource);
     }
+
+    @GetMapping("/show/{category}")
+    public ResponseEntity<?> showAllPost(@PathVariable("category") String category){
+        log.info("showAllPost()");
+        log.info("category = {}", category);
+        ResponseEntity<?> posts = service.showAllPost(category);
+        return posts;
+    }
+
+    @PutMapping(value = "/modify/{category}/{id}", consumes = "multipart/form-data")
+    public ResponseEntity<?> modifyPost(
+/*            @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,*/
+            @PathVariable("category") String category,
+            @PathVariable("id") Long postId,
+            @RequestPart("modifyParam") PostModifyParam modifyParam,
+            @RequestPart(value = "imageFiles", required = false) List<MultipartFile> imgFiles,
+            @RequestPart(value = "videoFiles", required = false) List<MultipartFile> vidFiles) throws IOException {
+
+        log.info("modifyPost()");
+        log.info("imgFiles = {}", imgFiles);
+        log.info("vidFiles = {}", vidFiles);
+//        if(!isLogin(loginMember)){
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인하지 않은 사용자는 접근할 수 없습니다.");
+//        }
+
+        service.modifyPost(/*loginMember.getId()*/2L, category, postId, modifyParam, imgFiles, vidFiles);
+        return  null;
+    }
+
+
+    private static boolean isLogin(Member loginMember){
+        if(loginMember == null) return false;
+        else return true;
+    }
+
     private MediaType determineImgMediaType(String filename) {
         if (filename.endsWith(".jpg")) {
             return MediaType.IMAGE_JPEG;
@@ -83,46 +121,18 @@ public class BoardController {
         }
         return MediaType.ALL;
     }
+
     private MediaType determineVideoMediaType(String filename) {
         if (filename.endsWith(".mp4")) {
-            return MediaType.valueOf("video/mp4");
+            return MediaType.parseMediaType("video/mp4");
         } else if (filename.endsWith(".avi")) {
-            return MediaType.valueOf("video/x-msvideo");
+            return MediaType.parseMediaType("video/x-msvideo");
         } else if (filename.endsWith(".mov")) {
-            return MediaType.valueOf("video/quicktime");
+            return MediaType.parseMediaType("video/quicktime");
         } else if (filename.endsWith(".mkv")) {
-            return MediaType.valueOf("video/x-matroska");
+            return MediaType.parseMediaType("video/x-matroska");
         }
-        return MediaType.APPLICATION_OCTET_STREAM; // 기본 값
-    }
-
-
-    @GetMapping("/show/{category}")
-    public ResponseEntity<?> showAllPost(@PathVariable("category") String category){
-        log.info("showAllPost()");
-        log.info("category = {}", category);
-        ResponseEntity<?> posts = service.showAllPost(category);
-        return posts;
-    }
-
-    @PutMapping("/modify")
-    public ResponseEntity<?> modifyPost(
-            @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
-            @RequestBody PostModifyParam modifyParam){
-
-        log.info("modifyPost()");
-//        if(!isLogin(loginMember)){
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인하지 않은 사용자는 접근할 수 없습니다.");
-//        }
-
-        service.modifyPost(loginMember.getId(), modifyParam);
-        return  null;
-    }
-
-
-    public static boolean isLogin(Member loginMember){
-        if(loginMember == null) return false;
-        else return true;
+        return MediaType.APPLICATION_OCTET_STREAM; // 기본 값인데 이걸 보내는게 맞나?
     }
 
 }
