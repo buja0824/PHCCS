@@ -4,7 +4,7 @@ package PHCCS.web.controller;
 import PHCCS.SessionConst;
 import PHCCS.domain.Member;
 import PHCCS.domain.Pet;
-import PHCCS.web.repository.domain.PetDto;
+import PHCCS.web.service.domain.PetDto;
 import PHCCS.web.repository.domain.PetmodifyParam;
 import PHCCS.web.service.PetService;
 import lombok.RequiredArgsConstructor;

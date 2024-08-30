@@ -1,4 +1,4 @@
-package PHCCS.web.repository.domain;
+package PHCCS.web.service.domain;
 
 import lombok.Data;
 

@@ -2,12 +2,11 @@ package PHCCS.web.service;
 
 import PHCCS.domain.Member;
 import PHCCS.web.repository.MemberRepository;
-import PHCCS.web.repository.domain.MemberDto;
-import PHCCS.web.repository.domain.SessionMemberDTO;
-import jakarta.servlet.http.HttpSession;
+import PHCCS.web.repository.domain.MemberModifyParam;
+import PHCCS.web.service.domain.MemberDto;
+import PHCCS.web.service.domain.SessionMemberDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -47,12 +46,19 @@ public class MemberService {
             //비밀번호 확인
         if (member.getPwd().equals(memberDto.getPwd())) {
             // 맞다면 sessionMember 필드값 설정
+            sessionMember.setId(member.getId());
             sessionMember.setEmail(member.getEmail());
             sessionMember.setPwd(member.getPwd());
             sessionMember.setRole(member.getRole());
             return Optional.of(sessionMember);
         }
         return Optional.empty();
+    }
+
+    public int modifyMember (long id, MemberModifyParam memberModifyParam){
+        int isSuccess = repository.modifyMember(id, memberModifyParam);
+
+        return isSuccess;
     }
 }
 

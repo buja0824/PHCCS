@@ -3,7 +3,7 @@ package PHCCS.web.service;
 import PHCCS.domain.Post;
 import PHCCS.domain.UploadFile;
 import PHCCS.file.FileStore;
-import PHCCS.web.controller.FileDto;
+import PHCCS.web.service.domain.FileDto;
 import PHCCS.web.controller.PostDto;
 import PHCCS.web.repository.PostRepository;
 import PHCCS.web.repository.domain.PostModifyParam;
@@ -20,7 +20,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.sql.SQLSyntaxErrorException;
 import java.util.List;
 
 @Slf4j

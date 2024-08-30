@@ -1,4 +1,4 @@
-package PHCCS.web.controller;
+package PHCCS.web.service.domain;
 
 import lombok.Data;
 

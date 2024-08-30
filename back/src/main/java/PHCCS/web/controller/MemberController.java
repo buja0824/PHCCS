@@ -1,17 +1,16 @@
 package PHCCS.web.controller;
 
 import PHCCS.domain.Member;
-import PHCCS.web.repository.domain.MemberDto;
-import PHCCS.web.repository.domain.SessionMemberDTO;
+import PHCCS.web.repository.domain.MemberModifyParam;
+import PHCCS.web.service.domain.MemberDto;
+import PHCCS.web.service.domain.SessionMemberDTO;
 import PHCCS.web.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
@@ -40,7 +39,7 @@ public class MemberController {
             if(sessionMember.isPresent()){
                 //5. 세션 설정
                 HttpSession session = request.getSession();
-                session.setAttribute("loginMember", sessionMember);
+                session.setAttribute("loginMember", sessionMember.get());
                 return ResponseEntity.ok("로그인 되었습니다.");
             }
             //4-2. 못 찾았다면 다음 문장 실행
@@ -56,5 +55,16 @@ public class MemberController {
             session.invalidate();
             return ResponseEntity.ok("로그아웃 되었습니다.");
         }else {return ResponseEntity.badRequest().body("잘못된 접근.");}
+    }
+
+    @PatchMapping("/member/update")
+    public ResponseEntity<?> update(@SessionAttribute(name = "loginMember", required = false) SessionMemberDTO loginMember
+    , @RequestBody MemberModifyParam ModifyParam){
+
+        int isSuccess = service.modifyMember(loginMember.getId(), ModifyParam);
+
+        if(isSuccess == 1){
+            return ResponseEntity.ok("수정 되었습니다.");
+        }else{return ResponseEntity.badRequest().body("수정 중 오류가 발생했습니다.");}
     }
 }

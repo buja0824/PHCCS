@@ -16,4 +16,13 @@
         where email = #{email}
     </select>
 
+    <update id="modifyMember">
+        update member
+        set pwd = #{memberModifyParam.pwd},
+        name = #{memberModifyParam.name},
+        nick_name = #{memberModifyParam.nickName},
+        pho_no = #{memberModifyParam.phoNo}
+        where id = #{id}
+    </update>
+
 </mapper>
