@@ -3,8 +3,8 @@ package PHCCS.web.service;
 import PHCCS.domain.Post;
 import PHCCS.domain.UploadFile;
 import PHCCS.file.FileStore;
-import PHCCS.web.controller.FileDto;
-import PHCCS.web.controller.PostDto;
+import PHCCS.web.service.domain.FileDto;
+import PHCCS.web.service.domain.PostDto;
 import PHCCS.web.repository.PostRepository;
 import PHCCS.web.repository.domain.PostModifyParam;
 import lombok.RequiredArgsConstructor;
@@ -20,14 +20,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.sql.SQLSyntaxErrorException;
 import java.util.List;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class PostService {
-    @Value("{file.dir}")
+    @Value("${file.dir}")
     private String fileDir;
     private final PostRepository repository;
     private final FileStore fileStore;
@@ -132,7 +131,7 @@ public class PostService {
      * 수정에 관해서는 디렉터리의 파일들을 삭제하고 재등록하는 과정이 존재하니 트랜잭션의 적용이 필요해보임
      */
     @Transactional
-    public void modifyPost(Long memberId, String category, Long postId, PostModifyParam param, List<MultipartFile> imgs, List<MultipartFile> vids) throws IOException {
+    public ResponseEntity<?> modifyPost(Long memberId, String category, Long postId, PostModifyParam param, List<MultipartFile> imgs, List<MultipartFile> vids) throws IOException {
         log.info("|se|modifyPost()");
         String storedDir = null;
         String findFileDir = repository.findPostDir(category, postId);
@@ -153,10 +152,51 @@ public class PostService {
         log.info("|se|storedDir = {}", storedDir);
         if(!param.getCategory().equals(category)){
             log.info("카테고리변경");
+            Post beforePost = repository.showPost(category, postId);
+            log.info("|se|beforePost = {}",beforePost.toString());
+            Post afterPost = new Post();
+            afterPost.setMemberId(memberId);
+            afterPost.setTitle(param.getTitle());
+            afterPost.setContent(param.getContent());
+            afterPost.setAuthor(beforePost.getAuthor());
+            afterPost.setViewCnt(beforePost.getViewCnt());
+            afterPost.setFileDir(storedDir);
+            afterPost.setWriteTime(beforePost.getWriteTime());
+            afterPost.setUpdateTime(param.getModifyTime());
+            switch (param.getCategory()){
+                case "community_board":
+                    if(repository.communitySave(afterPost) <= 0){
+                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("내부 오류 발생 게시글 수정 실패");
+                    }
+                    break;
+                case "qna_board":
+                    if(repository.qnaSave(afterPost) <= 0){
+                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("내부 오류 발생 게시글 수정 실패");
+                    }
+                    break;
+                case "vet_board":
+                    if(repository.vetSave(afterPost) <= 0){
+                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("내부 오류 발생 게시글 수정 실패");
+                    }
+                    break;
+            }
             repository.deletePost(category, memberId, postId);
+            log.info("삭제 끝");
         }else {
             log.info("카테고리동일");
             repository.modifyPost(memberId, postId, param, storedDir);
+        }
+        return ResponseEntity.ok().body("수정완료");
+    }
+
+    public void deletePost(String category, Long memberId, Long postId){
+        log.info("|se|deletePost()");
+        String findFileDir = repository.findPostDir(category, postId);
+        repository.deletePost(category, memberId, postId);
+        if(findFileDir != null){
+            // 해당 게시글을 통해서 저장된 파일존재
+            // 해당 경로 찾아가서 파일들 삭제하기
+            fileStore.deleteFiles(findFileDir);
         }
     }
 

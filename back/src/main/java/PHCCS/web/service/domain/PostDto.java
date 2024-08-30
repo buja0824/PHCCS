@@ -1,6 +1,5 @@
-package PHCCS.web.controller;
+package PHCCS.web.service.domain;
 
-import PHCCS.domain.UploadFile;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 

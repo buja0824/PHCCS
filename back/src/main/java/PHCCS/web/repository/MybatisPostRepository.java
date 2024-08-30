@@ -58,7 +58,7 @@ public class MybatisPostRepository implements PostRepository{
 
     @Override
     public void deletePost(String category, Long memberId, Long postId) {
-        log.info("|re|deletePost()");
+        log.info("|se|re|deletePost()");
         mapper.deletePost(category, memberId, postId);
     }
 
