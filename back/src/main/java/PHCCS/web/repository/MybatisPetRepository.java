@@ -16,14 +16,14 @@ public class MybatisPetRepository implements PetRepository{
     private final PetMapper mapper;
 
     @Override
-    public int save(Long id,Pet pet) {
-        int save = mapper.save(id, pet);
+    public int save(Pet pet) {
+        int save = mapper.save(pet);
         return save;
     }
 
     @Override
-    public Pet findById(Long id) {
-        return mapper.findById(id);
+    public Pet findByRegNo(String regNo) {
+        return mapper.findByRegNo(regNo);
     }
 
     @Override
@@ -40,5 +40,10 @@ public class MybatisPetRepository implements PetRepository{
     @Override
     public void deletePet(Long memberId, List<String> petNames ) {
         mapper.deletePet(memberId, petNames);
+    }
+
+    @Override
+    public void testDelete() {
+        mapper.testDelete();
     }
 }

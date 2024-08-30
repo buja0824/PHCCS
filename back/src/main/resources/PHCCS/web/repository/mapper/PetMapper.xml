@@ -7,7 +7,7 @@
 
     <insert id="save">
         insert into member_pet(member_id, name, breed, age, gender, reg_no)
-        values (#{memberId}, #{pet.petName}, #{pet.petBreed}, #{pet.petAge}, #{pet.petGender}, #{pet.petRegNo})
+        values (#{pet.memberId}, #{pet.petName}, #{pet.petBreed}, #{pet.petAge}, #{pet.petGender}, #{pet.petRegNo})
     </insert>
 
     <select id="findPetsByMember" resultType="Pet">
@@ -16,10 +16,10 @@
         where member_id = #{id}
     </select>
 
-    <select id="findById" resultType="Pet">
-        select *
+    <select id="findByRegNo" resultType="Pet">
+        select reg_no as petRegNo, name as petName, age as petAge, breed as petBreed, gender as petGender
         from member_pet
-        where pet_no = #{id}
+        where reg_no = #{id}
     </select>
 
     <update id="modifyPet">
@@ -38,6 +38,11 @@
         <foreach item="petName" collection="petNames" open="(" separator="," close=")">
             #{petName}
         </foreach>
+    </delete>
+
+    <delete id="testDelete">
+        delete
+        from member_pet
     </delete>
 
 

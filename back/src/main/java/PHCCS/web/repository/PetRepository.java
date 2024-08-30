@@ -7,12 +7,13 @@ import java.util.List;
 
 public interface PetRepository {
 
-    int save(Long id, Pet pet);
+    int save(Pet pet);
 
-    Pet findById(Long id);
+    Pet findByRegNo(String regNo);
 
     List<Pet> findPetsByMember(Long id);
 
     void modifyPet(Long memberId, String name, PetmodifyParam modifyParam);
     void deletePet(Long memberId, List<String> petNames);
+    void testDelete();
 }
