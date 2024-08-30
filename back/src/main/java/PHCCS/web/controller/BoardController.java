@@ -4,6 +4,9 @@ import PHCCS.domain.Member;
 import PHCCS.web.repository.domain.PostModifyParam;
 import PHCCS.web.service.PostService;
 import PHCCS.web.service.domain.FileDto;
+
+import PHCCS.web.service.domain.PostDto;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
@@ -96,9 +99,21 @@ public class BoardController {
 //        if(!isLogin(loginMember)){
 //            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인하지 않은 사용자는 접근할 수 없습니다.");
 //        }
+        ResponseEntity<?> responseEntity = service.modifyPost(/*loginMember.getId()*/2L, category, postId, modifyParam, imgFiles, vidFiles);
+        return responseEntity;
+    }
 
-        service.modifyPost(/*loginMember.getId()*/2L, category, postId, modifyParam, imgFiles, vidFiles);
-        return  null;
+    @DeleteMapping("/delete/{category}/{id}")
+    public ResponseEntity<?> deletePost(
+/*            @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,*/
+            @PathVariable("category") String category,
+            @PathVariable("id") Long postId){
+        log.info("deletePost()");
+//        if(!isLogin(loginMember)){
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인하지 않은 사용자는 접근할 수 없습니다.");
+//        }
+        service.deletePost(category, /*loginMember.getId()*/2L, postId);
+        return ResponseEntity.ok().body("삭제 완료");
     }
 
 
