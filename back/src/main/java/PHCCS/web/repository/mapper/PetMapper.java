@@ -9,7 +9,7 @@ import java.util.List;
 
 @Mapper
 public interface PetMapper {
-    int save(@Param("memberId") Long id, @Param("pet") Pet pet);
+    int save(@Param("pet") Pet pet);
 
     List<Pet> findPetsByMember(Long id);
 

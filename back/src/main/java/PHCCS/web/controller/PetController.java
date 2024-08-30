@@ -4,6 +4,7 @@ package PHCCS.web.controller;
 import PHCCS.SessionConst;
 import PHCCS.domain.Member;
 import PHCCS.domain.Pet;
+import PHCCS.web.repository.domain.PetDto;
 import PHCCS.web.repository.domain.PetmodifyParam;
 import PHCCS.web.service.PetService;
 import lombok.RequiredArgsConstructor;
@@ -24,9 +25,10 @@ public class PetController {
     @PostMapping("/pet/add")
     public ResponseEntity<?> petAdd(
             /*@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,*/
-            @RequestBody Pet pet){
+            @RequestBody PetDto dto){
         log.info("petAdd()");
-        ResponseEntity<?> save = service.save(/*loginMember.getId()*/1L,pet);
+
+        ResponseEntity<?> save = service.save(/*loginMember.getId()*/1L,dto);
         return save;
     }
 

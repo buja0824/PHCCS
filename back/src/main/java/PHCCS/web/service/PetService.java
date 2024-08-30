@@ -2,6 +2,7 @@ package PHCCS.web.service;
 
 import PHCCS.domain.Pet;
 import PHCCS.web.repository.PetRepository;
+import PHCCS.web.repository.domain.PetDto;
 import PHCCS.web.repository.domain.PetmodifyParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,8 +18,16 @@ public class PetService {
 
     private final PetRepository repository;
 
-    public ResponseEntity<?> save(Long id, Pet pet) {
-        int resultRow = repository.save(id, pet);
+    public ResponseEntity<?> save(Long memberId, PetDto dto) {
+        Pet pet = new Pet();
+        pet.setPetRegNo(dto.getPetRegNo());
+        pet.setMemberId(memberId);
+        pet.setPetName(dto.getPetName());
+        pet.setPetBreed(dto.getPetBreed());
+        pet.setPetAge(dto.getPetAge());
+        pet.setPetGender(dto.getPetGender());
+
+        int resultRow = repository.save(pet);
         if (resultRow < 0) {
             return ResponseEntity.badRequest().body("펫 등록에 실패하였습니다.");
         }

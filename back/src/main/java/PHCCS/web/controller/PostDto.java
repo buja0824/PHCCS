@@ -19,7 +19,7 @@ public class PostDto {
 
     //file 관련 멤버변수
     private String fileDir;
-//    private List<MultipartFile> imageFiles;
-//    private List<MultipartFile> videoFiles;
+    private List<MultipartFile> imageFiles;
+    private List<MultipartFile> videoFiles;
 
 }

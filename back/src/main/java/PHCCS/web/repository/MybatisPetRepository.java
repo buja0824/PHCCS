@@ -16,8 +16,8 @@ public class MybatisPetRepository implements PetRepository{
     private final PetMapper mapper;
 
     @Override
-    public int save(Long id,Pet pet) {
-        int save = mapper.save(id, pet);
+    public int save(Pet pet) {
+        int save = mapper.save(pet);
         return save;
     }
 

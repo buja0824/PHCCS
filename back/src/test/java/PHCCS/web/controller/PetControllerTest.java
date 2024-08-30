@@ -1,6 +1,7 @@
 package PHCCS.web.controller;
 
 import PHCCS.domain.Pet;
+import PHCCS.web.repository.domain.PetDto;
 import PHCCS.web.repository.domain.PetmodifyParam;
 import PHCCS.web.service.PetService;
 import lombok.extern.slf4j.Slf4j;
@@ -34,9 +35,10 @@ class PetControllerTest {
 
     @Test
     public void petAddTest(){
-        Pet pet = new Pet();
+        PetDto pet = new PetDto();
 
         pet.setPetRegNo("01");
+
         pet.setPetName("바둑이");
         pet.setPetAge("4");
         pet.setPetBreed("푸들");
@@ -50,7 +52,7 @@ class PetControllerTest {
 
     @Test
     public void showMyPetTest(){
-        Pet pet1 = new Pet();
+        PetDto pet1 = new PetDto();
         pet1.setPetRegNo("01");
         pet1.setPetName("바둑이");
         pet1.setPetAge("4");
@@ -58,7 +60,7 @@ class PetControllerTest {
         pet1.setPetGender("0");
         service.save(1L,pet1);
 
-        Pet pet2 = new Pet();
+        PetDto pet2 = new PetDto();
         pet2.setPetRegNo("02");
         pet2.setPetName("겨울이");
         pet2.setPetAge("3");
@@ -66,7 +68,7 @@ class PetControllerTest {
         pet2.setPetGender("0");
         service.save(1L,pet2);
 
-        Pet pet3 = new Pet();
+        PetDto pet3 = new PetDto();
         pet3.setPetRegNo("03");
         pet3.setPetName("여름이");
         pet3.setPetAge("2");
@@ -81,7 +83,7 @@ class PetControllerTest {
 
     @Test
     public void deletePetTest(){
-        Pet pet = new Pet();
+        PetDto pet = new PetDto();
         pet.setPetRegNo("01");
         pet.setPetName("바둑이");
         pet.setPetAge("4");
@@ -89,8 +91,7 @@ class PetControllerTest {
         pet.setPetGender("0");
 
         service.save(1L,pet);
-
-        Pet pet2 = new Pet();
+        PetDto pet2 = new PetDto();
         pet2.setPetRegNo("02");
         pet2.setPetName("겨울이");
         pet2.setPetAge("3");
@@ -98,7 +99,7 @@ class PetControllerTest {
         pet2.setPetGender("0");
         service.save(1L,pet2);
 
-        Pet pet3 = new Pet();
+        PetDto pet3 = new PetDto();
         pet3.setPetRegNo("03");
         pet3.setPetName("여름이");
         pet3.setPetAge("2");
@@ -117,7 +118,8 @@ class PetControllerTest {
     }
     @Test
     public void petModifyTest(){
-        Pet pet = new Pet();
+
+        PetDto pet = new PetDto();
         pet.setPetRegNo("01");
         pet.setPetName("바둑이");
         pet.setPetAge("4");
@@ -126,7 +128,7 @@ class PetControllerTest {
 
         service.save(1L,pet);
 
-        Pet pet2 = new Pet();
+        PetDto pet2 = new PetDto();
         pet2.setPetRegNo("02");
         pet2.setPetName("나비");
         pet2.setPetAge("3");

@@ -1,10 +1,12 @@
 package PHCCS.web.controller;
 
-import org.springframework.web.multipart.MultipartFile;
+import lombok.Data;
 
-import java.util.List;
-
+@Data
 public class FileDto {
-    private List<MultipartFile> imageFiles;
-    private List<MultipartFile> videoFiles;
+
+    private String category;
+    private Long id;
+    private String title;
+
 }

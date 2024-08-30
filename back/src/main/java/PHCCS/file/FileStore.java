@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @Component
@@ -47,9 +48,9 @@ public class FileStore {
     /**
      * originalFileName이 사진1.png 라면
      * 서버에 저장하는 파일명은 저장 폴더에 간 후
-     * 게시글이름, 업로드한 파일이름을 저장명으로 합니다.
+     * UUID + 파일 확장자로 한다
      */
-    public UploadFile storeFile(
+    private UploadFile storeFile(
             MultipartFile multipartFile,
             Long memberId, String postTitle, String boardType) throws IOException {
 
@@ -57,7 +58,7 @@ public class FileStore {
         // 파일 이름.확장자
         String originalFileName = multipartFile.getOriginalFilename();
         log.info("originalFileName = {}", originalFileName);
-        String storeFileName = createStoreFileName(postTitle, originalFileName);
+        String storeFileName = createStoreFileName(originalFileName);
         log.info("storeFileName = {}", storeFileName);
 
         // 디렉터리에 저장하기
@@ -67,16 +68,46 @@ public class FileStore {
             if(!parentFile.mkdirs()){
                 throw new IOException("파일 저장 실패");
             }
-            multipartFile.transferTo(file); // 파일 저장
         }
+        multipartFile.transferTo(file); // 파일 저장
         return new UploadFile(originalFileName, storeFileName, getFullPath(boardType, memberId, postTitle, storeFileName));
     }
 
-    private static String createStoreFileName(String title, String originalFileName) {
+    public List<String> findFiles(String dir){
+        List<String> fileList = new ArrayList<>();
+
+        File fileDir = new File(dir);
+
+        if(fileDir.exists() && fileDir.isDirectory()){
+            File[] files = fileDir.listFiles();
+            if(files != null){
+                for (File file : files) {
+                    fileList.add(file.getName());
+                }
+            }
+        }else{
+            return null;
+        }
+        return fileList;
+    }
+
+    public void deleteFiles(String fileDir){
+        File endPoint = new File(fileDir);
+        if(!endPoint.exists()) return;
+
+        File[] files = endPoint.listFiles();
+        if(files == null) return;
+        for (File file : files) {
+            file.delete();
+        }
+        endPoint.delete();
+    }
+
+    private static String createStoreFileName(String originalFileName) {
         // 확장자 추출
         String ext = extractExt(originalFileName);
         // 서버에 저장할 파일 이름 만들기
-        return originalFileName + "." + ext;
+        return UUID.randomUUID() + "." + ext;
     }
 
     private static String extractExt(String originalFileName) {
