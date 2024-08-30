@@ -10,5 +10,7 @@ public interface MemberRepository {
 
     Optional<Member> findMemberByEmail(String email);
 
-    int modifyMember(long id, MemberModifyParam memberModifyParam);
+    int modifyMember(Long id, MemberModifyParam memberModifyParam);
+
+    Optional<Member> findMemberById(Long id);
 }

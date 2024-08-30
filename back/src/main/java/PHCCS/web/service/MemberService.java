@@ -55,10 +55,16 @@ public class MemberService {
         return Optional.empty();
     }
 
-    public int modifyMember (long id, MemberModifyParam memberModifyParam){
+    public int modifyMember (Long id, MemberModifyParam memberModifyParam){
         int isSuccess = repository.modifyMember(id, memberModifyParam);
 
         return isSuccess;
+    }
+
+    public Optional<Member> findMyProfileById(Long id) {
+        Optional<Member> member = repository.findMemberById(id);
+
+        return member;
     }
 }
 

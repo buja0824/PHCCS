@@ -29,8 +29,14 @@ public class MybatisMemberRepository implements MemberRepository{
     }
 
     @Override
-    public int modifyMember(long id, MemberModifyParam memberModifyParam){
+    public int modifyMember(Long id, MemberModifyParam memberModifyParam){
         int isSuccess = mapper.modifyMember(id, memberModifyParam);
         return isSuccess;
+    }
+
+    @Override
+    public Optional<Member> findMemberById(Long id){
+        Optional<Member> member = mapper.findMemberById(id);
+        return member;
     }
 }

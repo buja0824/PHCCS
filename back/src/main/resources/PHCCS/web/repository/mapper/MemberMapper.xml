@@ -25,4 +25,10 @@
         where id = #{id}
     </update>
 
+    <select id="findMemberById" resultType="member">
+        select *
+        from member
+        where id = #{id}
+    </select>
+
 </mapper>

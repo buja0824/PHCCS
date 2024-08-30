@@ -67,4 +67,13 @@ public class MemberController {
             return ResponseEntity.ok("수정 되었습니다.");
         }else{return ResponseEntity.badRequest().body("수정 중 오류가 발생했습니다.");}
     }
+
+    @GetMapping("/auth/me")
+    public ResponseEntity<?> getMyProfile(@SessionAttribute(name = "loginMember", required = false) SessionMemberDTO loginMember){
+        Optional<Member> member = service.findMyProfileById(loginMember.getId());
+
+        if(member.isPresent()) {
+            return ResponseEntity.ok(member.get());
+        }else{return ResponseEntity.badRequest().body("정보 조회 오류");}
+    }
 }

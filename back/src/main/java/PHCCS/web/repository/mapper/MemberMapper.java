@@ -14,5 +14,7 @@ public interface MemberMapper {
 
     Optional<Member> findMemberByEmail(String email);
 
-    int modifyMember(@Param("id") long id, @Param("memberModifyParam") MemberModifyParam memberModifyParam);
+    int modifyMember(@Param("id") Long id, @Param("memberModifyParam") MemberModifyParam memberModifyParam);
+
+    Optional<Member> findMemberById(@Param("id") Long id);
 }
