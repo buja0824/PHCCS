@@ -18,10 +18,10 @@
 
     <update id="modifyMember">
         update member
-        set pwd = #{memberModifyParam.pwd},
-        name = #{memberModifyParam.name},
-        nick_name = #{memberModifyParam.nickName},
-        pho_no = #{memberModifyParam.phoNo}
+        set pwd = #{memberModifyDto.pwd},
+        name = #{memberModifyDto.name},
+        nick_name = #{memberModifyDto.nickName},
+        pho_no = #{memberModifyDto.phoNo}
         where id = #{id}
     </update>
 

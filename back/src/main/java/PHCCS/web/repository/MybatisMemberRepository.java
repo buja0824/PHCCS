@@ -1,7 +1,7 @@
 package PHCCS.web.repository;
 
 import PHCCS.domain.Member;
-import PHCCS.web.repository.domain.MemberModifyParam;
+import PHCCS.web.repository.domain.MemberModifyDto;
 import PHCCS.web.repository.mapper.MemberMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,8 +29,8 @@ public class MybatisMemberRepository implements MemberRepository{
     }
 
     @Override
-    public int modifyMember(Long id, MemberModifyParam memberModifyParam){
-        int isSuccess = mapper.modifyMember(id, memberModifyParam);
+    public int modifyMember(Long id, MemberModifyDto memberModifyDto){
+        int isSuccess = mapper.modifyMember(id, memberModifyDto);
         return isSuccess;
     }
 

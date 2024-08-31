@@ -5,7 +5,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class PostModifyParam {
+public class PostUpdateDto {
     private String category;
     private String title;
     private String content;

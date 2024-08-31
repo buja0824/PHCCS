@@ -3,7 +3,7 @@ package PHCCS.web.repository.domain;
 import lombok.Data;
 
 @Data
-public class MemberModifyParam {
+public class MemberModifyDto {
     private String pwd;
     private String name;
     private String nickName;

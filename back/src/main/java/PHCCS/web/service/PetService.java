@@ -3,7 +3,7 @@ package PHCCS.web.service;
 import PHCCS.domain.Pet;
 import PHCCS.web.repository.PetRepository;
 import PHCCS.web.service.domain.PetDto;
-import PHCCS.web.repository.domain.PetmodifyParam;
+import PHCCS.web.repository.domain.PetUpdateDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -42,9 +42,9 @@ public class PetService {
         return repository.findByRegNo(regNo);
     }
 
-    public void modifyPet(Long memberId, String petName, PetmodifyParam modifyParam){
+    public void updatePet(Long memberId, String petName, PetUpdateDto updateParam){
         log.info("service modifyPet()");
-        repository.modifyPet(memberId, petName, modifyParam);
+        repository.updatePet(memberId, petName, updateParam);
     }
 
     public void deletePet(Long memberId, List<String> petNames){

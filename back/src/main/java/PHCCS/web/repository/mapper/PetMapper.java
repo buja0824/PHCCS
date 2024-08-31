@@ -1,7 +1,7 @@
 package PHCCS.web.repository.mapper;
 
 import PHCCS.domain.Pet;
-import PHCCS.web.repository.domain.PetmodifyParam;
+import PHCCS.web.repository.domain.PetUpdateDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -15,7 +15,7 @@ public interface PetMapper {
 
     Pet findByRegNo(String regNo);
 
-    void modifyPet(@Param("memberId") Long memberId, @Param("name") String name, @Param("modifyParam") PetmodifyParam modifyParam);
+    void updatePet(@Param("memberId") Long memberId, @Param("name") String name, @Param("updateDto") PetUpdateDto updateDto);
 
     void deletePet(@Param("memberId") Long memberId, @Param("petNames") List<String> petNames);
 

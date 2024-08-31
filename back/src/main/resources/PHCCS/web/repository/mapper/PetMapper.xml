@@ -22,12 +22,12 @@
         where reg_no = #{id}
     </select>
 
-    <update id="modifyPet">
+    <update id="updatePet">
         update member_pet
-        set name = #{modifyParam.petName},
-            age = #{modifyParam.petAge},
-            breed = #{modifyParam.petBreed},
-            gender = #{modifyParam.petGender}
+        set name = #{updateDto.petName},
+            age = #{updateDto.petAge},
+            breed = #{updateDto.petBreed},
+            gender = #{updateDto.petGender}
         where member_id = #{memberId} and name = #{name}
     </update>
 
