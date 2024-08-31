@@ -2,7 +2,7 @@ package PHCCS.web.controller;
 
 import PHCCS.domain.Pet;
 import PHCCS.web.service.domain.PetDto;
-import PHCCS.web.repository.domain.PetmodifyParam;
+import PHCCS.web.repository.domain.PetUpdateDto;
 import PHCCS.web.service.PetService;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
@@ -137,13 +137,13 @@ class PetControllerTest {
         service.save(1L,pet2);
         log.info(service.findByRegNo("02").toString());
 
-        PetmodifyParam modifyParam = new PetmodifyParam();
+        PetUpdateDto modifyParam = new PetUpdateDto();
         modifyParam.setPetName("여름이");
         modifyParam.setPetAge("3");
         modifyParam.setPetBreed("웰시코기");
         modifyParam.setPetGender("0");
 
-        service.modifyPet(1L, "나비", modifyParam);
+        service.updatePet(1L, "나비", modifyParam);
         log.info(service.findByRegNo("02").toString());
     }
 

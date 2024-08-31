@@ -1,8 +1,8 @@
 package PHCCS.web.controller;
 
 import PHCCS.domain.Member;
-import PHCCS.web.repository.domain.MemberModifyParam;
 import PHCCS.web.repository.domain.MemberProfileDTO;
+import PHCCS.web.repository.domain.MemberModifyDto;
 import PHCCS.web.service.domain.MemberDto;
 import PHCCS.web.service.domain.SessionMemberDTO;
 import PHCCS.web.service.MemberService;
@@ -60,9 +60,9 @@ public class MemberController {
 
     @PatchMapping("/member/update")
     public ResponseEntity<?> update(@SessionAttribute(name = "loginMember", required = false) SessionMemberDTO loginMember
-    , @RequestBody MemberModifyParam ModifyParam){
+    , @RequestBody MemberModifyDto ModifyDto){
 
-        int isSuccess = service.modifyMember(loginMember.getId(), ModifyParam);
+        int isSuccess = service.modifyMember(loginMember.getId(), ModifyDto);
 
         if(isSuccess == 1){
             return ResponseEntity.ok("수정 되었습니다.");

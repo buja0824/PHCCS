@@ -1,7 +1,7 @@
 package PHCCS.web.controller;
 
 import PHCCS.domain.Member;
-import PHCCS.web.repository.domain.PostModifyParam;
+import PHCCS.web.repository.domain.PostUpdateDto;
 import PHCCS.web.service.PostService;
 import PHCCS.web.service.domain.FileDto;
 
@@ -84,22 +84,22 @@ public class BoardController {
         return posts;
     }
 
-    @PutMapping(value = "/modify/{category}/{id}", consumes = "multipart/form-data")
-    public ResponseEntity<?> modifyPost(
+    @PutMapping(value = "/update/{category}/{id}", consumes = "multipart/form-data")
+    public ResponseEntity<?> updatePost(
 /*            @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,*/
             @PathVariable("category") String category,
             @PathVariable("id") Long postId,
-            @RequestPart("modifyParam") PostModifyParam modifyParam,
+            @RequestPart("updateParam") PostUpdateDto updateParam,
             @RequestPart(value = "imageFiles", required = false) List<MultipartFile> imgFiles,
             @RequestPart(value = "videoFiles", required = false) List<MultipartFile> vidFiles) throws IOException {
 
-        log.info("modifyPost()");
+        log.info("updatePost()");
         log.info("imgFiles = {}", imgFiles);
         log.info("vidFiles = {}", vidFiles);
 //        if(!isLogin(loginMember)){
 //            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인하지 않은 사용자는 접근할 수 없습니다.");
 //        }
-        ResponseEntity<?> responseEntity = service.modifyPost(/*loginMember.getId()*/2L, category, postId, modifyParam, imgFiles, vidFiles);
+        ResponseEntity<?> responseEntity = service.updatePost(/*loginMember.getId()*/2L, category, postId, updateParam, imgFiles, vidFiles);
         return responseEntity;
     }
 

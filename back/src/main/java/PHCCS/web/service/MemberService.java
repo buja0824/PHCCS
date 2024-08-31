@@ -2,8 +2,8 @@ package PHCCS.web.service;
 
 import PHCCS.domain.Member;
 import PHCCS.web.repository.MemberRepository;
-import PHCCS.web.repository.domain.MemberModifyParam;
 import PHCCS.web.repository.domain.MemberProfileDTO;
+import PHCCS.web.repository.domain.MemberModifyDto;
 import PHCCS.web.service.domain.MemberDto;
 import PHCCS.web.service.domain.SessionMemberDTO;
 import lombok.RequiredArgsConstructor;
@@ -56,8 +56,8 @@ public class MemberService {
         return Optional.empty();
     }
 
-    public int modifyMember (Long id, MemberModifyParam memberModifyParam){
-        int isSuccess = repository.modifyMember(id, memberModifyParam);
+    public int modifyMember (Long id, MemberModifyDto memberModifyDto){
+        int isSuccess = repository.modifyMember(id, memberModifyDto);
 
         return isSuccess;
     }

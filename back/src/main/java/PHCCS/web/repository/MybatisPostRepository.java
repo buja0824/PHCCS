@@ -1,11 +1,10 @@
 package PHCCS.web.repository;
 
 import PHCCS.domain.Post;
-import PHCCS.web.repository.domain.PostModifyParam;
+import PHCCS.web.repository.domain.PostUpdateDto;
 import PHCCS.web.repository.mapper.PostMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -18,18 +17,8 @@ public class MybatisPostRepository implements PostRepository{
     private final PostMapper mapper;
 
     @Override
-    public int communitySave(Post post) {
-        return mapper.communitySave(post);
-    }
-
-    @Override
-    public int qnaSave(Post post) {
-        return mapper.qnaSave(post);
-    }
-
-    @Override
-    public int vetSave(Post post) {
-        return mapper.vetSave(post);
+    public int save(String category, Post post) {
+        return mapper.save(category, post);
     }
 
     @Override
@@ -51,9 +40,9 @@ public class MybatisPostRepository implements PostRepository{
     }
 
     @Override
-    public void modifyPost(Long memberId, Long postId, PostModifyParam param, String fileDir) {
+    public void updatePost(Long memberId, Long postId, PostUpdateDto dto, String fileDir) {
         log.info("|se|re|modifyPost()");
-        mapper.modifyPost(memberId, postId, param, fileDir);
+        mapper.updatePost(memberId, postId, dto, fileDir);
     }
 
     @Override
