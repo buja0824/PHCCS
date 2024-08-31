@@ -86,16 +86,22 @@ public class PostService {
         }
         return ResponseEntity.ok("게시글을 등록 하였습니다.");
     }
-
+    @Transactional
     public ResponseEntity<?> showPost(String category, Long id){
-
         if(category != null && !category.isEmpty() && id != 0L){
+            repository.incrementViewCount(category, id);
             Post post = repository.showPost(category, id);
+            if(post == null){
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("게시글을 찾을 수 없습니다.");
+            }
             String fileDir = post.getFileDir();
-            List<String> fileNames= fileStore.findFiles(fileDir);
-            post.setFileList(fileNames);
-            post.setFileDir("");
-            return ResponseEntity.ok().body(post);
+            if(fileDir != null) {
+                List<String> fileNames = fileStore.findFiles(fileDir);
+                post.setFileList(fileNames);
+                post.setFileDir("");
+            }
+            post.setCategory(category);
+            return ResponseEntity.ok(post);
         }else{
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("게시글을 찾을수 없습니다.");
         }
@@ -172,14 +178,20 @@ public class PostService {
         return ResponseEntity.ok().body("수정완료");
     }
 
+    @Transactional
     public void deletePost(String category, Long memberId, Long postId){
         log.info("|se|deletePost()");
         String findFileDir = repository.findPostDir(category, postId);
         repository.deletePost(category, memberId, postId);
+
         if(findFileDir != null){
-            // 해당 게시글을 통해서 저장된 파일존재
-            // 해당 경로 찾아가서 파일들 삭제하기
-            fileStore.deleteFiles(findFileDir);
+            try {
+                // 해당 게시글을 통해서 저장된 파일존재
+                // 해당 경로 찾아가서 파일들 삭제하기
+                fileStore.deleteFiles(findFileDir);
+            }catch (Exception e){
+                throw e;
+            }
         }
     }
 

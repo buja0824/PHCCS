@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -27,5 +28,11 @@ class BoardControllerTest {
         postDto.setTitle("테스트코드에서 작성한 제목");
         postDto.setWriteTime(LocalDateTime.now());
         service.save(3L, postDto, null, null);
+    }
+
+    @Test
+    void showPostTest(){
+        ResponseEntity<?> responseEntity = service.showPost("qna_board", 2L);
+        log.info(responseEntity.toString());
     }
 }

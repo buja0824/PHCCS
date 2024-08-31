@@ -13,4 +13,5 @@ public interface PostRepository {
     void updatePost(Long memberId, Long postId, PostUpdateDto param, String fileDir);
     void deletePost(String category, Long memberId, Long postId);
     String findPostDir(String category, Long postId);
+    void incrementViewCount(String category, Long postId);
 }

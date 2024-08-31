@@ -30,4 +30,19 @@ public class MybatisCommentRepository implements CommentRepository{
     public void updateComment(CommentDto dto) {
         mapper.updateComment(dto);
     }
+
+    @Override
+    public void deleteComment(String category, Long postId, Long commentId) {
+        mapper.deleteComment(category, postId, commentId);
+    }
+
+    @Override
+    public void incrementLike(String category, Long postId, Long commentId) {
+        mapper.incrementLike(category, postId, commentId);
+    }
+
+    @Override
+    public void decrementLike(String category, Long postId, Long commentId) {
+        mapper.decrementLike(category, postId, commentId);
+    }
 }

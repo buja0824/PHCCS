@@ -17,8 +17,8 @@
                 community_board
             </when>
         </choose>
-        (member_id, author, title, content, create_date,update_date, file_dir)
-        values (#{post.memberId}, #{post.author}, #{post.title}, #{post.content}, #{post.writeTime},#{post.updateTime}, #{post.fileDir})
+        (member_id, author, title, content, create_date,update_date, file_dir, view_cnt)
+        values (#{post.memberId}, #{post.author}, #{post.title}, #{post.content}, #{post.writeTime},#{post.updateTime}, #{post.fileDir}, 0)
     </insert>
 
     <select id="showPost" resultType="Post">
@@ -39,7 +39,7 @@
     </select>
 
     <select id="showAllPost" resultType="Post">
-        select id, author, title, view_cnt, create_date as writeTime
+        select id, member_id, author, title, view_cnt, create_date as writeTime
         from
         <choose>
             <when test= "category == 'qna_board'">
@@ -106,5 +106,22 @@
         </choose>
         where id = #{id}
     </select>
+    
+    <update id="incrementViewCount">
+        update
+        <choose>
+            <when test="category eq 'qna_board'">
+                qna_board
+            </when>
+            <when test="category eq 'vet_board'">
+                vet_board
+            </when>
+            <when test="category eq 'community_board'">
+                community_board
+            </when>
+        </choose>
+        set view_cnt = view_cnt + 1
+        where id = #{id}
+    </update>
 </mapper>
 

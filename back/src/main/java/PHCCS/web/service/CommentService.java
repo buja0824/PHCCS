@@ -39,7 +39,17 @@ public class CommentService {
         dto.setPostId(postId);
         dto.setCommentId(commentId);
         repository.updateComment(dto);
+    }
 
+    public void deleteComment(String category, Long postId, Long commentId){
+        repository.deleteComment(category, postId, commentId);
+    }
+
+    public void incrementLike(String category, Long postId, Long commentId, boolean flag){
+        if(flag)
+            repository.incrementLike(category, postId, commentId);
+        else
+            repository.decrementLike(category, postId, commentId);
     }
 
 }

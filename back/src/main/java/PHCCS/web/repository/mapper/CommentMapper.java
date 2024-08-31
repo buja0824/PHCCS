@@ -12,4 +12,7 @@ public interface CommentMapper {
     int save(@Param("category") String category, @Param("comment") Comment comment);
     List<Comment> findAllComment(@Param("category") String category, @Param("id") Long postId);
     void updateComment(@Param("dto") CommentDto dto);
+    void deleteComment(@Param("category") String category, @Param("postId") Long postId, @Param("commentId") Long commentId);
+    void incrementLike(@Param("category") String category, @Param("postId") Long postId, @Param("commentId") Long commentId);
+    void decrementLike(@Param("category") String category, @Param("postId") Long postId, @Param("commentId") Long commentId);
 }

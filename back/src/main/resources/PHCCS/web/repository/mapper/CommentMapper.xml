@@ -17,8 +17,8 @@
                 community_comment
             </when>
         </choose>
-        (member_id, post_id, nick_name, comment, create_date)
-        values (#{comment.memberId}, #{comment.postId}, #{comment.author}, #{comment.comment}, #{comment.writeTime})
+        (member_id, post_id, nick_name, comment, create_date, like_cnt)
+        values (#{comment.memberId}, #{comment.postId}, #{comment.author}, #{comment.comment}, #{comment.writeTime}, 0)
     </insert>
 
     <select id="findAllComment" resultType="Comment">
@@ -54,5 +54,53 @@
         where id = #{dto.commentId} and post_id = #{dto.postId}
     </update>
 
+    <delete id="deleteComment">
+        delete from
+        <choose>
+            <when test="category eq 'qna_board'">
+                qna_comment
+            </when>
+            <when test="category eq 'vet_board'">
+                vet_comment
+            </when>
+            <when test="category eq 'community_board'">
+                community_comment
+            </when>
+        </choose>
+        where post_id = #{postId} and id = #{commentId}
+    </delete>
 
+    <update id="incrementLike">
+        update
+        <choose>
+            <when test="category eq 'qna_board'">
+                qna_comment
+            </when>
+            <when test="category eq 'vet_board'">
+                vet_comment
+            </when>
+            <when test="category eq 'community_board'">
+                community_comment
+            </when>
+        </choose>
+        set like_cnt = like_cnt + 1
+        where post_id = #{postId} and id = #{commentId}
+    </update>
+
+    <update id="decrementLike">
+        update
+        <choose>
+            <when test="category eq 'qna_board'">
+                qna_comment
+            </when>
+            <when test="category eq 'vet_board'">
+                vet_comment
+            </when>
+            <when test="category eq 'community_board'">
+                community_comment
+            </when>
+        </choose>
+        set like_cnt = like_cnt - 1
+        where post_id = #{postId} and id = #{commentId}
+    </update>
 </mapper>

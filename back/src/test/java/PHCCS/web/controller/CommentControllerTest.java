@@ -24,7 +24,7 @@ class CommentControllerTest {
         Comment comment = new Comment();
         comment.setComment("세번째");
         comment.setAuthor("테스터");
-        comment.setMemberId(3L);
+        comment.setMemberId(1L);
         comment.setWriteTime(LocalDateTime.now());
         service.save("qna_board", 1L, comment);
     }
@@ -40,6 +40,15 @@ class CommentControllerTest {
         CommentDto commentDto = new CommentDto();
         commentDto.setComment("수정합니다");
 
-        service.updateComment("qna_board", 1L, 2L, commentDto);
+        service.updateComment("qna_board", 1L, 4L, commentDto);
+    }
+
+    @Test
+    void deleteCommentTest(){
+
+    }
+    @Test
+    void increaseLike(){
+        service.incrementLike("qna_board", 1L, 4L, false);
     }
 }

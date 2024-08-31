@@ -21,4 +21,5 @@ public interface PostMapper {
     void updatePost(@Param("memberId") Long memberId, @Param("postId") Long postId, @Param("dto") PostUpdateDto dto, @Param("dir") String fileDir);
     void deletePost(@Param("category") String category, @Param("memberId") Long memberId, @Param("postId") Long postId);
     String findPostDir(@Param("category") String category, @Param("id") Long postId);
+    void incrementViewCount(@Param("category") String category, @Param("id") Long postId);
 }

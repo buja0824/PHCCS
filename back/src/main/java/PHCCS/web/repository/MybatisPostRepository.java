@@ -57,4 +57,9 @@ public class MybatisPostRepository implements PostRepository{
         return mapper.findPostDir(category, postId);
     }
 
+    @Override
+    public void incrementViewCount(String category, Long postId) {
+        mapper.incrementViewCount(category, postId);
+    }
+
 }

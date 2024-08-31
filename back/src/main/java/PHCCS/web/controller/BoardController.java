@@ -43,17 +43,18 @@ public class BoardController {
 
     @GetMapping("/show/{category}/{id}")
     public ResponseEntity<?> showPost(
+//            @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
             @PathVariable("category") String category,
             @PathVariable("id") Long id){
-
+//        if(!isLogin(loginMember)){
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인하지 않은 사용자는 접근할 수 없습니다.");
+//        }
         log.info("showPost()");
-
         ResponseEntity<?> post = service.showPost(category, id);
-
         return post;
     }
 
-    @GetMapping("/images/{uuid}")
+    @GetMapping("/image/{uuid}")
     public ResponseEntity<Resource> sendImgFile(
             @PathVariable("uuid") String filename,
             @RequestBody FileDto dto) throws MalformedURLException {
@@ -68,6 +69,7 @@ public class BoardController {
     public ResponseEntity<Resource> sendVidFile(
             @PathVariable("uuid") String filename,
             @RequestBody FileDto dto) throws MalformedURLException {
+
         Resource resource = service.sendFile(filename, dto);
         MediaType mediaType = determineVideoMediaType(filename);
 
@@ -77,9 +79,14 @@ public class BoardController {
     }
 
     @GetMapping("/show/{category}")
-    public ResponseEntity<?> showAllPost(@PathVariable("category") String category){
+    public ResponseEntity<?> showAllPost(
+//            @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
+            @PathVariable("category") String category){
         log.info("showAllPost()");
         log.info("category = {}", category);
+//        if(!isLogin(loginMember)){
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인하지 않은 사용자는 접근할 수 없습니다.");
+//        }
         ResponseEntity<?> posts = service.showAllPost(category);
         return posts;
     }
