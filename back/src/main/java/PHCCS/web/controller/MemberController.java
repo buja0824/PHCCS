@@ -1,7 +1,7 @@
 package PHCCS.web.controller;
 
 import PHCCS.domain.Member;
-import PHCCS.web.repository.domain.MemberProfileDTO;
+import PHCCS.web.service.domain.MemberProfileDTO;
 import PHCCS.web.repository.domain.MemberModifyDto;
 import PHCCS.web.service.domain.MemberDto;
 import PHCCS.web.service.domain.SessionMemberDTO;
@@ -76,5 +76,14 @@ public class MemberController {
         if(memberProfile.isPresent()) {
             return ResponseEntity.ok(memberProfile.get());
         }else{return ResponseEntity.badRequest().body("정보 조회 오류");}
+    }
+
+    @DeleteMapping("/member/delete")
+    public ResponseEntity<?> deleteMember(@SessionAttribute(name = "loginMember", required = false) SessionMemberDTO loginMember){
+        int isSuccess = service.deleteMember(loginMember.getId());
+
+        if(isSuccess == 1){
+            return ResponseEntity.ok("회원탈퇴 되었습니다.");
+        }else{return ResponseEntity.badRequest().body("회원탈퇴 오류");}
     }
 }

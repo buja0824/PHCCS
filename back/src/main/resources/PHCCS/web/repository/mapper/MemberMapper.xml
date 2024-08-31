@@ -25,10 +25,16 @@
         where id = #{id}
     </update>
 
-    <select id="findMemberById" resultType="PHCCS.web.repository.domain.MemberProfileDTO">
+    <select id="findMemberById" resultType="PHCCS.web.service.domain.MemberProfileDTO">
         select email, pwd, name, nick_name, pho_no
         from member
         where id = #{id}
     </select>
+
+    <delete id="deleteMember">
+        delete
+        from member
+        where id = #{id}
+    </delete>
 
 </mapper>

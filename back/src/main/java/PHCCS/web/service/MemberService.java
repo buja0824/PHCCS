@@ -2,7 +2,7 @@ package PHCCS.web.service;
 
 import PHCCS.domain.Member;
 import PHCCS.web.repository.MemberRepository;
-import PHCCS.web.repository.domain.MemberProfileDTO;
+import PHCCS.web.service.domain.MemberProfileDTO;
 import PHCCS.web.repository.domain.MemberModifyDto;
 import PHCCS.web.service.domain.MemberDto;
 import PHCCS.web.service.domain.SessionMemberDTO;
@@ -66,6 +66,12 @@ public class MemberService {
         Optional<MemberProfileDTO> memberProfile = repository.findMemberById(id);
 
         return memberProfile;
+    }
+
+    public int deleteMember(Long id) {
+        int isSuccess = repository.deleteMember(id);
+
+        return isSuccess;
     }
 }
 

@@ -1,7 +1,7 @@
 package PHCCS.web.repository.mapper;
 
 import PHCCS.domain.Member;
-import PHCCS.web.repository.domain.MemberProfileDTO;
+import PHCCS.web.service.domain.MemberProfileDTO;
 import PHCCS.web.repository.domain.MemberModifyDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -18,4 +18,6 @@ public interface MemberMapper {
     int modifyMember(@Param("id") Long id, @Param("memberModifyDto") MemberModifyDto memberModifyDto);
 
     Optional<MemberProfileDTO> findMemberById(@Param("id") Long id);
+
+    int deleteMember(@Param("id") Long id);
 }

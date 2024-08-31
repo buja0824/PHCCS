@@ -1,7 +1,7 @@
 package PHCCS.web.repository;
 
 import PHCCS.domain.Member;
-import PHCCS.web.repository.domain.MemberProfileDTO;
+import PHCCS.web.service.domain.MemberProfileDTO;
 import PHCCS.web.repository.domain.MemberModifyDto;
 import PHCCS.web.repository.mapper.MemberMapper;
 import lombok.RequiredArgsConstructor;
@@ -39,5 +39,12 @@ public class MybatisMemberRepository implements MemberRepository{
     public Optional<MemberProfileDTO> findMemberById(Long id){
         Optional<MemberProfileDTO> memberProfile = mapper.findMemberById(id);
         return memberProfile;
+    }
+
+    @Override
+    public int deleteMember(Long id){
+        int isSuccess = mapper.deleteMember(id);
+
+        return isSuccess;
     }
 }
