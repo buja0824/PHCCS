@@ -5,7 +5,7 @@ import PHCCS.SessionConst;
 import PHCCS.domain.Member;
 import PHCCS.domain.Pet;
 import PHCCS.web.service.domain.PetDto;
-import PHCCS.web.repository.domain.PetmodifyParam;
+import PHCCS.web.repository.domain.PetUpdateDto;
 import PHCCS.web.service.PetService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -68,14 +68,14 @@ public class PetController {
     public ResponseEntity<?> modifyPet(
             /*@SessionAttribute(name = SessionConst.LOGIN_MEMBER,required = false) Member loginMember,*/
             @PathVariable("name") String petName,
-            @RequestBody PetmodifyParam modifyParam){
+            @RequestBody PetUpdateDto modifyParam){
 
         log.info("modifyPet()");
 //        if(!isLogin(loginMember)) {
 //            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요 합니다.");
 //        }
 
-        service.modifyPet(/*loginMember.getId()*/1L, petName, modifyParam);
+        service.updatePet(/*loginMember.getId()*/1L, petName, modifyParam);
 
         return ResponseEntity.ok("수정 완료");
     }

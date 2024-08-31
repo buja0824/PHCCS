@@ -3,7 +3,7 @@ package PHCCS.web.repository.domain;
 import lombok.Data;
 
 @Data
-public class PetmodifyParam {
+public class PetUpdateDto {
 
     private String petName;
     private String petAge;

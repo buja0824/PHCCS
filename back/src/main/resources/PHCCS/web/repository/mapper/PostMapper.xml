@@ -4,20 +4,20 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="PHCCS.web.repository.mapper.PostMapper">
-
-    <insert id="communitySave" keyProperty="post.id" useGeneratedKeys="true">
-        insert into community_board
-        (member_id, author, title, content, create_date, update_date, file_dir)
-        values (#{post.memberId}, #{post.author}, #{post.title}, #{post.content}, #{post.writeTime},#{post.updateTime}, #{post.fileDir})
-    </insert>
-
-    <insert id="qnaSave" keyProperty="post.id" useGeneratedKeys="true">
-        insert into qna_board (member_id, author, title, content, create_date,update_date, file_dir)
-        values (#{post.memberId}, #{post.author}, #{post.title}, #{post.content}, #{post.writeTime},#{post.updateTime}, #{post.fileDir})
-    </insert>
-
-    <insert id="vetSave" keyProperty="post.id" useGeneratedKeys="true">
-        insert into vet_board (member_id, author, title, content, create_date,update_date, file_dir)
+    <insert id="save" keyProperty="post.id" useGeneratedKeys="true">
+        insert into
+        <choose>
+            <when test="category == 'qna_board'">
+                qna_board
+            </when>
+            <when test="category == 'vet_board'">
+                vet_board
+            </when>
+            <when test="category == 'community_board'">
+                community_board
+            </when>
+        </choose>
+        (member_id, author, title, content, create_date,update_date, file_dir)
         values (#{post.memberId}, #{post.author}, #{post.title}, #{post.content}, #{post.writeTime},#{post.updateTime}, #{post.fileDir})
     </insert>
 
@@ -36,7 +36,6 @@
             </when>
         </choose>
         where id = #{id}
-
     </select>
 
     <select id="showAllPost" resultType="Post">
@@ -55,16 +54,16 @@
         </choose>
     </select>
 
-    <update id="modifyPost">
+    <update id="updatePost">
         update
         <choose>
-            <when test="param.category == 'qna_board'">
+            <when test="dto.category == 'qna_board'">
                 qna_board
             </when>
-            <when test="param.category == 'vet_board'">
+            <when test="dto.category == 'vet_board'">
                 vet_board
             </when>
-            <when test="param.category == 'community_board'">
+            <when test="dto.category == 'community_board'">
                 community_board
             </when>
         </choose>
