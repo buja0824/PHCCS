@@ -3,6 +3,7 @@ package PHCCS.web.service;
 import PHCCS.domain.Member;
 import PHCCS.web.repository.MemberRepository;
 import PHCCS.web.repository.domain.MemberModifyParam;
+import PHCCS.web.repository.domain.MemberProfileDTO;
 import PHCCS.web.service.domain.MemberDto;
 import PHCCS.web.service.domain.SessionMemberDTO;
 import lombok.RequiredArgsConstructor;
@@ -61,10 +62,10 @@ public class MemberService {
         return isSuccess;
     }
 
-    public Optional<Member> findMyProfileById(Long id) {
-        Optional<Member> member = repository.findMemberById(id);
+    public Optional<MemberProfileDTO> findMyProfileById(Long id) {
+        Optional<MemberProfileDTO> memberProfile = repository.findMemberById(id);
 
-        return member;
+        return memberProfile;
     }
 }
 

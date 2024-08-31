@@ -2,6 +2,7 @@ package PHCCS.web.repository;
 
 import PHCCS.domain.Member;
 import PHCCS.web.repository.domain.MemberModifyParam;
+import PHCCS.web.repository.domain.MemberProfileDTO;
 import PHCCS.web.repository.mapper.MemberMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,8 +36,8 @@ public class MybatisMemberRepository implements MemberRepository{
     }
 
     @Override
-    public Optional<Member> findMemberById(Long id){
-        Optional<Member> member = mapper.findMemberById(id);
-        return member;
+    public Optional<MemberProfileDTO> findMemberById(Long id){
+        Optional<MemberProfileDTO> memberProfile = mapper.findMemberById(id);
+        return memberProfile;
     }
 }

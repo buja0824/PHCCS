@@ -25,8 +25,8 @@
         where id = #{id}
     </update>
 
-    <select id="findMemberById" resultType="member">
-        select *
+    <select id="findMemberById" resultType="PHCCS.web.repository.domain.MemberProfileDTO">
+        select email, pwd, name, nick_name, pho_no
         from member
         where id = #{id}
     </select>

@@ -2,6 +2,7 @@ package PHCCS.web.controller;
 
 import PHCCS.domain.Member;
 import PHCCS.web.repository.domain.MemberModifyParam;
+import PHCCS.web.repository.domain.MemberProfileDTO;
 import PHCCS.web.service.domain.MemberDto;
 import PHCCS.web.service.domain.SessionMemberDTO;
 import PHCCS.web.service.MemberService;
@@ -70,10 +71,10 @@ public class MemberController {
 
     @GetMapping("/auth/me")
     public ResponseEntity<?> getMyProfile(@SessionAttribute(name = "loginMember", required = false) SessionMemberDTO loginMember){
-        Optional<Member> member = service.findMyProfileById(loginMember.getId());
+        Optional<MemberProfileDTO> memberProfile = service.findMyProfileById(loginMember.getId());
 
-        if(member.isPresent()) {
-            return ResponseEntity.ok(member.get());
+        if(memberProfile.isPresent()) {
+            return ResponseEntity.ok(memberProfile.get());
         }else{return ResponseEntity.badRequest().body("정보 조회 오류");}
     }
 }
