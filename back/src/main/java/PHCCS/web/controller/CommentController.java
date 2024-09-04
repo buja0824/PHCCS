@@ -37,7 +37,7 @@ public class CommentController {
         return save;
     }
 
-    @GetMapping("/show-comments/{category}/{id}")
+    @GetMapping("/show/{category}/{id}")
     public ResponseEntity<List<Comment>> findAllComment(
 //            @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
             @PathVariable("category") String category,
@@ -86,15 +86,14 @@ public class CommentController {
     @PostMapping("/like/{category}/{postId}/{commentId}")
     public ResponseEntity<?> incrementLike(
 //            @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
-            @RequestParam("increaseFlag") boolean flag,
             @PathVariable("category") String category,
-            @PathVariable("postId")Long postId,
+            @PathVariable("postId") Long postId,
             @PathVariable("commentId")Long commentId){
         log.info("incrementLike()");
 //        if(!isLogin(loginMember)){
 //            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인하지 않은 사용자는 접근할 수 없습니다.");
 //        }
-        service.incrementLike(category, postId, commentId, flag);
+        service.incrementLike(/*loginMember.getId()*/2L, category, postId, commentId);
         return ResponseEntity.ok(HttpStatus.OK);
     }
 }

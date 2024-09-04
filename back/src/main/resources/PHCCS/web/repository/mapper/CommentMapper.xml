@@ -34,7 +34,7 @@
                 community_comment
             </when>
         </choose>
-        where post_id = #{id}
+        where post_id = #{postId}
     </select>
 
     <update id="updateComment">
@@ -103,4 +103,21 @@
         set like_cnt = like_cnt - 1
         where post_id = #{postId} and id = #{commentId}
     </update>
+
+    <select id="isLikeMember" resultType="boolean">
+        select COALESCE(is_like, 0)
+        from
+        <choose>
+            <when test="category eq 'qna_board'">
+                qna_comment_like
+            </when>
+            <when test="category eq 'vet_board'">
+                vet_comment_like
+            </when>
+            <when test="category eq 'community_board'">
+                community_comment_like
+            </when>
+        </choose>
+        where member_id = #{memberId} and comment_id = #{commentId}
+    </select>
 </mapper>

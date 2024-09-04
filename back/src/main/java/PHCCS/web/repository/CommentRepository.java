@@ -13,5 +13,5 @@ public interface CommentRepository {
     void updateComment(CommentDto dto);
     void deleteComment(String category, Long postId, Long commentId);
     void incrementLike(String category, Long postId, Long commentId);
-    void decrementLike(String category, Long postId, Long commentId);
+    boolean isLikeMember(Long memberId, String category, Long postId, Long commentId);
 }

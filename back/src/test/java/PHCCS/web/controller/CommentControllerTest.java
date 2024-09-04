@@ -23,7 +23,7 @@ class CommentControllerTest {
     void addCommentTest(){
         Comment comment = new Comment();
         comment.setComment("세번째");
-        comment.setAuthor("테스터");
+        comment.setNickName("테스터");
         comment.setMemberId(1L);
         comment.setWriteTime(LocalDateTime.now());
         service.save("qna_board", 1L, comment);
@@ -49,6 +49,6 @@ class CommentControllerTest {
     }
     @Test
     void increaseLike(){
-        service.incrementLike("qna_board", 1L, 4L, false);
+        service.incrementLike(2L, "qna_board", 1L, 4L);
     }
 }
