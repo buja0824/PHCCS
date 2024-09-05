@@ -18,7 +18,7 @@
             </when>
         </choose>
         (member_id, post_id, nick_name, comment, create_date, like_cnt)
-        values (#{comment.memberId}, #{comment.postId}, #{comment.author}, #{comment.comment}, #{comment.writeTime}, 0)
+        values (#{comment.memberId}, #{comment.postId}, #{comment.nickName}, #{comment.comment}, #{comment.writeTime}, 0)
     </insert>
 
     <select id="findAllComment" resultType="Comment">
@@ -87,25 +87,8 @@
         where post_id = #{postId} and id = #{commentId}
     </update>
 
-    <update id="decrementLike">
-        update
-        <choose>
-            <when test="category eq 'qna_board'">
-                qna_comment
-            </when>
-            <when test="category eq 'vet_board'">
-                vet_comment
-            </when>
-            <when test="category eq 'community_board'">
-                community_comment
-            </when>
-        </choose>
-        set like_cnt = like_cnt - 1
-        where post_id = #{postId} and id = #{commentId}
-    </update>
-
     <select id="isLikeMember" resultType="boolean">
-        select COALESCE(is_like, 0)
+        select is_like
         from
         <choose>
             <when test="category eq 'qna_board'">

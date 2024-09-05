@@ -27,12 +27,12 @@ class BoardControllerTest {
         postDto.setContent("테스트코드에서 작성");
         postDto.setTitle("테스트코드에서 작성한 제목");
         postDto.setWriteTime(LocalDateTime.now());
-        service.save(3L, postDto, null, null);
+        service.save(5L, postDto, null, null);
     }
 
     @Test
     void showPostTest(){
-        ResponseEntity<?> responseEntity = service.showPost("qna_board", 2L);
+        ResponseEntity<?> responseEntity = service.showPost("qna_board", 5L);
         log.info(responseEntity.toString());
     }
 }

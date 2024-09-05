@@ -42,7 +42,9 @@ public class MybatisCommentRepository implements CommentRepository{
     }
 
     @Override
-    public boolean isLikeMember(Long memberId, String category, Long postId, Long commentId) {
-        return mapper.isLikeMember(memberId, category, postId, commentId);
+    public Boolean isLikeMember(Long memberId, String category, Long postId, Long commentId) {
+        Boolean likeMember = mapper.isLikeMember(memberId, category, postId, commentId);
+        log.info("likeMember : {}", likeMember);
+        return likeMember;
     }
 }

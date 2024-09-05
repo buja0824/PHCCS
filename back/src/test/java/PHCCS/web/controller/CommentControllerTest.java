@@ -22,25 +22,26 @@ class CommentControllerTest {
     @Test
     void addCommentTest(){
         Comment comment = new Comment();
-        comment.setComment("세번째");
-        comment.setNickName("테스터");
-        comment.setMemberId(1L);
+        comment.setComment("저도 댓글달아요");
+        comment.setNickName("테스터33");
+        comment.setMemberId(2L);
         comment.setWriteTime(LocalDateTime.now());
-        service.save("qna_board", 1L, comment);
+        comment.setLikeCnt(0L);
+        service.save("qna_board", 3L, comment);
     }
 
     @Test
     void showAllCommentTest(){
-        List<Comment> allComment = service.findAllComment("qna_board", 1L);
+        List<Comment> allComment = service.findAllComment("qna_board", 3L);
         log.info("allComment = {}", allComment.toString());
     }
 
     @Test
     void updateCommentTest(){
         CommentDto commentDto = new CommentDto();
-        commentDto.setComment("수정합니다");
+        commentDto.setComment("수정합니다 댓글 수정");
 
-        service.updateComment("qna_board", 1L, 4L, commentDto);
+        service.updateComment("qna_board", 3L, 7L, commentDto);
     }
 
     @Test
@@ -49,6 +50,6 @@ class CommentControllerTest {
     }
     @Test
     void increaseLike(){
-        service.incrementLike(2L, "qna_board", 1L, 4L);
+        service.incrementLike(2L, "qna_board", 3L, 7L);
     }
 }

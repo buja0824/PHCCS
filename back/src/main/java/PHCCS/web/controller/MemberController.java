@@ -22,6 +22,7 @@ public class MemberController {
 
     @PostMapping("/auth/signup")
     public ResponseEntity<?> add(@RequestBody Member member) {
+        log.info("member = {}", member);
         ResponseEntity<?> save = service.save(member);
         return save;
     }
