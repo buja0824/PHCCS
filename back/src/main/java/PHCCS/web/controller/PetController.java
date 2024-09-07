@@ -7,6 +7,7 @@ import PHCCS.domain.Pet;
 import PHCCS.web.service.domain.PetDto;
 import PHCCS.web.repository.domain.PetUpdateDto;
 import PHCCS.web.service.PetService;
+import PHCCS.web.service.domain.SessionMemberDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -24,16 +25,17 @@ public class PetController {
 
     @PostMapping("/pet/add")
     public ResponseEntity<?> petAdd(
-            /*@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,*/
+            @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) SessionMemberDTO loginMember,
             @RequestBody PetDto dto){
         log.info("petAdd()");
 
-        ResponseEntity<?> save = service.save(/*loginMember.getId()*/1L,dto);
+        ResponseEntity<?> save = service.save(loginMember.getId(),dto);
         return save;
     }
 
     @GetMapping("/pet/showAll")
-    public ResponseEntity<?> showMyPet(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember){
+    public ResponseEntity<?> showMyPet(
+            @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) SessionMemberDTO loginMember){
         log.info("showMyPet()");
 //        if(!isLogin(loginMember)){
 //            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요 합니다.");
@@ -45,7 +47,7 @@ public class PetController {
 
     @DeleteMapping("/pet/delete")
     public ResponseEntity<?> petDelete(
-            @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
+            @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) SessionMemberDTO loginMember,
             @RequestBody List<String> petNames){
 
         log.info("petDelete()");
@@ -66,7 +68,7 @@ public class PetController {
 
     @PutMapping("/pet/modify/{name}")
     public ResponseEntity<?> modifyPet(
-            /*@SessionAttribute(name = SessionConst.LOGIN_MEMBER,required = false) Member loginMember,*/
+            @SessionAttribute(name = SessionConst.LOGIN_MEMBER,required = false) SessionMemberDTO loginMember,
             @PathVariable("name") String petName,
             @RequestBody PetUpdateDto modifyParam){
 

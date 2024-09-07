@@ -123,6 +123,14 @@ public class BoardController {
         return ResponseEntity.ok().body("삭제 완료");
     }
 
+    @PostMapping("like/{category}/{id}")
+    public ResponseEntity<?> likePost(
+
+    ){
+
+
+        return null;
+    }
 
     private static boolean isLogin(Member loginMember){
         if(loginMember == null) return false;
