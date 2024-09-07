@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
@@ -26,7 +27,7 @@ public class MemberController {
         ResponseEntity<?> save = service.save(member);
         return save;
     }
-
+/**
     @PostMapping("/auth/signin")
     public ResponseEntity<?> login(@RequestBody MemberDto memberDto
     , HttpServletRequest request) {
@@ -47,6 +48,12 @@ public class MemberController {
             else{return ResponseEntity.badRequest().body("비밀번호를 다시 입력해주세요.");}
         //2-2. 못 찾았다면 다음 문장 실행
         }else{return ResponseEntity.badRequest().body("없는 회원입니다.");}
+    }
+    */
+    @PostMapping("auth/signin")
+    public Map<String, String> login(@RequestBody MemberDto memberDto
+    , HttpServletRequest request) {
+        return service.login(memberDto);
     }
 
     @PostMapping("/auth/logout")

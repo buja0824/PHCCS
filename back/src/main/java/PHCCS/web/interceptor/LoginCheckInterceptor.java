@@ -1,3 +1,4 @@
+/**
 package PHCCS.web.interceptor;
 
 import PHCCS.SessionConst;
@@ -27,3 +28,4 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
         return true;
     }
 }
+ */

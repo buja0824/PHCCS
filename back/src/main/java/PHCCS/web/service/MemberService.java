@@ -1,6 +1,7 @@
 package PHCCS.web.service;
 
 import PHCCS.domain.Member;
+import PHCCS.jwt.JwtUtil;
 import PHCCS.web.repository.MemberRepository;
 import PHCCS.web.service.domain.MemberProfileDTO;
 import PHCCS.web.repository.domain.MemberModifyDto;
@@ -12,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
@@ -19,6 +22,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository repository;
+    private final JwtUtil jwtUtil;
 
     public ResponseEntity<?> save(Member member) {
         // 현재 시간을 기록
@@ -39,6 +43,8 @@ public class MemberService {
             return Optional.of(findMemberOptional.get());}
         else {return Optional.empty();}
     }
+
+    /**
 // service 계층에서 ResponseBody 반환하는것을 최대한 제한하고자 함
     public Optional<SessionMemberDTO> login(Member member, MemberDto memberDto) {
 
@@ -54,6 +60,26 @@ public class MemberService {
             return Optional.of(sessionMember);
         }
         return Optional.empty();
+    }
+    */
+
+    public Map<String, String> login(MemberDto memberDto){
+        Optional<Member> optionalMember = findMemberByEmail(memberDto.getEmail());
+        Member member = optionalMember.get();
+
+        if(member == null) {
+            throw new RuntimeException("회원을 찾을 수 없음.");
+        }
+
+        if(!member.getPwd().equals(memberDto.getPwd())){
+            throw new RuntimeException("검증 되지 않음.");
+        }
+
+        Map<String, String> tokens = new HashMap<>();
+        tokens.put("accessToken", jwtUtil.createAccessToken(member.getId(), member.getRole()));
+        tokens.put("refreshToken", jwtUtil.createRefreshToken(member.getId()));
+
+        return tokens;
     }
 
     public int modifyMember (Long id, MemberModifyDto memberModifyDto){

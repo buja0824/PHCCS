@@ -10,6 +10,8 @@ public class JwtProperties {
     private String issuer;
     private String secretKey;
     private String passwordSalt;
+    private String accessTokenExpiration;
+    private String refreshTokenExpiration;
 
     // Getters
     public String getIssuer() {
@@ -22,5 +24,13 @@ public class JwtProperties {
 
     public String getPasswordSalt() {
         return passwordSalt;
+    }
+
+    public long getAccessTokenExpiration() {
+        return Long.parseLong(accessTokenExpiration);
+    }
+
+    public long getRefreshTokenExpiration() {
+        return Long.parseLong(refreshTokenExpiration);
     }
 }
