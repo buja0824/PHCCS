@@ -66,9 +66,13 @@ public class MemberService {
     public Map<String, String> login(MemberDto memberDto){
         Optional<Member> optionalMember = findMemberByEmail(memberDto.getEmail());
         Member member = optionalMember.get();
-
+        log.info("RuntimeException 에러 발생");
+        try{
         if(member == null) {
             throw new RuntimeException("회원을 찾을 수 없음.");
+        }
+        }catch (RuntimeException e) {
+            log.info("RuntimeException 에러 발생");
         }
 
         if(!member.getPwd().equals(memberDto.getPwd())){
@@ -79,6 +83,7 @@ public class MemberService {
         tokens.put("accessToken", jwtUtil.createAccessToken(member.getId(), member.getRole()));
         tokens.put("refreshToken", jwtUtil.createRefreshToken(member.getId()));
 
+        log.info("tokens: {}", tokens);
         return tokens;
     }
 

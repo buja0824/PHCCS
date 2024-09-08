@@ -1,11 +1,13 @@
 package PHCCS;
 
 import PHCCS.jwt.JwtAuthenticationFilter;
+import PHCCS.jwt.JwtProperties;
 import PHCCS.jwt.JwtUtil;
 import PHCCS.web.filter.LogFilter;
 import jakarta.servlet.Filter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
