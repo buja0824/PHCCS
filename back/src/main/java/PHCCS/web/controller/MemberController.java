@@ -57,8 +57,11 @@ public class MemberController {
     }
 
     @PostMapping("/auth/logout")
-    public ResponseEntity<?> logout(HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
+    public ResponseEntity<?> logout(@RequestHeader("Authorization") String token) {
+        String actualToken = token.replace("Bearer ", "");
+
+        Boolean isSuccess = service.logout;
+
         if(session != null) {
             session.invalidate();
             return ResponseEntity.ok("로그아웃 되었습니다.");

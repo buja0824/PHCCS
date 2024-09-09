@@ -23,6 +23,7 @@ import java.util.Optional;
 public class MemberService {
     private final MemberRepository repository;
     private final JwtUtil jwtUtil;
+    private final TokenService tokenService;
 
     public ResponseEntity<?> save(Member member) {
         // 현재 시간을 기록
@@ -79,11 +80,17 @@ public class MemberService {
 
         Map<String, String> tokens = new HashMap<>();
         tokens.put("accessToken", jwtUtil.createAccessToken(member.getId(), member.getRole()));
+
+        String refreshToken = jwtUtil.createRefreshToken(member.getId());
+        tokenService.storeRefreshToken(refreshToken);
+
         tokens.put("refreshToken", jwtUtil.createRefreshToken(member.getId()));
 
         log.info("tokens: {}", tokens);
         return tokens;
     }
+
+    public boolean logout()
 
     public int modifyMember (Long id, MemberModifyDto memberModifyDto){
         int isSuccess = repository.modifyMember(id, memberModifyDto);
