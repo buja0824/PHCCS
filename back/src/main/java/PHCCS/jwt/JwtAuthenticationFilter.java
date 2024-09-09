@@ -43,14 +43,19 @@ public class JwtAuthenticationFilter implements Filter {
                         httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                         httpResponse.getWriter().write("잘못된 토큰.");
                         httpResponse.sendRedirect("/auth/signin?redirectURL=" + requestURI);
+                        return;
                     }
 
                 }else {
                     httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                     httpResponse.getWriter().write("Authorization 헤더가 누락되었거나 잘못되었습니다.");
                     httpResponse.sendRedirect("/auth/signin?redirectURL=" + requestURI);
+                    return;
                 }
             }
+
+            chain.doFilter(httpRequest, httpResponse);
+
         }catch (Exception e){
             throw e;
 

@@ -26,6 +26,7 @@ public class LogFilter implements Filter {
         try {
             log.info("REQUEST [{}][{}]", uuid, requestURI);
             chain.doFilter(request, response);
+
         } catch (Exception e)
         {
             throw e;

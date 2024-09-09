@@ -64,16 +64,14 @@ public class MemberService {
     */
 
     public Map<String, String> login(MemberDto memberDto){
+
         Optional<Member> optionalMember = findMemberByEmail(memberDto.getEmail());
-        Member member = optionalMember.get();
-        log.info("RuntimeException 에러 발생");
-        try{
-        if(member == null) {
+
+        if(!optionalMember.isPresent()) {
             throw new RuntimeException("회원을 찾을 수 없음.");
         }
-        }catch (RuntimeException e) {
-            log.info("RuntimeException 에러 발생");
-        }
+
+        Member member = optionalMember.get();
 
         if(!member.getPwd().equals(memberDto.getPwd())){
             throw new RuntimeException("검증 되지 않음.");
