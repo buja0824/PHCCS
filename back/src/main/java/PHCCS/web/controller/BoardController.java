@@ -1,11 +1,11 @@
 package PHCCS.web.controller;
 
 import PHCCS.domain.Member;
-import PHCCS.web.repository.domain.PostUpdateDto;
+import PHCCS.web.repository.domain.PostUpdateDTO;
 import PHCCS.web.service.PostService;
-import PHCCS.web.service.domain.FileDto;
+import PHCCS.web.service.domain.FileDTO;
 
-import PHCCS.web.service.domain.PostDto;
+import PHCCS.web.service.domain.PostDTO;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +29,7 @@ public class BoardController {
     @PostMapping(value = "/post", consumes = "multipart/form-data")
     public ResponseEntity<?> createPost(
 //            @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
-            @RequestPart("dto") PostDto dto,
+            @RequestPart("dto") PostDTO dto,
             @RequestPart(value = "imageFiles", required = false) List<MultipartFile> imageFiles,
             @RequestPart(value = "videoFiles", required = false) List<MultipartFile> videoFiles)  throws IOException {
         log.info("|co|createPost()");
@@ -57,7 +57,7 @@ public class BoardController {
     @GetMapping("/image/{uuid}")
     public ResponseEntity<Resource> sendImgFile(
             @PathVariable("uuid") String filename,
-            @RequestBody FileDto dto) throws MalformedURLException {
+            @RequestBody FileDTO dto) throws MalformedURLException {
         Resource resource = service.sendFile(filename, dto);
         MediaType mediaType = determineImgMediaType(filename);
 
@@ -68,7 +68,7 @@ public class BoardController {
     @GetMapping("/video/{uuid}")
     public ResponseEntity<Resource> sendVidFile(
             @PathVariable("uuid") String filename,
-            @RequestBody FileDto dto) throws MalformedURLException {
+            @RequestBody FileDTO dto) throws MalformedURLException {
 
         Resource resource = service.sendFile(filename, dto);
         MediaType mediaType = determineVideoMediaType(filename);
@@ -96,7 +96,7 @@ public class BoardController {
 /*            @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,*/
             @PathVariable("category") String category,
             @PathVariable("id") Long postId,
-            @RequestPart("updateParam") PostUpdateDto updateParam,
+            @RequestPart("updateParam") PostUpdateDTO updateParam,
             @RequestPart(value = "imageFiles", required = false) List<MultipartFile> imgFiles,
             @RequestPart(value = "videoFiles", required = false) List<MultipartFile> vidFiles) throws IOException {
 

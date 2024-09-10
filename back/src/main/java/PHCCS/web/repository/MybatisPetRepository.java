@@ -1,7 +1,7 @@
 package PHCCS.web.repository;
 
 import PHCCS.domain.Pet;
-import PHCCS.web.repository.domain.PetUpdateDto;
+import PHCCS.web.repository.domain.PetUpdateDTO;
 import PHCCS.web.repository.mapper.PetMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +32,7 @@ public class MybatisPetRepository implements PetRepository{
     }
 
     @Override
-    public void updatePet(Long memberId, String name, PetUpdateDto updateDto) {
+    public void updatePet(Long memberId, String name, PetUpdateDTO updateDto) {
         log.info("MybatisPetRepository modifyPet()");
         mapper.updatePet(memberId, name, updateDto);
     }

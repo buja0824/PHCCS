@@ -2,7 +2,7 @@ package PHCCS.web.service;
 
 import PHCCS.domain.Comment;
 import PHCCS.web.repository.CommentRepository;
-import PHCCS.web.repository.domain.CommentDto;
+import PHCCS.web.repository.domain.CommentDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -36,7 +36,7 @@ public class CommentService {
         return allComment;
     }
 
-    public void updateComment(String category, Long postId, Long commentId, CommentDto dto){
+    public void updateComment(String category, Long postId, Long commentId, CommentDTO dto){
         dto.setCategory(category);
         dto.setPostId(postId);
         dto.setCommentId(commentId);

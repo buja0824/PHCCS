@@ -3,13 +3,13 @@ package PHCCS.web.service;
 import PHCCS.domain.Post;
 import PHCCS.domain.UploadFile;
 import PHCCS.file.FileStore;
-import PHCCS.web.service.domain.FileDto;
+import PHCCS.web.service.domain.FileDTO;
 
 
-import PHCCS.web.service.domain.PostDto;
+import PHCCS.web.service.domain.PostDTO;
 
 import PHCCS.web.repository.PostRepository;
-import PHCCS.web.repository.domain.PostUpdateDto;
+import PHCCS.web.repository.domain.PostUpdateDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,7 +35,7 @@ public class PostService {
     private final FileStore fileStore;
 
     @Transactional
-    public ResponseEntity<?> save(Long memberId, PostDto dto, List<MultipartFile> imageFiles, List<MultipartFile> videoFiles) throws IOException {
+    public ResponseEntity<?> save(Long memberId, PostDTO dto, List<MultipartFile> imageFiles, List<MultipartFile> videoFiles) throws IOException {
 
         String storedDir = null;
         List<UploadFile> storeImgs = null;
@@ -134,7 +134,7 @@ public class PostService {
      * 수정에 관해서는 디렉터리의 파일들을 삭제하고 재등록하는 과정이 존재하니 트랜잭션의 적용이 필요해보임
      */
     @Transactional
-    public ResponseEntity<?> updatePost(Long memberId, String category, Long postId, PostUpdateDto param, List<MultipartFile> imgs, List<MultipartFile> vids) throws IOException {
+    public ResponseEntity<?> updatePost(Long memberId, String category, Long postId, PostUpdateDTO param, List<MultipartFile> imgs, List<MultipartFile> vids) throws IOException {
         log.info("|se|updatePost()");
         String storedDir =
                 fileDir + param.getCategory() + "/" + memberId + "/" + param.getTitle() +"/"; // 새로운 저장 경로
@@ -196,7 +196,7 @@ public class PostService {
         }
     }
 
-    public Resource sendFile(String filename, FileDto dto) throws MalformedURLException {
+    public Resource sendFile(String filename, FileDTO dto) throws MalformedURLException {
         String fullPath = fileStore.getFullPath(dto.getCategory(), dto.getId(), dto.getTitle(), filename);
         return new UrlResource("file:" + fullPath);
     }

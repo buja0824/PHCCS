@@ -1,13 +1,11 @@
 package PHCCS.web.service.domain;
 
 import lombok.Data;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
-public class PostDto {
+public class PostDTO {
     private Long id; // 게시판의 pk
 
     private String category; // 게시판 종류

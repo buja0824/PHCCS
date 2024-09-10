@@ -1,13 +1,10 @@
 package PHCCS.web.controller;
 
 import PHCCS.domain.Comment;
-import PHCCS.web.repository.domain.CommentDto;
+import PHCCS.web.repository.domain.CommentDTO;
 import PHCCS.web.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Param;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -58,7 +55,7 @@ public class CommentController {
             @PathVariable("category") String category,
             @PathVariable("postId") Long postId,
             @PathVariable("commentId") Long commentId,
-            @RequestBody CommentDto dto){
+            @RequestBody CommentDTO dto){
         log.info("updateComment()");
 //        if(!isLogin(loginMember)){
 //            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인하지 않은 사용자는 접근할 수 없습니다.");

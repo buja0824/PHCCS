@@ -1,7 +1,7 @@
 package PHCCS.web.repository;
 
 import PHCCS.domain.Post;
-import PHCCS.web.repository.domain.PostUpdateDto;
+import PHCCS.web.repository.domain.PostUpdateDTO;
 import PHCCS.web.repository.mapper.PostMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +40,7 @@ public class MybatisPostRepository implements PostRepository{
     }
 
     @Override
-    public void updatePost(Long memberId, Long postId, PostUpdateDto dto, String fileDir) {
+    public void updatePost(Long memberId, Long postId, PostUpdateDTO dto, String fileDir) {
         log.info("|se|re|modifyPost()");
         mapper.updatePost(memberId, postId, dto, fileDir);
     }

@@ -1,7 +1,7 @@
 package PHCCS.web.repository;
 
 import PHCCS.domain.Member;
-import PHCCS.web.repository.domain.MemberModifyDto;
+import PHCCS.web.repository.domain.MemberModifyDTO;
 
 import java.util.Optional;
 
@@ -10,7 +10,7 @@ public interface MemberRepository {
 
     Optional<Member> findMemberByEmail(String email);
 
-    int modifyMember(Long id, MemberModifyDto memberModifyDto);
+    int modifyMember(Long id, MemberModifyDTO memberModifyDto);
 
     Optional<Member> findMemberById(Long id);
 }

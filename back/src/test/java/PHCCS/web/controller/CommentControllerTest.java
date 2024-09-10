@@ -1,7 +1,7 @@
 package PHCCS.web.controller;
 
 import PHCCS.domain.Comment;
-import PHCCS.web.repository.domain.CommentDto;
+import PHCCS.web.repository.domain.CommentDTO;
 import PHCCS.web.service.CommentService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -10,8 +10,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 @SpringBootTest
@@ -38,7 +36,7 @@ class CommentControllerTest {
 
     @Test
     void updateCommentTest(){
-        CommentDto commentDto = new CommentDto();
+        CommentDTO commentDto = new CommentDTO();
         commentDto.setComment("수정합니다 댓글 수정");
 
         service.updateComment("qna_board", 3L, 7L, commentDto);
