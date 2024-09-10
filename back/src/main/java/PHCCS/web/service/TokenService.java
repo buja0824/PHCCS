@@ -18,4 +18,8 @@ public class TokenService {
         tokenRepository.saveRefreshToken(refreshToken);
     }
 
+    public boolean removeRefreshToken(String refreshToken){
+        return tokenRepository.removeRefreshToken(refreshToken);
+    }
+
 }

@@ -37,7 +37,7 @@ public class JwtAuthenticationFilter implements Filter {
                     String token = authorizationHeader.substring(7);
 
                     if (jwtUtil.validateToken(token)) {
-                        request.setAttribute("id", jwtUtil.extractId(token));
+                        request.setAttribute("id", jwtUtil.extractSubject(token));
 
                     }else {
                         httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

@@ -12,7 +12,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.security.SecureRandom;
 import java.time.LocalDate;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -84,13 +86,15 @@ public class MemberService {
         String refreshToken = jwtUtil.createRefreshToken(member.getId());
         tokenService.storeRefreshToken(refreshToken);
 
-        tokens.put("refreshToken", jwtUtil.createRefreshToken(member.getId()));
+        tokens.put("refreshToken", refreshToken);
 
         log.info("tokens: {}", tokens);
         return tokens;
     }
 
-    public boolean logout()
+    public boolean logout(String token){
+        return tokenService.removeRefreshToken(token);
+    }
 
     public int modifyMember (Long id, MemberModifyDto memberModifyDto){
         int isSuccess = repository.modifyMember(id, memberModifyDto);

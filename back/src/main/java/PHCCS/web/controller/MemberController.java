@@ -60,10 +60,9 @@ public class MemberController {
     public ResponseEntity<?> logout(@RequestHeader("Authorization") String token) {
         String actualToken = token.replace("Bearer ", "");
 
-        Boolean isSuccess = service.logout;
+        Boolean isSuccess = service.logout(actualToken);
 
-        if(session != null) {
-            session.invalidate();
+        if(isSuccess) {
             return ResponseEntity.ok("로그아웃 되었습니다.");
         }else {return ResponseEntity.badRequest().body("잘못된 접근.");}
     }
