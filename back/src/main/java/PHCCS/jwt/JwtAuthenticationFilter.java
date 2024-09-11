@@ -32,13 +32,13 @@ public class JwtAuthenticationFilter implements Filter {
                 log.info("인증 체크 로직 실행 {}", requestURI);
 
                 String authorizationHeader = httpRequest.getHeader("Authorization");
-
+                log.info("check");
                 if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
                     String token = authorizationHeader.substring(7);
-
+                    log.info("check2");
                     if (jwtUtil.validateToken(token)) {
                         request.setAttribute("id", jwtUtil.extractSubject(token));
-
+                        log.info("check3");
                     }else {
                         httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                         httpResponse.getWriter().write("잘못된 토큰.");

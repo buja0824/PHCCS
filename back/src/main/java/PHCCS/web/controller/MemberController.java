@@ -1,6 +1,7 @@
 package PHCCS.web.controller;
 
 import PHCCS.domain.Member;
+import PHCCS.web.service.TokenService;
 import PHCCS.web.service.domain.MemberProfileDTO;
 import PHCCS.web.repository.domain.MemberModifyDto;
 import PHCCS.web.service.domain.MemberDto;
@@ -21,6 +22,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MemberController {
     private final MemberService service;
+    private final TokenService tokenService;
 
     @PostMapping("/auth/signup")
     public ResponseEntity<?> add(@RequestBody Member member) {
@@ -95,4 +97,11 @@ public class MemberController {
             return ResponseEntity.ok("회원탈퇴 되었습니다.");
         }else{return ResponseEntity.badRequest().body("회원탈퇴 오류");}
     }
+
+    @PostMapping("/auth/refresh")
+    public String refreshAccessToken(@RequestHeader("Authorization") String token){
+        String actualToken = token.replace("Bearer ", "");
+        return tokenService.refreshAccessToken(actualToken);
+    }
+
 }

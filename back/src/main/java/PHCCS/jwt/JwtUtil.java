@@ -39,6 +39,10 @@ public class JwtUtil {
         }
     }
 
+    public Integer extractRole(String token){
+        return (Integer) extractAllClaims(token).get("role");
+    }
+
     public String extractSubject(String token){
         return extractAllClaims(token).getSubject();
     }
@@ -85,7 +89,7 @@ public class JwtUtil {
                 .getBody();
     }
 
-    private Boolean isTokenExpired(String token) {
+    public Boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
 

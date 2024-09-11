@@ -31,8 +31,11 @@ public class TokenRepository {
         return refreshTokenStore.remove(jwtUtil.extractId(token)) != null; // 삭제 성공시 true 아니면 false 반환
     }
 
-    private String getRefreshTokenByToken(String token){
-        return refreshTokenStore.get(jwtUtil.extractId(token)).getRefreshToken();
+    public String getRefreshTokenByToken(String token){
+        RefreshToken refreshTokenObj = refreshTokenStore.get(jwtUtil.extractId(token));
+        if(refreshTokenObj == null){
+            return null;
+        }
+        return refreshTokenObj.getRefreshToken();
     }
-
 }
