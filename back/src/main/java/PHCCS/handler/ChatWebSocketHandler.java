@@ -26,9 +26,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     private final ChatService chatService;
 
     @Override
-    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-        String payload = message.getPayload(); // 메시지 가져오기
-        log.info("3. 받은 메시지: {}", payload);
+    public void afterConnectionEstablished(WebSocketSession session){
         log.info("##세션 : {}", session);
         log.info("##세션.getLocalAddress() : {}", session.getLocalAddress());
         log.info("##세션.getRemoteAddress() : {}", session.getRemoteAddress());
@@ -36,6 +34,12 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         log.info("##세션.getAcceptedProtocol() : {}", session.getAcceptedProtocol());
         log.info("##세션.getAttributes() : {}", session.getAttributes());
         log.info("##세션.getId() : {}", session.getId());
+
+    }
+    @Override
+    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+        String payload = message.getPayload(); // 메시지 가져오기
+        log.info("3. 받은 메시지: {}", payload);
 
         // payload를 객체로 변환
         Message chatMessage = mapper.readValue(payload, Message.class);
