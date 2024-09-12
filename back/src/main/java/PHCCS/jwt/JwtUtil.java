@@ -3,18 +3,18 @@ package PHCCS.jwt;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.crypto.spec.SecretKeySpec;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 
+@RequiredArgsConstructor
 @Component
 public class JwtUtil {
 
     @Autowired
-    private JwtProperties jwtProperties;
+    private final JwtProperties jwtProperties;
 
 
     public String createAccessToken(Long id, int role){

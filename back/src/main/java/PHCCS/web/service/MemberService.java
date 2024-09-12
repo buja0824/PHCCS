@@ -47,7 +47,7 @@ public class MemberService {
         else {return Optional.empty();}
     }
 
-    /**
+    /** // 세션기반 로그인
 // service 계층에서 ResponseBody 반환하는것을 최대한 제한하고자 함
     public Optional<SessionMemberDTO> login(Member member, MemberDto memberDto) {
 
@@ -65,7 +65,7 @@ public class MemberService {
         return Optional.empty();
     }
     */
-
+    // JWT 기반 로그인
     public Map<String, String> login(MemberDto memberDto){
 
         Optional<Member> optionalMember = findMemberByEmail(memberDto.getEmail());

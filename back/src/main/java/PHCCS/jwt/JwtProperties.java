@@ -1,7 +1,6 @@
 package PHCCS.jwt;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration  // @Component 대신 사용
@@ -11,7 +10,6 @@ public class JwtProperties {
 
     private String issuer;
     private String secretKey;
-    private String passwordSalt;
     private long accessTokenExpiration;
     private long refreshTokenExpiration;
 
@@ -22,10 +20,6 @@ public class JwtProperties {
 
     public void setSecretKey(String secretKey) {
         this.secretKey = secretKey;
-    }
-
-    public void setPasswordSalt(String passwordSalt) {
-        this.passwordSalt = passwordSalt;
     }
 
     public void setAccessTokenExpiration(long accessTokenExpiration) {
@@ -43,10 +37,6 @@ public class JwtProperties {
 
     public String getSecretKey() {
         return secretKey;
-    }
-
-    public String getPasswordSalt() {
-        return passwordSalt;
     }
 
     public long  getAccessTokenExpiration() {
