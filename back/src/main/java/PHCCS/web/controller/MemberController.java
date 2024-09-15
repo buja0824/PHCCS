@@ -1,13 +1,13 @@
 package PHCCS.web.controller;
 
 import PHCCS.domain.Member;
+import PHCCS.jwt.JwtUtil;
 import PHCCS.web.service.TokenService;
 import PHCCS.web.service.domain.MemberProfileDTO;
 import PHCCS.web.repository.domain.MemberModifyDto;
 import PHCCS.web.service.domain.MemberDto;
 import PHCCS.web.service.domain.SessionMemberDTO;
 import PHCCS.web.service.MemberService;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +22,7 @@ import java.util.Optional;
 public class MemberController {
     private final MemberService service;
     private final TokenService tokenService;
+    private final JwtUtil jwtUtil;
 
     @PostMapping("/auth/signup")
     public ResponseEntity<?> add(@RequestBody Member member) {
@@ -29,9 +30,8 @@ public class MemberController {
         return save;
     }
 
-    @PostMapping("auth/signin")
-    public Map<String, String> login(@RequestBody MemberDto memberDto
-    , HttpServletRequest request) {
+    @PostMapping("/auth/signin")
+    public Map<String, String> login(@RequestBody MemberDto memberDto) {
         return service.login(memberDto);
     }
 
@@ -58,8 +58,9 @@ public class MemberController {
     }
 
     @GetMapping("/auth/me")
-    public ResponseEntity<?> getMyProfile(@SessionAttribute(name = "loginMember", required = false) SessionMemberDTO loginMember){
-        Optional<MemberProfileDTO> memberProfile = service.findMyProfileById(loginMember.getId());
+    public ResponseEntity<?> getMyProfile(@RequestHeader("Authorization") String token){
+        String actualToken = token.replace("Bearer ", "");
+        Optional<MemberProfileDTO> memberProfile = service.findMyProfileById(Long.valueOf(jwtUtil.extractSubject(actualToken)));
 
         if(memberProfile.isPresent()) {
             return ResponseEntity.ok(memberProfile.get());
