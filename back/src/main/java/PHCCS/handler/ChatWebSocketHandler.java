@@ -32,11 +32,11 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         chatService.handlerActions(session, message);
     }
-//
-//    @Override
-//    public void afterConnectionClosed(WebSocketSession session, CloseStatus status){
-//        log.info("소켓 닫기");
-//        chatService.se
-//    }
+
+    @Override
+    public void afterConnectionClosed(WebSocketSession session, CloseStatus status){
+        log.info("WebSocket 연결이 닫힘 = {}", session.getId());
+        chatService.closeSession(session, status);
+    }
 
 }
