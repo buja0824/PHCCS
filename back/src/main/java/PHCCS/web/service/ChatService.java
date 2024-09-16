@@ -47,8 +47,11 @@ public class ChatService {
     private static final String SECRET_KEY = "OapJ2D0zLQs4S1FdY5TgRhYKJffpMq7RaNmbN4XURRs";
     private final MemberRepository repository;
     private final ObjectMapper objectMapper;
+    // key : roomId - value : ChatRoom
     private Map<String, ChatRoom> chatRooms; // 채팅방들의 목록
+    // key : bindSenderAndRoom - value webSocketSession
     private Map<BindSenderAndRoom, WebSocketSession> sessions; // 연결된 세션들의 목록
+//    private Map<ChatRoom, List<>>
 
     @PostConstruct //모든 Bean 의존성 주입이 완료되고 실행되어야 하는 메서드에 사용
     private void init() { // 마지막에 초기화가 진행되어진다
@@ -56,8 +59,16 @@ public class ChatService {
         sessions = new ConcurrentHashMap<>();
     }
     //모든 방을 찾는 메서드
-    public List<ChatRoom> findAllRoom() {
-        return new ArrayList<>(chatRooms.values());
+    public List<ChatRoom> findAllRoom(Long memberId) {
+        Iterator<ChatRoom> iterator = chatRooms.values().iterator();
+        List<ChatRoom> memberJoinRooms = new ArrayList<>();
+        while(iterator.hasNext()){
+            ChatRoom next = iterator.next();
+            if(next.getCreateMemberId() == memberId || next.getParticipatingMemberId() == memberId){
+                memberJoinRooms.add(next);
+            }
+        }
+        return memberJoinRooms;
     }
     //id로 방을 찾고 결과로 ChatRoom 객체 반환
     public ChatRoom findRoomById(String roomId) {
@@ -72,7 +83,8 @@ public class ChatService {
         // roomId 생성
         ChatRoom chatRoom = ChatRoom.builder() //builder로 변수 세팅
                 .roomId(roomId)
-                .name(createMember.getName())
+                .createMemberId(createMember.getId())
+                .participatingMemberId(participatingMember.getId())
                 .build();
 
         chatRooms.put(roomId, chatRoom); //방 생성 후 방 목록에 추가
@@ -107,6 +119,7 @@ public class ChatService {
          */
         ChatRoom findRoom = findRoomById(roomId);
         if(findRoom == null){
+            log.error("생성된 채팅방이 존재하지 않습니다.");
             return;
         }
         if(type.equals("enter")){
