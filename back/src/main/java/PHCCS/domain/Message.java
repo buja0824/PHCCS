@@ -11,7 +11,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Data
 public class Message {
-
+    private Long memberId;
     private String message;
     private LocalDateTime timestamp;
 

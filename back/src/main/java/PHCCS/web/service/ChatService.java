@@ -3,12 +3,11 @@ package PHCCS.web.service;
 import PHCCS.domain.ChatRoom;
 import PHCCS.domain.Member;
 import PHCCS.domain.Message;
+import PHCCS.web.repository.ChatRepository;
 import PHCCS.web.repository.MemberRepository;
 import PHCCS.web.service.domain.ChatConnectDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
@@ -45,18 +44,23 @@ public class ChatService {
     }
 
     private static final String SECRET_KEY = "OapJ2D0zLQs4S1FdY5TgRhYKJffpMq7RaNmbN4XURRs";
-    private final MemberRepository repository;
+    private final MemberRepository memberRepository;
     private final ObjectMapper objectMapper;
     // key : roomId - value : ChatRoom
     private Map<String, ChatRoom> chatRooms; // 채팅방들의 목록
     // key : bindSenderAndRoom - value webSocketSession
-    private Map<BindSenderAndRoom, WebSocketSession> sessions; // 연결된 세션들의 목록
-//    private Map<ChatRoom, List<>>
+    private Map<BindSenderAndRoom, WebSocketSession> sessions; // 연결된 세션들의 목
+    /**
+     * 채팅 내역을 저장할 맵 키는 챗룸, 벨류는 음..리스트??
+     */
+    private Map<ChatRoom, Message> chatLog;
+    private ChatRepository chatRepository;
 
     @PostConstruct //모든 Bean 의존성 주입이 완료되고 실행되어야 하는 메서드에 사용
     private void init() { // 마지막에 초기화가 진행되어진다
         chatRooms = new ConcurrentHashMap<>();
         sessions = new ConcurrentHashMap<>();
+        chatLog = new ConcurrentHashMap<>();
     }
     //모든 방을 찾는 메서드
     public List<ChatRoom> findAllRoom(Long memberId) {
@@ -76,8 +80,8 @@ public class ChatService {
     }
     //방 생성 메서드
     public ChatRoom createRoom(ChatConnectDTO chatConnectDTO) {
-        Member createMember = repository.findMemberById(chatConnectDTO.getCreateMemberId()).get();
-        Member participatingMember = repository.findMemberById(chatConnectDTO.getParticipatingMemberId()).get();
+        Member createMember = memberRepository.findMemberById(chatConnectDTO.getCreateMemberId()).get();
+        Member participatingMember = memberRepository.findMemberById(chatConnectDTO.getParticipatingMemberId()).get();
         String roomId = createRoomId(createMember, participatingMember);
         log.info("2. 생성된 방의 ID = {}", roomId);
         // roomId 생성
@@ -112,7 +116,6 @@ public class ChatService {
 
         Long entryId = getEntryId(session);
         /**
-         * TODO
          * 토큰에서 사용자 정보 추출 -> 사용자의 ID 추출
          * 사용자의 ID와 쿼리 파라미터로 넘어온 roomId를 이용해서 생성된 방이 있는지 찾기
          * 생성된 방이 존재하면 그 방에 메시지를 보낼 수 있음
@@ -130,7 +133,7 @@ public class ChatService {
 
             sessions.put(bindSenderAndRoom, session);
             Message message = new Message();
-            Member entryMember = repository.findMemberById(entryId).get();
+            Member entryMember = memberRepository.findMemberById(entryId).get();
             message.setMessage(entryMember.getNickName()+" 님이 입장하였습니다.");
             try {
                 session.sendMessage(new TextMessage(roomId + " 채팅방 입장 성공"));
@@ -154,11 +157,40 @@ public class ChatService {
         // 생성된 방 찾기
         Map<String, String> queryMap = getQueryVal(session);
         String roomId = queryMap.get("roomId");
+        String type = queryMap.get("type");
+        ChatRoom findRoom = findRoomById(roomId);
+
+        /**
+        * 음 채팅방을 나갔다가 (소켓 닫기가 아닌 그냥 뒤로가기) 다시 들어가면 그 채팅방의 메시지 내역을 다시 로드 해줘야 하는데
+        * 그걸 어떻게 구현을 해야할지 모르겠다
+        */
+        switch (type){
+            case "talk":
+                List<Message> msgLogs = new ArrayList<>();
+                for (Map.Entry<ChatRoom, Message> chatRoomMessageEntry : chatLog.entrySet()) {
+                    if(findRoom.equals(chatRoomMessageEntry.getKey())){
+                        Message msgLog = chatRoomMessageEntry.getValue();
+                        msgLogs.add(msgLog);
+                        // 기존 채팅 내역들을 다시 보여주고
+                        try {
+                            session.sendMessage(new TextMessage(msgLogs.stream()
+                                    .iterator()
+                                    .toString()));
+                        } catch (IOException e) {
+                            log.error(e.getMessage(), e);
+                        }
+                    }
+                }
+                break;
+                case ""
+
+        }
 
         sendToMessage(chatMessage, roomId);
         //메세지 전송
     }
     private void sendToMessage(Message message, String roomId) {
+        ChatRoom chatRoom = findRoomById(roomId);
         // 연결된 세션들에서 해당 채팅방의 세션이 존재 하는지 확인하고 그 세션 전부에게 메시지 전송
         for (BindSenderAndRoom bindSenderAndRoom : sessions.keySet()) {
             String findRoomId = bindSenderAndRoom.getRoomId(); /// 반복문을 돌았으니 2개의 세션이 나올것
@@ -166,6 +198,7 @@ public class ChatService {
                 WebSocketSession session = sessions.get(bindSenderAndRoom);
                 try {
                     session.sendMessage(new TextMessage(objectMapper.writeValueAsString(message)));
+                    chatLog.put(chatRoom, message);
                 } catch (IOException e) {
                     log.error(e.getMessage(), e);
                 }
@@ -185,7 +218,7 @@ public class ChatService {
         Map<String, String> queryMap = getQueryVal(session);
         String roomId = queryMap.get("roomId");
         Long entryId = getEntryId(session);
-        Member entryMember = repository.findMemberById(entryId).get();
+        Member entryMember = memberRepository.findMemberById(entryId).get();
         int cnt = 0;
         for (BindSenderAndRoom bindSenderAndRoom : sessions.keySet()) {
             String findRoomId = bindSenderAndRoom.getRoomId();
