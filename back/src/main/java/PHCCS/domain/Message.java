@@ -11,8 +11,15 @@ import java.util.Date;
 @AllArgsConstructor
 @Data
 public class Message {
+
+    public enum MessageType{
+        ENTER,
+        TALK
+    }
+    private MessageType type;
     private Long memberId;
     private String message;
+
     private LocalDateTime timestamp;
 
 }

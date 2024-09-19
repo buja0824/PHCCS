@@ -112,7 +112,7 @@ public class ChatService {
         log.info("##세션.getQuery() : {}", session.getUri().getQuery());
         Map<String, String> queryMap = getQueryVal(session);
         String roomId = queryMap.get("roomId");
-        String type = queryMap.get("type");
+//        String type = queryMap.get("type");
 
         Long entryId = getEntryId(session);
         /**
@@ -122,27 +122,25 @@ public class ChatService {
          */
         ChatRoom findRoom = findRoomById(roomId);
         if(findRoom == null){
+            // TODO 방이 없으면 에러 발생
             log.error("생성된 채팅방이 존재하지 않습니다.");
             return;
         }
-        if(type.equals("enter")){
-            BindSenderAndRoom bindSenderAndRoom = BindSenderAndRoom.builder()
-                    .sender(entryId)
-                    .roomId(roomId)
-                    .build();
+        BindSenderAndRoom bindSenderAndRoom = BindSenderAndRoom.builder()
+                .sender(entryId)
+                .roomId(roomId)
+                .build();
 
-            sessions.put(bindSenderAndRoom, session);
-            Message message = new Message();
-            Member entryMember = memberRepository.findMemberById(entryId).get();
-            message.setMessage(entryMember.getNickName()+" 님이 입장하였습니다.");
-            try {
-                session.sendMessage(new TextMessage(roomId + " 채팅방 입장 성공"));
-                sendToMessage(message, roomId);
-            } catch (IOException e) {
-                log.error(e.getMessage(), e);
-            }
+        sessions.put(bindSenderAndRoom, session);
+        Message message = new Message();
+        Member entryMember = memberRepository.findMemberById(entryId).get();
+        message.setMessage(entryMember.getNickName()+" 님이 입장하였습니다.");
+        try {
+            session.sendMessage(new TextMessage(roomId + " 채팅방 입장 성공"));
+            sendToMessage(message, roomId);
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
         }
-
     }
 
     public void handlerActions(WebSocketSession session, TextMessage message) throws JsonProcessingException {
@@ -157,40 +155,30 @@ public class ChatService {
         // 생성된 방 찾기
         Map<String, String> queryMap = getQueryVal(session);
         String roomId = queryMap.get("roomId");
-        String type = queryMap.get("type");
+//        String type = queryMap.get("type");
         ChatRoom findRoom = findRoomById(roomId);
-
+        if(findRoom == null){
+            log.error("생성된 방이 존재하지 않음");
+            // TODO 방이 없으면 에러 발생
+        }
         /**
         * 음 채팅방을 나갔다가 (소켓 닫기가 아닌 그냥 뒤로가기) 다시 들어가면 그 채팅방의 메시지 내역을 다시 로드 해줘야 하는데
-        * 그걸 어떻게 구현을 해야할지 모르겠다
+        * 그걸 어떻게 구현?
+        * 처음 방에 접속하여 나눈 채팅들을 모두 저장하여 주고 채팅방을 나갔다가 들어오면 그 저장된 채팅내역들 출력하면 될거 같다         *
         */
-        switch (type){
-            case "talk":
-                List<Message> msgLogs = new ArrayList<>();
-                for (Map.Entry<ChatRoom, Message> chatRoomMessageEntry : chatLog.entrySet()) {
-                    if(findRoom.equals(chatRoomMessageEntry.getKey())){
-                        Message msgLog = chatRoomMessageEntry.getValue();
-                        msgLogs.add(msgLog);
-                        // 기존 채팅 내역들을 다시 보여주고
-                        try {
-                            session.sendMessage(new TextMessage(msgLogs.stream()
-                                    .iterator()
-                                    .toString()));
-                        } catch (IOException e) {
-                            log.error(e.getMessage(), e);
-                        }
-                    }
-                }
-                break;
-                case ""
-
+        if(chatMessage.getType().equals(Message.MessageType.ENTER)){ 
+            // 방을 나갔다가 다시 들어오는거면 (소켓닫기가 아닌)
+            // 이전에 저장된 채팅 내역들을 뿌려주기
+            Message chatLogs = this.chatLog.get(findRoom);
+            sendToMessage(chatLogs, roomId);
         }
-
-        sendToMessage(chatMessage, roomId);
         //메세지 전송
+        sendToMessage(chatMessage, roomId);
+        //메시지 내역 저장
+        chatLog.put(findRoom, chatMessage);
     }
     private void sendToMessage(Message message, String roomId) {
-        ChatRoom chatRoom = findRoomById(roomId);
+//        ChatRoom chatRoom = findRoomById(roomId);
         // 연결된 세션들에서 해당 채팅방의 세션이 존재 하는지 확인하고 그 세션 전부에게 메시지 전송
         for (BindSenderAndRoom bindSenderAndRoom : sessions.keySet()) {
             String findRoomId = bindSenderAndRoom.getRoomId(); /// 반복문을 돌았으니 2개의 세션이 나올것
@@ -198,7 +186,7 @@ public class ChatService {
                 WebSocketSession session = sessions.get(bindSenderAndRoom);
                 try {
                     session.sendMessage(new TextMessage(objectMapper.writeValueAsString(message)));
-                    chatLog.put(chatRoom, message);
+//                    chatLog.put(chatRoom, message);
                 } catch (IOException e) {
                     log.error(e.getMessage(), e);
                 }
