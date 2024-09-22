@@ -20,4 +20,6 @@ public interface MemberMapper {
     Optional<MemberProfileDTO> findMemberById(@Param("id") Long id);
 
     int deleteMember(@Param("id") Long id);
+
+    int findRoleById(@Param("id") Long id);
 }

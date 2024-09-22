@@ -37,4 +37,10 @@
         where id = #{id}
     </delete>
 
+    <select id="findRoleById">
+        select role
+        from member
+        where id = #{id}
+    </select>
+
 </mapper>

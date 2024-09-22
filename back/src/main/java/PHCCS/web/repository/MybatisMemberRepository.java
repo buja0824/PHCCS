@@ -47,4 +47,9 @@ public class MybatisMemberRepository implements MemberRepository{
 
         return isSuccess;
     }
+
+    @Override
+    public int findRoleById(Long id) {
+        return mapper.findRoleById(id);
+    }
 }

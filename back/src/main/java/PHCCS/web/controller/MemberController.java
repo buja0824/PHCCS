@@ -78,7 +78,9 @@ public class MemberController {
 
     @GetMapping("/auth/refresh")
     public Map<String, String> refreshAccessToken(@RequestHeader("Authorization") String token){
+        log.info("RefreshToken1: {}", token);
         String actualToken = token.replace("Bearer ", "");
+        log.info("RefreshToken2: {}", actualToken);
         return tokenService.refreshAccessToken(actualToken);
     }
 

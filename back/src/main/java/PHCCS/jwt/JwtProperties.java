@@ -1,8 +1,10 @@
 package PHCCS.jwt;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
+@Slf4j
 @Configuration  // @Component 대신 사용
 @ConfigurationProperties(prefix = "jwt")
 
@@ -23,10 +25,12 @@ public class JwtProperties {
     }
 
     public void setAccessTokenExpiration(long accessTokenExpiration) {
+        log.info("accessTokenExpiration: {}", accessTokenExpiration);
         this.accessTokenExpiration = accessTokenExpiration;
     }
 
     public void setRefreshTokenExpiration(long refreshTokenExpiration) {
+        log.info("refreshTokenExpiration: {}", refreshTokenExpiration);
         this.refreshTokenExpiration = refreshTokenExpiration;
     }
 

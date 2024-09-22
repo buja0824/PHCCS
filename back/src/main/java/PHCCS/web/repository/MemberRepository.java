@@ -16,4 +16,6 @@ public interface MemberRepository {
     Optional<MemberProfileDTO> findMemberById(Long id);
 
     int deleteMember(Long id);
+
+    int findRoleById(Long id);
 }

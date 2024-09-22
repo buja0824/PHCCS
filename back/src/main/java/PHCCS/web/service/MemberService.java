@@ -13,11 +13,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
+import java.time.Instant;
 import java.time.LocalDate;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -89,6 +87,11 @@ public class MemberService {
         tokens.put("refreshToken", refreshToken);
 
         log.info("tokens: {}", tokens);
+
+        Date serverTime = new Date();
+        System.out.println("서버 시간: " + serverTime.toString());
+        System.out.println("서버 UTC 시간: " + Instant.now().toString());
+
         return tokens;
     }
 
