@@ -69,6 +69,7 @@ public class ChatService {
         while(iterator.hasNext()){
             ChatRoom next = iterator.next();
             if(next.getCreateMemberId() == memberId || next.getParticipatingMemberId() == memberId){
+                memberJoinRooms.add(chatRooms.get(next.getRoomId()));
             }
         }
         return memberJoinRooms;
