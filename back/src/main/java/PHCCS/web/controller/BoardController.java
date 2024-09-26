@@ -1,11 +1,11 @@
 package PHCCS.web.controller;
 
 import PHCCS.domain.Member;
-import PHCCS.web.repository.domain.PostUpdateDto;
+import PHCCS.web.repository.domain.PostUpdateDTO;
 import PHCCS.web.service.PostService;
-import PHCCS.web.service.domain.FileDto;
+import PHCCS.web.service.domain.FileDTO;
 
-import PHCCS.web.service.domain.PostDto;
+import PHCCS.web.service.domain.PostDTO;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +29,7 @@ public class BoardController {
     @PostMapping(value = "/post", consumes = "multipart/form-data")
     public ResponseEntity<?> createPost(
 //            @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
-            @RequestPart("dto") PostDto dto,
+            @RequestPart("dto") PostDTO dto,
             @RequestPart(value = "imageFiles", required = false) List<MultipartFile> imageFiles,
             @RequestPart(value = "videoFiles", required = false) List<MultipartFile> videoFiles)  throws IOException {
         log.info("|co|createPost()");
@@ -43,20 +43,21 @@ public class BoardController {
 
     @GetMapping("/show/{category}/{id}")
     public ResponseEntity<?> showPost(
+//            @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
             @PathVariable("category") String category,
             @PathVariable("id") Long id){
-
+//        if(!isLogin(loginMember)){
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인하지 않은 사용자는 접근할 수 없습니다.");
+//        }
         log.info("showPost()");
-
         ResponseEntity<?> post = service.showPost(category, id);
-
         return post;
     }
 
-    @GetMapping("/images/{uuid}")
+    @GetMapping("/image/{uuid}")
     public ResponseEntity<Resource> sendImgFile(
             @PathVariable("uuid") String filename,
-            @RequestBody FileDto dto) throws MalformedURLException {
+            @RequestBody FileDTO dto) throws MalformedURLException {
         Resource resource = service.sendFile(filename, dto);
         MediaType mediaType = determineImgMediaType(filename);
 
@@ -67,7 +68,8 @@ public class BoardController {
     @GetMapping("/video/{uuid}")
     public ResponseEntity<Resource> sendVidFile(
             @PathVariable("uuid") String filename,
-            @RequestBody FileDto dto) throws MalformedURLException {
+            @RequestBody FileDTO dto) throws MalformedURLException {
+
         Resource resource = service.sendFile(filename, dto);
         MediaType mediaType = determineVideoMediaType(filename);
 
@@ -77,9 +79,14 @@ public class BoardController {
     }
 
     @GetMapping("/show/{category}")
-    public ResponseEntity<?> showAllPost(@PathVariable("category") String category){
+    public ResponseEntity<?> showAllPost(
+//            @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
+            @PathVariable("category") String category){
         log.info("showAllPost()");
         log.info("category = {}", category);
+//        if(!isLogin(loginMember)){
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인하지 않은 사용자는 접근할 수 없습니다.");
+//        }
         ResponseEntity<?> posts = service.showAllPost(category);
         return posts;
     }
@@ -89,7 +96,7 @@ public class BoardController {
 /*            @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,*/
             @PathVariable("category") String category,
             @PathVariable("id") Long postId,
-            @RequestPart("updateParam") PostUpdateDto updateParam,
+            @RequestPart("updateParam") PostUpdateDTO updateParam,
             @RequestPart(value = "imageFiles", required = false) List<MultipartFile> imgFiles,
             @RequestPart(value = "videoFiles", required = false) List<MultipartFile> vidFiles) throws IOException {
 
@@ -116,6 +123,14 @@ public class BoardController {
         return ResponseEntity.ok().body("삭제 완료");
     }
 
+    @PostMapping("like/{category}/{id}")
+    public ResponseEntity<?> likePost(
+
+    ){
+
+
+        return null;
+    }
 
     private static boolean isLogin(Member loginMember){
         if(loginMember == null) return false;

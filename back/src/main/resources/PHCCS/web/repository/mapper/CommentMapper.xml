@@ -17,8 +17,8 @@
                 community_comment
             </when>
         </choose>
-        (member_id, post_id, nick_name, comment, create_date)
-        values (#{comment.memberId}, #{comment.postId}, #{comment.author}, #{comment.comment}, #{comment.writeTime})
+        (member_id, post_id, nick_name, comment, create_date, like_cnt)
+        values (#{comment.memberId}, #{comment.postId}, #{comment.nickName}, #{comment.comment}, #{comment.writeTime}, 0)
     </insert>
 
     <select id="findAllComment" resultType="Comment">
@@ -34,7 +34,7 @@
                 community_comment
             </when>
         </choose>
-        where post_id = #{id}
+        where post_id = #{postId}
     </select>
 
     <update id="updateComment">
@@ -54,5 +54,53 @@
         where id = #{dto.commentId} and post_id = #{dto.postId}
     </update>
 
+    <delete id="deleteComment">
+        delete from
+        <choose>
+            <when test="category eq 'qna_board'">
+                qna_comment
+            </when>
+            <when test="category eq 'vet_board'">
+                vet_comment
+            </when>
+            <when test="category eq 'community_board'">
+                community_comment
+            </when>
+        </choose>
+        where post_id = #{postId} and id = #{commentId}
+    </delete>
 
+    <update id="incrementLike">
+        update
+        <choose>
+            <when test="category eq 'qna_board'">
+                qna_comment
+            </when>
+            <when test="category eq 'vet_board'">
+                vet_comment
+            </when>
+            <when test="category eq 'community_board'">
+                community_comment
+            </when>
+        </choose>
+        set like_cnt = like_cnt + 1
+        where post_id = #{postId} and id = #{commentId}
+    </update>
+
+    <select id="isLikeMember" resultType="boolean">
+        select is_like
+        from
+        <choose>
+            <when test="category eq 'qna_board'">
+                qna_comment_like
+            </when>
+            <when test="category eq 'vet_board'">
+                vet_comment_like
+            </when>
+            <when test="category eq 'community_board'">
+                community_comment_like
+            </when>
+        </choose>
+        where member_id = #{memberId} and comment_id = #{commentId}
+    </select>
 </mapper>

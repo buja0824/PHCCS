@@ -1,8 +1,8 @@
 package PHCCS.web.controller;
 
 import PHCCS.domain.Pet;
-import PHCCS.web.service.domain.PetDto;
-import PHCCS.web.repository.domain.PetUpdateDto;
+import PHCCS.web.service.domain.PetDTO;
+import PHCCS.web.repository.domain.PetUpdateDTO;
 import PHCCS.web.service.PetService;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
@@ -35,7 +35,7 @@ class PetControllerTest {
 
     @Test
     public void petAddTest(){
-        PetDto pet = new PetDto();
+        PetDTO pet = new PetDTO();
 
         pet.setPetRegNo("01");
 
@@ -52,7 +52,7 @@ class PetControllerTest {
 
     @Test
     public void showMyPetTest(){
-        PetDto pet1 = new PetDto();
+        PetDTO pet1 = new PetDTO();
         pet1.setPetRegNo("01");
         pet1.setPetName("바둑이");
         pet1.setPetAge("4");
@@ -60,7 +60,7 @@ class PetControllerTest {
         pet1.setPetGender("0");
         service.save(1L,pet1);
 
-        PetDto pet2 = new PetDto();
+        PetDTO pet2 = new PetDTO();
         pet2.setPetRegNo("02");
         pet2.setPetName("겨울이");
         pet2.setPetAge("3");
@@ -68,7 +68,7 @@ class PetControllerTest {
         pet2.setPetGender("0");
         service.save(1L,pet2);
 
-        PetDto pet3 = new PetDto();
+        PetDTO pet3 = new PetDTO();
         pet3.setPetRegNo("03");
         pet3.setPetName("여름이");
         pet3.setPetAge("2");
@@ -83,7 +83,7 @@ class PetControllerTest {
 
     @Test
     public void deletePetTest(){
-        PetDto pet = new PetDto();
+        PetDTO pet = new PetDTO();
         pet.setPetRegNo("01");
         pet.setPetName("바둑이");
         pet.setPetAge("4");
@@ -91,7 +91,7 @@ class PetControllerTest {
         pet.setPetGender("0");
 
         service.save(1L,pet);
-        PetDto pet2 = new PetDto();
+        PetDTO pet2 = new PetDTO();
         pet2.setPetRegNo("02");
         pet2.setPetName("겨울이");
         pet2.setPetAge("3");
@@ -99,7 +99,7 @@ class PetControllerTest {
         pet2.setPetGender("0");
         service.save(1L,pet2);
 
-        PetDto pet3 = new PetDto();
+        PetDTO pet3 = new PetDTO();
         pet3.setPetRegNo("03");
         pet3.setPetName("여름이");
         pet3.setPetAge("2");
@@ -119,7 +119,7 @@ class PetControllerTest {
     @Test
     public void petModifyTest(){
 
-        PetDto pet = new PetDto();
+        PetDTO pet = new PetDTO();
         pet.setPetRegNo("01");
         pet.setPetName("바둑이");
         pet.setPetAge("4");
@@ -128,7 +128,7 @@ class PetControllerTest {
 
         service.save(1L,pet);
 
-        PetDto pet2 = new PetDto();
+        PetDTO pet2 = new PetDTO();
         pet2.setPetRegNo("02");
         pet2.setPetName("나비");
         pet2.setPetAge("3");
@@ -137,7 +137,7 @@ class PetControllerTest {
         service.save(1L,pet2);
         log.info(service.findByRegNo("02").toString());
 
-        PetUpdateDto modifyParam = new PetUpdateDto();
+        PetUpdateDTO modifyParam = new PetUpdateDTO();
         modifyParam.setPetName("여름이");
         modifyParam.setPetAge("3");
         modifyParam.setPetBreed("웰시코기");

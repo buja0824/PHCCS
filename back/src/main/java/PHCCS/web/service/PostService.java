@@ -3,13 +3,13 @@ package PHCCS.web.service;
 import PHCCS.domain.Post;
 import PHCCS.domain.UploadFile;
 import PHCCS.file.FileStore;
-import PHCCS.web.service.domain.FileDto;
+import PHCCS.web.service.domain.FileDTO;
 
 
-import PHCCS.web.service.domain.PostDto;
+import PHCCS.web.service.domain.PostDTO;
 
 import PHCCS.web.repository.PostRepository;
-import PHCCS.web.repository.domain.PostUpdateDto;
+import PHCCS.web.repository.domain.PostUpdateDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,7 +35,7 @@ public class PostService {
     private final FileStore fileStore;
 
     @Transactional
-    public ResponseEntity<?> save(Long memberId, PostDto dto, List<MultipartFile> imageFiles, List<MultipartFile> videoFiles) throws IOException {
+    public ResponseEntity<?> save(Long memberId, PostDTO dto, List<MultipartFile> imageFiles, List<MultipartFile> videoFiles) throws IOException {
 
         String storedDir = null;
         List<UploadFile> storeImgs = null;
@@ -74,6 +74,7 @@ public class PostService {
             post.setAuthor(dto.getAuthor());
             post.setWriteTime(dto.getWriteTime());
             post.setFileDir(storedDir);
+            post.setViewCnt(0L);
 //        post.setImageFiles(storeImgs);
 //        post.setVideoFiles(storeVids);
 
@@ -86,16 +87,22 @@ public class PostService {
         }
         return ResponseEntity.ok("게시글을 등록 하였습니다.");
     }
-
+    @Transactional
     public ResponseEntity<?> showPost(String category, Long id){
-
         if(category != null && !category.isEmpty() && id != 0L){
+            repository.incrementViewCount(category, id);
             Post post = repository.showPost(category, id);
+            if(post == null){
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("게시글을 찾을 수 없습니다.");
+            }
             String fileDir = post.getFileDir();
-            List<String> fileNames= fileStore.findFiles(fileDir);
-            post.setFileList(fileNames);
-            post.setFileDir("");
-            return ResponseEntity.ok().body(post);
+            if(fileDir != null) {
+                List<String> fileNames = fileStore.findFiles(fileDir);
+                post.setFileList(fileNames);
+                post.setFileDir("");
+            }
+            post.setCategory(category);
+            return ResponseEntity.ok(post);
         }else{
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("게시글을 찾을수 없습니다.");
         }
@@ -127,7 +134,7 @@ public class PostService {
      * 수정에 관해서는 디렉터리의 파일들을 삭제하고 재등록하는 과정이 존재하니 트랜잭션의 적용이 필요해보임
      */
     @Transactional
-    public ResponseEntity<?> updatePost(Long memberId, String category, Long postId, PostUpdateDto param, List<MultipartFile> imgs, List<MultipartFile> vids) throws IOException {
+    public ResponseEntity<?> updatePost(Long memberId, String category, Long postId, PostUpdateDTO param, List<MultipartFile> imgs, List<MultipartFile> vids) throws IOException {
         log.info("|se|updatePost()");
         String storedDir =
                 fileDir + param.getCategory() + "/" + memberId + "/" + param.getTitle() +"/"; // 새로운 저장 경로
@@ -172,18 +179,24 @@ public class PostService {
         return ResponseEntity.ok().body("수정완료");
     }
 
+    @Transactional
     public void deletePost(String category, Long memberId, Long postId){
         log.info("|se|deletePost()");
         String findFileDir = repository.findPostDir(category, postId);
         repository.deletePost(category, memberId, postId);
+
         if(findFileDir != null){
-            // 해당 게시글을 통해서 저장된 파일존재
-            // 해당 경로 찾아가서 파일들 삭제하기
-            fileStore.deleteFiles(findFileDir);
+            try {
+                // 해당 게시글을 통해서 저장된 파일존재
+                // 해당 경로 찾아가서 파일들 삭제하기
+                fileStore.deleteFiles(findFileDir);
+            }catch (Exception e){
+                throw e;
+            }
         }
     }
 
-    public Resource sendFile(String filename, FileDto dto) throws MalformedURLException {
+    public Resource sendFile(String filename, FileDTO dto) throws MalformedURLException {
         String fullPath = fileStore.getFullPath(dto.getCategory(), dto.getId(), dto.getTitle(), filename);
         return new UrlResource("file:" + fullPath);
     }

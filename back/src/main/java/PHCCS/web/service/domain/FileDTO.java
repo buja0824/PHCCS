@@ -3,7 +3,7 @@ package PHCCS.web.service.domain;
 import lombok.Data;
 
 @Data
-public class FileDto {
+public class FileDTO {
 
     private String category;
     private Long id;

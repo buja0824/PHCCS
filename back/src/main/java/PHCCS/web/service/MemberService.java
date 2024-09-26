@@ -2,8 +2,8 @@ package PHCCS.web.service;
 
 import PHCCS.domain.Member;
 import PHCCS.web.repository.MemberRepository;
-import PHCCS.web.repository.domain.MemberModifyDto;
-import PHCCS.web.service.domain.MemberDto;
+import PHCCS.web.repository.domain.MemberModifyDTO;
+import PHCCS.web.service.domain.MemberDTO;
 import PHCCS.web.service.domain.SessionMemberDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,7 +39,7 @@ public class MemberService {
         else {return Optional.empty();}
     }
 // service 계층에서 ResponseBody 반환하는것을 최대한 제한하고자 함
-    public Optional<SessionMemberDTO> login(Member member, MemberDto memberDto) {
+    public Optional<SessionMemberDTO> login(Member member, MemberDTO memberDto) {
 
             SessionMemberDTO sessionMember = new SessionMemberDTO();
 
@@ -55,7 +55,7 @@ public class MemberService {
         return Optional.empty();
     }
 
-    public int modifyMember (Long id, MemberModifyDto memberModifyDto){
+    public int modifyMember (Long id, MemberModifyDTO memberModifyDto){
         int isSuccess = repository.modifyMember(id, memberModifyDto);
 
         return isSuccess;

@@ -10,7 +10,7 @@ public class Pet {
 
     private String petName;
     private String petBreed;
-    private String petAge;
+    private Long petAge;
     private String petGender;
 
 }

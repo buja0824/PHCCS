@@ -1,8 +1,8 @@
 package PHCCS.web.controller;
 
 import PHCCS.domain.Member;
-import PHCCS.web.repository.domain.MemberModifyDto;
-import PHCCS.web.service.domain.MemberDto;
+import PHCCS.web.repository.domain.MemberModifyDTO;
+import PHCCS.web.service.domain.MemberDTO;
 import PHCCS.web.service.domain.SessionMemberDTO;
 import PHCCS.web.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,12 +22,13 @@ public class MemberController {
 
     @PostMapping("/auth/signup")
     public ResponseEntity<?> add(@RequestBody Member member) {
+        log.info("member = {}", member);
         ResponseEntity<?> save = service.save(member);
         return save;
     }
 
     @PostMapping("/auth/signin")
-    public ResponseEntity<?> login(@RequestBody MemberDto memberDto
+    public ResponseEntity<?> login(@RequestBody MemberDTO memberDto
     , HttpServletRequest request) {
         //1. POST 요청으로 받은 email과 일치하는 멤버 객체를 찾음
         Optional<Member> optionalMember = service.findMemberByEmail(memberDto.getEmail());
@@ -59,7 +60,7 @@ public class MemberController {
 
     @PatchMapping("/member/update")
     public ResponseEntity<?> update(@SessionAttribute(name = "loginMember", required = false) SessionMemberDTO loginMember
-    , @RequestBody MemberModifyDto ModifyDto){
+    , @RequestBody MemberModifyDTO ModifyDto){
 
         int isSuccess = service.modifyMember(loginMember.getId(), ModifyDto);
 

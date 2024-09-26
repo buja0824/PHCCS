@@ -18,7 +18,7 @@ public class Post { // 회원과 게시판은 1:N 관계일듯
     // 글 작성자 : 회원의 닉네임을 받아와야 함
     private LocalDateTime writeTime; // 게시글 작성날짜와 시간
     private LocalDateTime updateTime;// 게시글 수정날짜와 시간
-    private String viewCnt;
+    private Long viewCnt;
 
     //file 관련 멤버변수
 //    private List<UploadFile> imageFiles;
