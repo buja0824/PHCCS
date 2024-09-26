@@ -7,13 +7,11 @@ import PHCCS.web.service.domain.DuplicateCheckDto;
 import PHCCS.web.service.domain.MemberProfileDTO;
 import PHCCS.web.repository.domain.MemberModifyDto;
 import PHCCS.web.service.domain.MemberDto;
-import PHCCS.web.service.domain.SessionMemberDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.security.SecureRandom;
+
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.*;
@@ -26,19 +24,17 @@ public class MemberService {
     private final JwtUtil jwtUtil;
     private final TokenService tokenService;
 
-    public ResponseEntity<?> save(Member member) {
+    public boolean save(Member member) {
         // 현재 시간을 기록
         LocalDate currentDate = LocalDate.now();
         member.setCreated(currentDate);
-        DuplicateCheckDto duplicateCheckDto = isDuplicateMember(member.getEmail(), member.getNickName(), member.getPhoNo());
-        log.info("DuflicateCheckDto : {}{}{}", duplicateCheckDto.isEmailDuplicate(), duplicateCheckDto.isNicknameDuplicate(), duplicateCheckDto.isPhoNoDuplicate());
 
         int resultRow = repository.save(member);
 
-        if (resultRow < 0) {
-            return ResponseEntity.badRequest().body("회원가입에 실패하였습니다.");
+        if (resultRow == 1) {
+            return true;
         }
-        return ResponseEntity.ok("정상적으로 가입 되었습니다.");
+        return false;
     }
 
     public Optional<Member> findMemberByEmail(String email){
@@ -89,11 +85,8 @@ public class MemberService {
 
         tokens.put("refreshToken", refreshToken);
 
+        // [LOG] 토큰 발급 확인
         log.info("tokens: {}", tokens);
-
-        Date serverTime = new Date();
-        System.out.println("서버 시간: " + serverTime.toString());
-        System.out.println("서버 UTC 시간: " + Instant.now().toString());
 
         return tokens;
     }
@@ -120,7 +113,7 @@ public class MemberService {
         return isSuccess;
     }
     // public Map<String, String> login(MemberDto memberDto) 에서 호출
-    private DuplicateCheckDto isDuplicateMember(String email, String nickname, String phoNo) {
+    public DuplicateCheckDto isDuplicateMember(String email, String nickname, String phoNo) {
         // existsByEmail = 1 이면 true, 0(다른값) 이면 false
         boolean emailDuplicate = (repository.existsByEmail(email) == 1);
         boolean nicknameDuplicate = (repository.existsByNickname(nickname) == 1);

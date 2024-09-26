@@ -31,36 +31,34 @@ public class TokenService {
 
     public Map<String, String> refreshAccessToken(String refreshToken) {
         String storedRefreshToken = tokenRepository.getRefreshTokenByToken(refreshToken);
-        log.info("storedtokens: {}", storedRefreshToken);
+        // [LOG] 저장된 refreshToken
+        log.info("storedTokens: {}", storedRefreshToken);
         // 받은 토큰과 일치하는 토큰이 없을때
         if(storedRefreshToken == null){
-            log.info("check1");
             return null;
         }
-        // 저장된 토큰이 기간이 만료되었을때
+        // 저장된 토큰 만료 확인
         boolean isSuccess = jwtUtil.isTokenExpired(refreshToken);
-        log.info("isSuccess: {}", isSuccess);
-        if(isSuccess){
 
+        if(isSuccess){
             // 만료된 토큰을 삭제
             removeRefreshToken(refreshToken);
-            log.info("check2");
             return null;
         }
 
         Map<String, String> tokens = new HashMap<>();
 
         Long id = Long.parseLong(jwtUtil.extractSubject(storedRefreshToken));
-        log.info("새로운 accesstoken 생성 시작");
         String newAccessToken = jwtUtil.createAccessToken(id, memberRepository.findRoleById(id));
-        log.info("새로운 accesstoken: {}", newAccessToken);
-        log.info("새로운 accesstoken의 만료시간: {}", jwtUtil.extractExpiration(newAccessToken));
+        log.info("새로운 accessToken: {}", newAccessToken);
+        log.info("새로운 accessToken 만료시간: {}", jwtUtil.extractExpiration(newAccessToken));
         tokens.put("accessToken", newAccessToken);
 
 
         tokens.put("refreshToken", refreshToken);
 
-        log.info("tokens: {}", tokens);
+        // [LOG] 새로 생성된 accessToken, refreshToken
+        log.info("new tokens: {}", tokens);
 
         return tokens;
     }

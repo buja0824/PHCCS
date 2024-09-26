@@ -3,13 +3,14 @@ package PHCCS.web.controller;
 import PHCCS.domain.Member;
 import PHCCS.jwt.JwtUtil;
 import PHCCS.web.service.TokenService;
+import PHCCS.web.service.domain.DuplicateCheckDto;
 import PHCCS.web.service.domain.MemberProfileDTO;
 import PHCCS.web.repository.domain.MemberModifyDto;
 import PHCCS.web.service.domain.MemberDto;
-import PHCCS.web.service.domain.SessionMemberDTO;
 import PHCCS.web.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,8 +27,28 @@ public class MemberController {
 
     @PostMapping("/auth/signup")
     public ResponseEntity<?> add(@RequestBody Member member) {
-        ResponseEntity<?> save = service.save(member);
-        return save;
+
+        // 서비스에서 중복 체크
+        DuplicateCheckDto duplicateCheckDto = service.isDuplicateMember(member.getEmail(), member.getNickName(), member.getPhoNo());
+
+        // 중복 체크 후 처리
+        if (duplicateCheckDto.isAnyDuplicate()) {
+            StringBuilder message = new StringBuilder("회원가입 실패: ");
+            if (duplicateCheckDto.isEmailDuplicate()) message.append("이메일 중복. ");
+            if (duplicateCheckDto.isNickNameDuplicate()) message.append("닉네임 중복. ");
+            if (duplicateCheckDto.isPhoNoDuplicate()) message.append("전화번호 중복.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(message.toString());
+        }
+
+        // 회원 정보 저장
+        boolean isSuccess = service.save(member);
+
+        if(isSuccess){
+            return ResponseEntity.ok("회원가입 되었습니다.");
+        }
+        else{
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원가입 저장 중 오류");
+        }
     }
 
     @PostMapping("/auth/signin")
@@ -39,7 +60,7 @@ public class MemberController {
     public ResponseEntity<?> logout(@RequestHeader("Authorization") String token) {
         String actualToken = token.replace("Bearer ", "");
 
-        Boolean isSuccess = service.logout(actualToken);
+        boolean isSuccess = service.logout(actualToken);
 
         if(isSuccess) {
             return ResponseEntity.ok("로그아웃 되었습니다.");
@@ -80,9 +101,8 @@ public class MemberController {
 
     @GetMapping("/auth/refresh")
     public Map<String, String> refreshAccessToken(@RequestHeader("Authorization") String token){
-        log.info("RefreshToken1: {}", token);
+        log.info("받은 RefreshToken: {}", token);
         String actualToken = token.replace("Bearer ", "");
-        log.info("RefreshToken2: {}", actualToken);
         return tokenService.refreshAccessToken(actualToken);
     }
 

@@ -23,14 +23,12 @@ public class JwtUtil {
         Map<String, Object> claims = new HashMap<>();
         claims.put("role", role);
 
-        log.info("가져온 어세스만료시간: {}", jwtProperties.getAccessTokenExpiration());
         return createToken(claims, id.toString(), jwtProperties.getAccessTokenExpiration());
     }
 
     public String createRefreshToken(Long id){
         Map<String, Object> claims = new HashMap<>();
 
-        log.info("가져온 리프레시토큰만료시간: {}", jwtProperties.getRefreshTokenExpiration());
         return createToken(claims, id.toString(), jwtProperties.getRefreshTokenExpiration());
     }
 
@@ -77,7 +75,6 @@ public class JwtUtil {
 
     private String createToken(Map<String, Object> claims, String subject, long expirationTime){
         long currentTimeMillis = System.currentTimeMillis();
-        log.info("생성시 가져온 리프레시토큰시간: {}", expirationTime);
         log.info("토큰 생성 시간: {}", new Date(currentTimeMillis));
         log.info("토큰 만료 시간: {}", new Date(currentTimeMillis + expirationTime));
         return Jwts.builder()
@@ -100,8 +97,6 @@ public class JwtUtil {
     }
 
     public Boolean isTokenExpired(String token) {
-        log.info("추출한 시간: {}", extractExpiration(token));
-        log.info("이전인지 이후인지1: {}", extractExpiration(token).before(new Date()));
         return extractExpiration(token).before(new Date());
     }
 
