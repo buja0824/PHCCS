@@ -22,4 +22,10 @@ public interface MemberMapper {
     int deleteMember(@Param("id") Long id);
 
     int findRoleById(@Param("id") Long id);
+
+    int existsByEmail(@Param("email") String email);
+
+    int existsByNickName(@Param("nickName") String nickName);
+
+    int existsByPhoNo(@Param("phoNo") String phoNo);
 }

@@ -3,6 +3,7 @@ package PHCCS.web.service;
 import PHCCS.domain.Member;
 import PHCCS.jwt.JwtUtil;
 import PHCCS.web.repository.MemberRepository;
+import PHCCS.web.service.domain.DuplicateCheckDto;
 import PHCCS.web.service.domain.MemberProfileDTO;
 import PHCCS.web.repository.domain.MemberModifyDto;
 import PHCCS.web.service.domain.MemberDto;
@@ -29,6 +30,8 @@ public class MemberService {
         // 현재 시간을 기록
         LocalDate currentDate = LocalDate.now();
         member.setCreated(currentDate);
+        DuplicateCheckDto duplicateCheckDto = isDuplicateMember(member.getEmail(), member.getNickName(), member.getPhoNo());
+        log.info("DuflicateCheckDto : {}{}{}", duplicateCheckDto.isEmailDuplicate(), duplicateCheckDto.isNicknameDuplicate(), duplicateCheckDto.isPhoNoDuplicate());
 
         int resultRow = repository.save(member);
 
@@ -115,6 +118,15 @@ public class MemberService {
         int isSuccess = repository.deleteMember(id);
 
         return isSuccess;
+    }
+    // public Map<String, String> login(MemberDto memberDto) 에서 호출
+    private DuplicateCheckDto isDuplicateMember(String email, String nickname, String phoNo) {
+        // existsByEmail = 1 이면 true, 0(다른값) 이면 false
+        boolean emailDuplicate = (repository.existsByEmail(email) == 1);
+        boolean nicknameDuplicate = (repository.existsByNickname(nickname) == 1);
+        boolean phoNoDuplicate = (repository.existsByPhoNo(phoNo) == 1);
+
+        return new DuplicateCheckDto(emailDuplicate, nicknameDuplicate, phoNoDuplicate);
     }
 }
 

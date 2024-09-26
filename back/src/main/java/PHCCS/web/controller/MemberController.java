@@ -47,10 +47,11 @@ public class MemberController {
     }
 
     @PatchMapping("/member/update")
-    public ResponseEntity<?> update(@SessionAttribute(name = "loginMember", required = false) SessionMemberDTO loginMember
+    public ResponseEntity<?> update(@RequestHeader("Authorization") String token
     , @RequestBody MemberModifyDto ModifyDto){
 
-        int isSuccess = service.modifyMember(loginMember.getId(), ModifyDto);
+        String actualToken = token.replace("Bearer ", "");
+        int isSuccess = service.modifyMember(Long.parseLong(jwtUtil.extractSubject(actualToken)), ModifyDto);
 
         if(isSuccess == 1){
             return ResponseEntity.ok("수정 되었습니다.");
@@ -68,8 +69,9 @@ public class MemberController {
     }
 
     @DeleteMapping("/member/delete")
-    public ResponseEntity<?> deleteMember(@SessionAttribute(name = "loginMember", required = false) SessionMemberDTO loginMember){
-        int isSuccess = service.deleteMember(loginMember.getId());
+    public ResponseEntity<?> deleteMember(@RequestHeader("Authorization") String token){
+        String actualToken = token.replace("Bearer ", "");
+        int isSuccess = service.deleteMember(Long.parseLong(jwtUtil.extractSubject(actualToken)));
 
         if(isSuccess == 1){
             return ResponseEntity.ok("회원탈퇴 되었습니다.");

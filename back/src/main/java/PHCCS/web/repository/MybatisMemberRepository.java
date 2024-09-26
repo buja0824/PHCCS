@@ -52,4 +52,19 @@ public class MybatisMemberRepository implements MemberRepository{
     public int findRoleById(Long id) {
         return mapper.findRoleById(id);
     }
+
+    @Override
+    public int existsByEmail(String email) {
+        return mapper.existsByEmail(email);
+    }
+
+    @Override
+    public int existsByNickname(String nickName) {
+        return mapper.existsByNickName(nickName);
+    }
+
+    @Override
+    public int existsByPhoNo(String phoNo) {
+        return mapper.existsByPhoNo(phoNo);
+    }
 }

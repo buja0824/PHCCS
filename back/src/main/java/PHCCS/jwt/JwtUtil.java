@@ -47,6 +47,7 @@ public class JwtUtil {
         return (Integer) extractAllClaims(token).get("role");
     }
 
+    // token에서 memberId를 추출할때 사용
     public String extractSubject(String token){
         return extractAllClaims(token).getSubject();
     }
@@ -63,6 +64,7 @@ public class JwtUtil {
         return extractAllClaims(token).getIssuedAt();
     }
 
+    // token에서 id를 추출할때 사용(id는 토큰 고유의 식별 id를 의미, memberId X)
     public String extractId(String token){
         return extractAllClaims(token).getId();
     }

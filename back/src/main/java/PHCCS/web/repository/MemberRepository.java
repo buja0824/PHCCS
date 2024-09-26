@@ -18,4 +18,10 @@ public interface MemberRepository {
     int deleteMember(Long id);
 
     int findRoleById(Long id);
+    
+    int existsByEmail(String email);
+
+    int existsByNickname(String nickname);
+
+    int existsByPhoNo(String phoNo);
 }

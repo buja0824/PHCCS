@@ -24,6 +24,9 @@ public class JwtAuthenticationFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         String requestURI = httpRequest.getRequestURI();
+        // 응답 인코딩 설정
+        httpResponse.setContentType("text/html; charset=UTF-8");
+        httpResponse.setCharacterEncoding("UTF-8");
 
         try {
             log.info("인증 체크 필터 시작{}", requestURI);
