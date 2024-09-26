@@ -17,7 +17,8 @@ public class Message {
         TALK
     }
     private MessageType type;
-    private Long memberId;
+    // 멤버 아이디 필요 없는거 같은데 왜 다시 넣었는지 기억이 안나
+//    private Long memberId;
     private String message;
 
     private LocalDateTime timestamp;

@@ -23,11 +23,22 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ChatWebSocketHandler extends TextWebSocketHandler {
     private final ChatService chatService;
 
+    /**
+     * @param session
+     * 채팅방에 첫 입장시 세션에 검증헤더에서 토큰을 파싱해서 어떤 회원인지 검증함
+     */
     @Override
     public void afterConnectionEstablished(WebSocketSession session){
         log.info("##세션 : {}", session);
         chatService.enterRoom(session);
     }
+
+    /**
+     * @param session
+     * @param message
+     * @throws Exception
+     * 전달하는 메시지는 messageType,
+     */
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         chatService.handlerActions(session, message);

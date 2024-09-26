@@ -54,7 +54,7 @@ public class ChatService {
      * 채팅 내역을 저장할 맵 키는 챗룸, 벨류는 음..리스트??
      */
     private Map<ChatRoom, Message> chatLog;
-    private ChatRepository chatRepository;
+    private final ChatRepository chatRepository;
 
     @PostConstruct //모든 Bean 의존성 주입이 완료되고 실행되어야 하는 메서드에 사용
     private void init() { // 마지막에 초기화가 진행되어진다
@@ -69,7 +69,6 @@ public class ChatService {
         while(iterator.hasNext()){
             ChatRoom next = iterator.next();
             if(next.getCreateMemberId() == memberId || next.getParticipatingMemberId() == memberId){
-                memberJoinRooms.add(next);
             }
         }
         return memberJoinRooms;
@@ -92,11 +91,6 @@ public class ChatService {
                 .build();
 
         chatRooms.put(roomId, chatRoom); //방 생성 후 방 목록에 추가
-        /**
-         * TODO
-         * a 사용자가 방을 생성하였으니 같이 채팅할 b 사용자에게 이 방에 들어오라는 알림을 보내야 함
-         * SSE 방식을 이용해서 구현할 예정임
-         */
         log.info("##웹 소켓으로 통신 업그레이드 시키면 됨##");
         return chatRoom;
     }
@@ -169,13 +163,14 @@ public class ChatService {
         if(chatMessage.getType().equals(Message.MessageType.ENTER)){ 
             // 방을 나갔다가 다시 들어오는거면 (소켓닫기가 아닌)
             // 이전에 저장된 채팅 내역들을 뿌려주기
-            Message chatLogs = this.chatLog.get(findRoom);
+            Message chatLogs = chatLog.get(findRoom);
             sendToMessage(chatLogs, roomId);
         }
         //메세지 전송
         sendToMessage(chatMessage, roomId);
         //메시지 내역 저장
         chatLog.put(findRoom, chatMessage);
+        log.info(chatLog.toString());
     }
     private void sendToMessage(Message message, String roomId) {
 //        ChatRoom chatRoom = findRoomById(roomId);
