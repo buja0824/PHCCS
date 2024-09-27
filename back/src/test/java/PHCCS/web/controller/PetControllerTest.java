@@ -40,7 +40,7 @@ class PetControllerTest {
         pet.setPetRegNo("01");
 
         pet.setPetName("바둑이");
-        pet.setPetAge("4");
+        pet.setPetAge(4L);
         pet.setPetBreed("푸들");
         pet.setPetGender("0");
 
@@ -55,7 +55,7 @@ class PetControllerTest {
         PetDTO pet1 = new PetDTO();
         pet1.setPetRegNo("01");
         pet1.setPetName("바둑이");
-        pet1.setPetAge("4");
+        pet1.setPetAge(4L);
         pet1.setPetBreed("푸들");
         pet1.setPetGender("0");
         service.save(1L,pet1);
@@ -63,7 +63,7 @@ class PetControllerTest {
         PetDTO pet2 = new PetDTO();
         pet2.setPetRegNo("02");
         pet2.setPetName("겨울이");
-        pet2.setPetAge("3");
+        pet2.setPetAge(3L);
         pet2.setPetBreed("웰시코기");
         pet2.setPetGender("0");
         service.save(1L,pet2);
@@ -71,7 +71,7 @@ class PetControllerTest {
         PetDTO pet3 = new PetDTO();
         pet3.setPetRegNo("03");
         pet3.setPetName("여름이");
-        pet3.setPetAge("2");
+        pet3.setPetAge(2L);
         pet3.setPetBreed("치와와");
         pet3.setPetGender("0");
         service.save(1L,pet3);
@@ -86,7 +86,7 @@ class PetControllerTest {
         PetDTO pet = new PetDTO();
         pet.setPetRegNo("01");
         pet.setPetName("바둑이");
-        pet.setPetAge("4");
+        pet.setPetAge(4L);
         pet.setPetBreed("푸들");
         pet.setPetGender("0");
 
@@ -94,7 +94,7 @@ class PetControllerTest {
         PetDTO pet2 = new PetDTO();
         pet2.setPetRegNo("02");
         pet2.setPetName("겨울이");
-        pet2.setPetAge("3");
+        pet2.setPetAge(3L);
         pet2.setPetBreed("웰시코기");
         pet2.setPetGender("0");
         service.save(1L,pet2);
@@ -102,7 +102,7 @@ class PetControllerTest {
         PetDTO pet3 = new PetDTO();
         pet3.setPetRegNo("03");
         pet3.setPetName("여름이");
-        pet3.setPetAge("2");
+        pet3.setPetAge(2L);
         pet3.setPetBreed("치와와");
         pet3.setPetGender("0");
 
@@ -122,7 +122,7 @@ class PetControllerTest {
         PetDTO pet = new PetDTO();
         pet.setPetRegNo("01");
         pet.setPetName("바둑이");
-        pet.setPetAge("4");
+        pet.setPetAge(4L);
         pet.setPetBreed("푸들");
         pet.setPetGender("0");
 
@@ -131,7 +131,7 @@ class PetControllerTest {
         PetDTO pet2 = new PetDTO();
         pet2.setPetRegNo("02");
         pet2.setPetName("나비");
-        pet2.setPetAge("3");
+        pet2.setPetAge(3L);
         pet2.setPetBreed("웰시코기");
         pet2.setPetGender("0");
         service.save(1L,pet2);

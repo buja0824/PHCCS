@@ -3,6 +3,7 @@ package PHCCS.web.controller;
 import PHCCS.domain.Comment;
 import PHCCS.web.repository.domain.CommentDTO;
 import PHCCS.web.service.CommentService;
+import PHCCS.web.service.SSEService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,7 @@ import java.util.List;
 public class CommentController {
 
     private final CommentService service;
+    private final SSEService sseService;
 
     @PostMapping("/add/{category}/{id}")
     public ResponseEntity<?> addComment(
@@ -30,8 +32,12 @@ public class CommentController {
 //        if(!isLogin(loginMember)){
 //            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인하지 않은 사용자는 접근할 수 없습니다.");
 //        }
-        ResponseEntity<?> save = service.save(category, postId, comment);
-        return save;
+        boolean isSave = service.save(category, postId, comment);
+        if(isSave){
+            sseService.addCommentAlarm(category, postId, comment);
+            return ResponseEntity.ok("댓글 저장이 완료되었습니다.");
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("댓글 저장에 오류가 발생하였습니다.");
     }
 
     @GetMapping("/show/{category}/{id}")

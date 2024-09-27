@@ -62,4 +62,9 @@ public class MybatisPostRepository implements PostRepository{
         mapper.incrementViewCount(category, postId);
     }
 
+    @Override
+    public Long findAuthorId(String category, Long postId) {
+        return mapper.findAuthorId(category, postId);
+    }
+
 }

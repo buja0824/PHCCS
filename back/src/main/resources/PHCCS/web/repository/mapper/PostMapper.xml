@@ -21,6 +21,23 @@
         values (#{post.memberId}, #{post.author}, #{post.title}, #{post.content}, #{post.writeTime},#{post.updateTime}, #{post.fileDir}, 0)
     </insert>
 
+    <select id="findAuthorId" resultType="Long">
+        select member_id
+        from
+        <choose>
+            <when test= "category == 'qna_board'">
+                qna_board
+            </when>
+            <when test= "category == 'community_board'">
+                community_board
+            </when>
+            <when test= "category == 'vet_board'">
+                vet_board
+            </when>
+        </choose>
+        where id = #{id}
+    </select>
+    
     <select id="showPost" resultType="Post">
         select id, member_id, author, title, content, view_cnt, create_date as writeTime, update_date, file_dir
         from

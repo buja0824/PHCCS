@@ -20,15 +20,11 @@ public class CommentService {
     private final CommentRepository repository;
 
     // 댓글 작성 완료 후 데이터베이스 저장 도중에 해당 게시글이 삭제가 되면?
-    public ResponseEntity<?> save(String category, Long postId, Comment comment){
+    public boolean save(String category, Long postId, Comment comment){
         comment.setPostId(postId);
         comment.setLikeCnt(0L);
         int save = repository.save(category, comment);
-        if(save <= 0) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("댓글 저장에 오류가 발생하였습니다.");
-        }else{
-            return ResponseEntity.ok().body("댓글 저장 완료");
-        }
+        return save > 0;
     }
 
     public List<Comment> findAllComment(String category, Long postId){

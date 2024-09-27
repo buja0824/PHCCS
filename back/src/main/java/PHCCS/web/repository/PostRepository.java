@@ -14,4 +14,5 @@ public interface PostRepository {
     void deletePost(String category, Long memberId, Long postId);
     String findPostDir(String category, Long postId);
     void incrementViewCount(String category, Long postId);
+    Long findAuthorId(String category, Long postId);
 }

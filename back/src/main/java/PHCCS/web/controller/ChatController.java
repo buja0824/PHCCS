@@ -36,7 +36,7 @@ public class ChatController {
          * SSE 방식을 이용해서 구현할 예정임
          */
         String roomId = chatRoom.getRoomId();
-        sseService.alarm(chatConnectDTO.getParticipatingMemberId(), roomId);
+        sseService.inviteAlarm(chatConnectDTO.getParticipatingMemberId(), roomId);
         return chatRoom;
     }
 
