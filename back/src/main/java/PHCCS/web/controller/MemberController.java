@@ -72,7 +72,8 @@ public class MemberController {
     , @RequestBody MemberModifyDTO ModifyDto){
 
         String actualToken = token.replace("Bearer ", "");
-        int isSuccess = service.modifyMember(Long.parseLong(jwtUtil.extractSubject(actualToken)), ModifyDto);
+
+        int isSuccess = service.modifyMember(jwtUtil.extractSubject(actualToken), ModifyDto);
 
         if(isSuccess == 1){
             return ResponseEntity.ok("수정 되었습니다.");
@@ -92,7 +93,7 @@ public class MemberController {
     @DeleteMapping("/member/delete")
     public ResponseEntity<?> deleteMember(@RequestHeader("Authorization") String token){
         String actualToken = token.replace("Bearer ", "");
-        int isSuccess = service.deleteMember(Long.parseLong(jwtUtil.extractSubject(actualToken)));
+        int isSuccess = service.deleteMember(jwtUtil.extractSubject(actualToken));
 
         if(isSuccess == 1){
             return ResponseEntity.ok("회원탈퇴 되었습니다.");

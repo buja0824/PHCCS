@@ -105,7 +105,7 @@ public class MemberService {
     }
 
     public Optional<MemberProfileDTO> findMyProfileById(Long id) {
-        Optional<MemberProfileDTO> memberProfile = repository.findMemberById(id);
+        Optional<MemberProfileDTO> memberProfile = repository.findMemberProfileById(id);
 
         return memberProfile;
     }

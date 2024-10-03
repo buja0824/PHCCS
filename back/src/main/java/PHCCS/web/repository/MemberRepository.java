@@ -14,7 +14,9 @@ public interface MemberRepository {
 
     int modifyMember(Long id, MemberModifyDTO memberModifyDto);
 
-    Optional<MemberProfileDTO> findMemberById(Long id);
+    Optional<MemberProfileDTO> findMemberProfileById(Long id);
+
+    Optional<Member> findMemberById(Long id);
 
     int deleteMember(Long id);
 

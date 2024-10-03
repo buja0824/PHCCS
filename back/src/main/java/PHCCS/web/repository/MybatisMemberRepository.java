@@ -37,9 +37,15 @@ public class MybatisMemberRepository implements MemberRepository{
     }
 
     @Override
-    public Optional<MemberProfileDTO> findMemberById(Long id){
-        Optional<MemberProfileDTO> memberProfile = mapper.findMemberById(id);
+    public Optional<MemberProfileDTO> findMemberProfileById(Long id){
+        Optional<MemberProfileDTO> memberProfile = mapper.findMemberProfileById(id);
         return memberProfile;
+    }
+
+    @Override
+    public Optional<Member> findMemberById(Long id) {
+        Optional<Member> member = mapper.findMemberById(id);
+        return member;
     }
 
     @Override

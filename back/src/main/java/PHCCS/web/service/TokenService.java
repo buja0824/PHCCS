@@ -48,7 +48,7 @@ public class TokenService {
 
         Map<String, String> tokens = new HashMap<>();
 
-        Long id = Long.parseLong(jwtUtil.extractSubject(storedRefreshToken));
+        Long id = jwtUtil.extractSubject(storedRefreshToken);
         String newAccessToken = jwtUtil.createAccessToken(id, memberRepository.findRoleById(id));
         log.info("새로운 accessToken: {}", newAccessToken);
         log.info("새로운 accessToken 만료시간: {}", jwtUtil.extractExpiration(newAccessToken));
