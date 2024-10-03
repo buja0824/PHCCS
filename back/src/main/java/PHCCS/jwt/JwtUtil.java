@@ -47,11 +47,11 @@ public class JwtUtil {
 
     // token에서 memberId를 추출할때 사용
     public Long extractSubject(String token){
-        return Long.parseLong(extractAllClaims(token).getSubject());
+        return Long.parseLong(extractAllClaims(actual(token)).getSubject());
     }
 
     private static String actual(String token) {
-        return token.replace("Bearer", "");
+        return token.replace("Bearer ", "");
     }
     public Date extractExpiration(String token) {
         return extractAllClaims(token).getExpiration();

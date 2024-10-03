@@ -27,7 +27,7 @@ public class SSEController {
     @GetMapping(value = "/connect-sse", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public ResponseEntity<SseEmitter> connectSSE(@RequestHeader("Authorization") String token){
         log.info("sse connect");
-
+        log.info("token = {}", token);
         Long memberId = jwtUtil.extractSubject(token);
         SseEmitter emitter = new SseEmitter(1000*1000L);
         sseService.add(memberId, emitter);
