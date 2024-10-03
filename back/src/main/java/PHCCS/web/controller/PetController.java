@@ -7,7 +7,6 @@ import PHCCS.domain.Pet;
 import PHCCS.web.service.domain.PetDTO;
 import PHCCS.web.repository.domain.PetUpdateDTO;
 import PHCCS.web.service.PetService;
-import PHCCS.web.service.domain.SessionMemberDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -34,8 +33,7 @@ public class PetController {
     }
 
     @GetMapping("/pet/showAll")
-    public ResponseEntity<?> showMyPet(
-            @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) SessionMemberDTO loginMember){
+    public ResponseEntity<?> showMyPet( ){
         log.info("showMyPet()");
 //        if(!isLogin(loginMember)){
 //            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요 합니다.");
@@ -47,7 +45,6 @@ public class PetController {
 
     @DeleteMapping("/pet/delete")
     public ResponseEntity<?> petDelete(
-            @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) SessionMemberDTO loginMember,
             @RequestBody List<String> petNames){
 
         log.info("petDelete()");
@@ -68,7 +65,6 @@ public class PetController {
 
     @PutMapping("/pet/modify/{name}")
     public ResponseEntity<?> modifyPet(
-            @SessionAttribute(name = SessionConst.LOGIN_MEMBER,required = false) SessionMemberDTO loginMember,
             @PathVariable("name") String petName,
             @RequestBody PetUpdateDTO modifyParam){
 

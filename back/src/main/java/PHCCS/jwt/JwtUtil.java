@@ -46,10 +46,14 @@ public class JwtUtil {
     }
 
     // token에서 memberId를 추출할때 사용
-    public String extractSubject(String token){
-        return extractAllClaims(token).getSubject();
+    public Long extractSubject(String token){
+
+        return Long.parseLong(extractAllClaims(actual(token)).getSubject());
     }
 
+    private static String actual(String token) {
+        return token.replace("Bearer", "");
+    }
     public Date extractExpiration(String token) {
         return extractAllClaims(token).getExpiration();
     }
@@ -71,7 +75,6 @@ public class JwtUtil {
         // Base64 URL-safe 디코딩
         return Base64.getUrlDecoder().decode(secret);
     }
-
 
     private String createToken(Map<String, Object> claims, String subject, long expirationTime){
         long currentTimeMillis = System.currentTimeMillis();

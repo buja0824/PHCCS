@@ -1,12 +1,8 @@
 package PHCCS.web.repository.mapper;
 
 import PHCCS.domain.Member;
-<<<<<<< HEAD
 import PHCCS.web.repository.domain.MemberModifyDTO;
-=======
 import PHCCS.web.service.domain.MemberProfileDTO;
-import PHCCS.web.repository.domain.MemberModifyDto;
->>>>>>> 진구
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
