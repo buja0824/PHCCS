@@ -62,7 +62,7 @@ public class ChatService {
         sessions = new ConcurrentHashMap<>();
         chatLog = new ConcurrentHashMap<>();
     }
-    //모든 방을 찾는 메서드
+    // 사용자가 참여중인 모든 방을 찾는 메서드
     public List<ChatRoom> findAllRoom(Long memberId) {
         Iterator<ChatRoom> iterator = chatRooms.values().iterator();
         List<ChatRoom> memberJoinRooms = new ArrayList<>();
@@ -74,10 +74,7 @@ public class ChatService {
         }
         return memberJoinRooms;
     }
-    //id로 방을 찾고 결과로 ChatRoom 객체 반환
-    public ChatRoom findRoomById(String roomId) {
-        return chatRooms.get(roomId);
-    }
+
     //방 생성 메서드
     public ChatRoom createRoom(ChatConnectDTO chatConnectDTO) {
         Member createMember = memberRepository.findMemberById(chatConnectDTO.getCreateMemberId()).get();
@@ -94,7 +91,7 @@ public class ChatService {
         // 메모리에 방을 저장해서 빠른 접근이 가능하게 하기 위함
         chatRooms.put(roomId, chatRoom); //방 생성 후 방 목록에 추가
         // 데이터베이스에 저장하여 방 생성 내역을 저장
-        chatRepository.saveChatRoom(chatRoom);
+//        chatRepository.saveChatRoom(chatRoom);
 
         log.info("##웹 소켓으로 통신 업그레이드 시키면 됨##");
         return chatRoom;
@@ -163,14 +160,18 @@ public class ChatService {
         /**
         * 음 채팅방을 나갔다가 (소켓 닫기가 아닌 그냥 뒤로가기) 다시 들어가면 그 채팅방의 메시지 내역을 다시 로드 해줘야 하는데
         * 그걸 어떻게 구현?
-        * 처음 방에 접속하여 나눈 채팅들을 모두 저장하여 주고 채팅방을 나갔다가 들어오면 그 저장된 채팅내역들 출력하면 될거 같다         *
+        * 처음 방에 접속하여 나눈 채팅들을 모두 저장하여 주고 채팅방을 나갔다가 들어오면 그 저장된 채팅내역들 출력하면 될거 같다
+         * 24.10.03
+         * 그냥 뒤로 가기이면 채팅 내역이 이미 그대로 남아 있으니 다시 뿌려줄 필요가 없음
+         * 소켓 닫기일 경우에 다시 뿌려주어야 하는데 프론트랑 이야기 해봐야 할 듯
+         *
         */
-        if(chatMessage.getType().equals(Message.MessageType.ENTER)){ 
-            // 방을 나갔다가 다시 들어오는거면 (소켓닫기가 아닌)
-            // 이전에 저장된 채팅 내역들을 뿌려주기
-            Message chatLogs = chatLog.get(findRoom);
-            sendToMessage(chatLogs, roomId);
-        }
+//        if(chatMessage.getType().equals(Message.MessageType.ENTER)){
+//            // 방을 나갔다가 다시 들어오는거면 (소켓닫기)
+//            // 이전에 저장된 채팅 내역들을 뿌려주기
+//            Message chatLogs = chatLog.get(findRoom);
+//            sendToMessage(chatLogs, roomId);
+//        }
         //메세지 전송
         sendToMessage(chatMessage, roomId);
         //메시지 내역 저장
@@ -236,6 +237,12 @@ public class ChatService {
         }
     }
 
+    //id로 방을 찾고 결과로 ChatRoom 객체 반환
+    public ChatRoom findRoomById(String roomId) {
+        return chatRooms.get(roomId);
+    }
+
+    // 채팅방 기본키 생성 어떤식으로 해야할지
     private static String createRoomId(Member createMember, Member participatingMember) {
         return createMember.getEmail() +"-"+ createMember.getId() +"-"+
                 participatingMember.getEmail() +"-"+ participatingMember.getId();

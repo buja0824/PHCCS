@@ -30,12 +30,9 @@ public class ChatController {
         chatConnectDTO.setCreateMemberId(memberId);
         log.info("1. 채팅방을 생성합니다.");
         ChatRoom chatRoom = chatService.createRoom(chatConnectDTO);
-        /**
-         * TODO
-         * a 사용자가 방을 생성하였으니 같이 채팅할 b 사용자에게 이 방에 들어오라는 알림을 보내야 함
-         * SSE 방식을 이용해서 구현할 예정임
-         */
+
         String roomId = chatRoom.getRoomId();
+        // 방에 초대받은 사용자에게 알림 보내기
         sseService.inviteAlarm(chatConnectDTO.getParticipatingMemberId(), roomId);
         return chatRoom;
     }
@@ -43,6 +40,7 @@ public class ChatController {
     @GetMapping("/chat")
     public List<ChatRoom> findAllRoom(HttpServletRequest request) {
         Long memberId = exMemberId(request);
+        // 특정 사용자가 참여중인 방 보여주기
         return chatService.findAllRoom(memberId);
     }
 

@@ -36,7 +36,10 @@ public class SSEService {
 
     public void inviteAlarm(Long participantId, String chatRoomId){
         try {
-            sseEmitterMap.get(participantId).send(SseEmitter.event()
+            SseEmitter emitter = sseEmitterMap.get(participantId);
+
+            emitter
+                    .send(SseEmitter.event()
                     .name("inviteMsg")
                     .data("새로운 채팅방에 초대 되었습니다." + chatRoomId));
         } catch (IOException e) {
