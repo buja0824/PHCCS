@@ -2,6 +2,8 @@ package PHCCS.web.repository;
 
 import PHCCS.domain.Member;
 import PHCCS.web.repository.domain.MemberModifyDTO;
+import PHCCS.web.service.domain.MemberProfileDTO;
+import PHCCS.web.repository.domain.MemberModifyDTO;
 import PHCCS.web.repository.mapper.MemberMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,8 +37,35 @@ public class MybatisMemberRepository implements MemberRepository{
     }
 
     @Override
-    public Optional<Member> findMemberById(Long id){
-        Optional<Member> member = mapper.findMemberById(id);
-        return member;
+    public Optional<MemberProfileDTO> findMemberById(Long id){
+        Optional<MemberProfileDTO> memberProfile = mapper.findMemberById(id);
+        return memberProfile;
+    }
+
+    @Override
+    public int deleteMember(Long id){
+        int isSuccess = mapper.deleteMember(id);
+
+        return isSuccess;
+    }
+
+    @Override
+    public int findRoleById(Long id) {
+        return mapper.findRoleById(id);
+    }
+
+    @Override
+    public int existsByEmail(String email) {
+        return mapper.existsByEmail(email);
+    }
+
+    @Override
+    public int existsByNickname(String nickName) {
+        return mapper.existsByNickName(nickName);
+    }
+
+    @Override
+    public int existsByPhoNo(String phoNo) {
+        return mapper.existsByPhoNo(phoNo);
     }
 }

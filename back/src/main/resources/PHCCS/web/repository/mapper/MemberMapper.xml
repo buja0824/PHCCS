@@ -25,10 +25,49 @@
         where id = #{id}
     </update>
 
-    <select id="findMemberById" resultType="member">
-        select *
+    <select id="findMemberById" resultType="PHCCS.web.service.domain.MemberProfileDTO">
+        select email, pwd, name, nick_name, pho_no
         from member
         where id = #{id}
+    </select>
+
+    <delete id="deleteMember">
+        delete
+        from member
+        where id = #{id}
+    </delete>
+
+    <select id="findRoleById">
+        select role
+        from member
+        where id = #{id}
+    </select>
+
+    <select id="existsByEmail">
+        SELECT
+            CASE
+                WHEN EXISTS (SELECT 1 FROM member WHERE email = #{email})
+                THEN 1
+                ELSE 0
+            END AS is_email_duplicate;
+    </select>
+
+    <select id="existsByNickName">
+        SELECT
+            CASE
+                WHEN EXISTS (SELECT 1 FROM member WHERE nick_name = #{nickName})
+                THEN 1
+                ELSE 0
+            END AS is_nickName_duplicate;
+    </select>
+
+    <select id="existsByPhoNo">
+        SELECT
+            CASE
+                WHEN EXISTS (SELECT 1 FROM member WHERE pho_no = #{phoNo})
+                THEN 1
+                ELSE 0
+            END AS is_PhoNo_duplicate;
     </select>
 
 </mapper>
