@@ -52,6 +52,7 @@ public class BoardController {
             @PathVariable("id") Long id){
 
         log.info("showPost()");
+        Long memberId = jwtUtil.extractSubject(token);
 
         ResponseEntity<?> post = service.showPost(category, id);
         return post;
@@ -83,7 +84,7 @@ public class BoardController {
 
     @GetMapping("/show/{category}")
     public ResponseEntity<?> showAllPost(
-//            @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
+            @RequestHeader("Authorization") String token,
             @PathVariable("category") String category,
             @RequestParam(name = "page", defaultValue = "1") Long page,
             @RequestParam(name = "size", defaultValue = "15") Long size){
@@ -91,6 +92,8 @@ public class BoardController {
 //        if(!isLogin(loginMember)){
 //            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인하지 않은 사용자는 접근할 수 없습니다.");
 //        }
+
+
         if(category == null || category.isEmpty())
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("잘못된 접근 입니다.");
 
@@ -101,7 +104,7 @@ public class BoardController {
 
     @PutMapping(value = "/update/{category}/{id}", consumes = "multipart/form-data")
     public ResponseEntity<?> updatePost(
-/*            @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,*/
+            @RequestHeader("Authorization") String token,
             @PathVariable("category") String category,
             @PathVariable("id") Long postId,
             @RequestPart("updateParam") PostUpdateDTO updateParam,
@@ -111,23 +114,27 @@ public class BoardController {
         log.info("updatePost()");
         log.info("imgFiles = {}", imgFiles);
         log.info("vidFiles = {}", vidFiles);
+        Long memberId = jwtUtil.extractSubject(token);
+
 //        if(!isLogin(loginMember)){
 //            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인하지 않은 사용자는 접근할 수 없습니다.");
 //        }
-        ResponseEntity<?> responseEntity = service.updatePost(/*loginMember.getId()*/2L, category, postId, updateParam, imgFiles, vidFiles);
+        ResponseEntity<?> responseEntity = service.updatePost(memberId, category, postId, updateParam, imgFiles, vidFiles);
         return responseEntity;
     }
 
     @DeleteMapping("/delete/{category}/{id}")
     public ResponseEntity<?> deletePost(
-/*            @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,*/
+            @RequestHeader("Authorization") String token,
             @PathVariable("category") String category,
             @PathVariable("id") Long postId){
         log.info("deletePost()");
 //        if(!isLogin(loginMember)){
 //            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인하지 않은 사용자는 접근할 수 없습니다.");
 //        }
-        service.deletePost(category, /*loginMember.getId()*/2L, postId);
+        Long memberId = jwtUtil.extractSubject(token);
+
+        service.deletePost(category, memberId, postId);
         return ResponseEntity.ok().body("삭제 완료");
     }
 

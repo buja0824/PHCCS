@@ -4,6 +4,7 @@ package PHCCS.web.controller;
 import PHCCS.SessionConst;
 import PHCCS.domain.Member;
 import PHCCS.domain.Pet;
+import PHCCS.jwt.JwtUtil;
 import PHCCS.web.service.domain.PetDTO;
 import PHCCS.web.repository.domain.PetUpdateDTO;
 import PHCCS.web.service.PetService;
@@ -20,40 +21,42 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PetController {
 
+    private final JwtUtil jwtUtil;
     private final PetService service;
 
     @PostMapping("/pet/add")
     public ResponseEntity<?> petAdd(
-/*            @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) SessionMemberDTO loginMember,*/
+            @RequestHeader("Authorization") String token,
             @RequestBody PetDTO dto){
         log.info("petAdd()");
-
-        ResponseEntity<?> save = service.save(2L,dto);
+        Long memberId = jwtUtil.extractSubject(token);
+        ResponseEntity<?> save = service.save(memberId,dto);
         return save;
     }
 
     @GetMapping("/pet/showAll")
-    public ResponseEntity<?> showMyPet( ){
+    public ResponseEntity<?> showMyPet(
+            @RequestHeader("Authorization") String token){
         log.info("showMyPet()");
-//        if(!isLogin(loginMember)){
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요 합니다.");
-//        }
-        List<Pet> pets = service.findPetsByMember(/*loginMember.getId()*/ 1L);
+
+        Long memberId = jwtUtil.extractSubject(token);
+        List<Pet> pets = service.findPetsByMember(memberId);
         log.info(pets.toString());
         return ResponseEntity.ok(pets);
     }
 
     @DeleteMapping("/pet/delete")
     public ResponseEntity<?> petDelete(
+            @RequestHeader("Authorization") String token,
             @RequestBody List<String> petNames){
 
         log.info("petDelete()");
-
+        Long memberId = jwtUtil.extractSubject(token);
 //        if(!isLogin(loginMember)){
 //            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요 합니다.");
 //        }
         try{
-            service.deletePet(/*loginMember.getId()*/1L, petNames);
+            service.deletePet(memberId, petNames);
             return ResponseEntity.ok("삭제 완료");
         }catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("반려동물을 선택해주세요");
@@ -65,15 +68,17 @@ public class PetController {
 
     @PutMapping("/pet/modify/{name}")
     public ResponseEntity<?> modifyPet(
+            @RequestHeader("Authorization") String token,
             @PathVariable("name") String petName,
             @RequestBody PetUpdateDTO modifyParam){
 
         log.info("modifyPet()");
+        Long memberId = jwtUtil.extractSubject(token);
 //        if(!isLogin(loginMember)) {
 //            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요 합니다.");
 //        }
 
-        service.updatePet(/*loginMember.getId()*/1L, petName, modifyParam);
+        service.updatePet(memberId, petName, modifyParam);
 
         return ResponseEntity.ok("수정 완료");
     }
