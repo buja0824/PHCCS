@@ -50,6 +50,9 @@ public class JwtUtil {
         return Long.parseLong(extractAllClaims(token).getSubject());
     }
 
+    private static String actual(String token) {
+        return token.replace("Bearer", "");
+    }
     public Date extractExpiration(String token) {
         return extractAllClaims(token).getExpiration();
     }

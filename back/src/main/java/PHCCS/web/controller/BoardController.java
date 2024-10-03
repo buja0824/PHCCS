@@ -2,6 +2,7 @@ package PHCCS.web.controller;
 
 import PHCCS.domain.Member;
 import PHCCS.domain.Post;
+import PHCCS.jwt.JwtUtil;
 import PHCCS.web.repository.domain.PostUpdateDTO;
 import PHCCS.web.service.PostService;
 import PHCCS.web.service.domain.FileDTO;
@@ -11,9 +12,7 @@ import PHCCS.web.service.domain.PostDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,10 +26,11 @@ import java.util.List;
 @RequestMapping("/board")
 public class BoardController {
 
+    private final JwtUtil jwtUtil;
     private final PostService service;
     @PostMapping(value = "/post", consumes = "multipart/form-data")
     public ResponseEntity<?> createPost(
-//            @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
+            @RequestHeader("Authorization") String token,
             @RequestPart("dto") PostDTO dto,
             @RequestPart(value = "imageFiles", required = false) List<MultipartFile> imageFiles,
             @RequestPart(value = "videoFiles", required = false) List<MultipartFile> videoFiles)  throws IOException {
@@ -38,20 +38,21 @@ public class BoardController {
 //        if(!isLogin(loginMember)){
 //            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인하지 않은 사용자는 접근할 수 없습니다.");
 //        }
+        Long memberId = jwtUtil.extractSubject(token);
 
-        ResponseEntity<?> save = service.save(/*loginMember.getId()*/2L, dto, imageFiles, videoFiles);
+        ResponseEntity<?> save = service.save(memberId, dto, imageFiles, videoFiles);
         return save;
     }
 
+
     @GetMapping("/show/{category}/{id}")
     public ResponseEntity<?> showPost(
-//            @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
+            @RequestHeader("Authorization") String token,
             @PathVariable("category") String category,
             @PathVariable("id") Long id){
-//        if(!isLogin(loginMember)){
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인하지 않은 사용자는 접근할 수 없습니다.");
-//        }
+
         log.info("showPost()");
+
         ResponseEntity<?> post = service.showPost(category, id);
         return post;
     }

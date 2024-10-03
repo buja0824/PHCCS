@@ -5,17 +5,13 @@ import PHCCS.jwt.JwtUtil;
 import PHCCS.web.repository.MemberRepository;
 import PHCCS.web.repository.domain.MemberModifyDTO;
 import PHCCS.web.service.domain.MemberDTO;
-import PHCCS.web.service.domain.SessionMemberDTO;
 import PHCCS.web.service.domain.DuplicateCheckDto;
 import PHCCS.web.service.domain.MemberProfileDTO;
-import PHCCS.web.repository.domain.MemberModifyDTO;
-import PHCCS.web.service.domain.MemberDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 
-import java.time.Instant;
 import java.time.LocalDate;
 import java.util.*;
 
