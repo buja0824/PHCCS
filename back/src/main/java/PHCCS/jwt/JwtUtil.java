@@ -46,8 +46,8 @@ public class JwtUtil {
     }
 
     // token에서 memberId를 추출할때 사용
-    public String extractSubject(String token){
-        return extractAllClaims(token).getSubject();
+    public Long extractSubject(String token){
+        return Long.parseLong(extractAllClaims(token).getSubject());
     }
 
     public Date extractExpiration(String token) {
