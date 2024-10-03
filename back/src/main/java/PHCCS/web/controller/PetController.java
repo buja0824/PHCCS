@@ -25,11 +25,11 @@ public class PetController {
 
     @PostMapping("/pet/add")
     public ResponseEntity<?> petAdd(
-            @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) SessionMemberDTO loginMember,
+/*            @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) SessionMemberDTO loginMember,*/
             @RequestBody PetDTO dto){
         log.info("petAdd()");
 
-        ResponseEntity<?> save = service.save(loginMember.getId(),dto);
+        ResponseEntity<?> save = service.save(2L,dto);
         return save;
     }
 

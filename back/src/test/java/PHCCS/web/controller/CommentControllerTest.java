@@ -3,6 +3,7 @@ package PHCCS.web.controller;
 import PHCCS.domain.Comment;
 import PHCCS.web.repository.domain.CommentDTO;
 import PHCCS.web.service.CommentService;
+import PHCCS.web.service.SSEService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import java.util.List;
 class CommentControllerTest {
 
     @Autowired private CommentService service;
+    @Autowired private SSEService sseService;
 
     @Test
     void addCommentTest(){
@@ -26,6 +28,7 @@ class CommentControllerTest {
         comment.setWriteTime(LocalDateTime.now());
         comment.setLikeCnt(0L);
         service.save("qna_board", 3L, comment);
+        sseService.addCommentAlarm("qna_board", 3L, comment);
     }
 
     @Test

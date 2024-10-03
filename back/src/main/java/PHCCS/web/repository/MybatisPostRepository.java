@@ -30,11 +30,10 @@ public class MybatisPostRepository implements PostRepository{
     }
 
     @Override
-    public List<Post> showAllPost(String category) {
+    public List<Post> showAllPost(String category, Long offset, Long size) {
         log.info("|se|re|showAllPost()");
-        log.info("category = {}", category);
 
-        List<Post> posts = mapper.showAllPost(category);
+        List<Post> posts = mapper.showAllPost(category, offset, size);
         log.info("repo = {}",posts.toString());
         return posts;
     }
@@ -60,6 +59,11 @@ public class MybatisPostRepository implements PostRepository{
     @Override
     public void incrementViewCount(String category, Long postId) {
         mapper.incrementViewCount(category, postId);
+    }
+
+    @Override
+    public Long findAuthorId(String category, Long postId) {
+        return mapper.findAuthorId(category, postId);
     }
 
 }

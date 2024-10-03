@@ -1,6 +1,7 @@
 package PHCCS.web.controller;
 
 import PHCCS.domain.Member;
+import PHCCS.domain.Post;
 import PHCCS.web.repository.domain.PostUpdateDTO;
 import PHCCS.web.service.PostService;
 import PHCCS.web.service.domain.FileDTO;
@@ -10,6 +11,7 @@ import PHCCS.web.service.domain.PostDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -81,14 +83,19 @@ public class BoardController {
     @GetMapping("/show/{category}")
     public ResponseEntity<?> showAllPost(
 //            @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
-            @PathVariable("category") String category){
-        log.info("showAllPost()");
-        log.info("category = {}", category);
+            @PathVariable("category") String category,
+            @RequestParam(name = "page", defaultValue = "1") Long page,
+            @RequestParam(name = "size", defaultValue = "15") Long size){
+        log.info("showAllPost() Category: {}, Page: {}, Size: {}", category, page, size);
 //        if(!isLogin(loginMember)){
 //            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인하지 않은 사용자는 접근할 수 없습니다.");
 //        }
-        ResponseEntity<?> posts = service.showAllPost(category);
-        return posts;
+        if(category == null || category.isEmpty())
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("잘못된 접근 입니다.");
+
+        List<Post> posts = service.showAllPost(category, page, size);
+        if(posts == null) return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("게시글을 불러오지 못하였습니다.");
+        return ResponseEntity.ok(posts);
     }
 
     @PutMapping(value = "/update/{category}/{id}", consumes = "multipart/form-data")

@@ -1,6 +1,9 @@
 package PHCCS.web.repository;
 
 
+import PHCCS.domain.ChatRoom;
+
 public interface ChatRepository {
-    void save(Long roomId, Long memberId, String chat);
+    void saveChatRoom(ChatRoom chatRoom);
+    void deleteRoom(String roomId);
 }

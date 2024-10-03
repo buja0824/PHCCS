@@ -108,23 +108,21 @@ public class PostService {
         }
     }
 
-    public ResponseEntity<?> showAllPost(String category){
+    public List<Post> showAllPost(String category, Long page, Long size){
         log.info("|se|showAllPost()");
-        log.info("category = {}", category);
-        if(category == null || category.isEmpty())
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("잘못된 접근입니다.");
+        Long offset = (page - 1) * size; // 사이즈의 배수로 페이지 단위를 끊어서 읽어오게 하기 위함
 
         try {
-            List<Post> posts = repository.showAllPost(category);
+            List<Post> posts = repository.showAllPost(category, offset, size);
             log.info("posts = {}", posts.toString());
             if(posts != null && !posts.isEmpty()){
-                return ResponseEntity.ok().body(posts);
+                return posts;
             }
         } catch (Exception e) {
             log.error("Exception occurred: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("게시글을 불러오지 못하였습니다.");
+            return null;
         }
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("게시글이 존재하지 않습니다..");
+        return null;
     }
 
     /**
