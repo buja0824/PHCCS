@@ -15,9 +15,11 @@ public interface MemberMapper {
 
     Optional<Member> findMemberByEmail(String email);
 
+    Optional<Member> findMemberById(@Param("id") Long id);
+
     int modifyMember(@Param("id") Long id, @Param("memberModifyDto") MemberModifyDTO memberModifyDto);
 
-    Optional<MemberProfileDTO> findMemberById(@Param("id") Long id);
+    Optional<MemberProfileDTO> findMemberProfileById(@Param("id") Long id);
 
     int deleteMember(@Param("id") Long id);
 
