@@ -3,6 +3,7 @@ package PHCCS.domain;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 /**
  * 아직 멤버에 관한 코드를 작성하지 않아서

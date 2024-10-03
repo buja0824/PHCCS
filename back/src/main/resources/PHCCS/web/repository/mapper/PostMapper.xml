@@ -69,6 +69,8 @@
                 vet_board
             </when>
         </choose>
+        order by id desc
+        limit #{size} offset ${offset}
     </select>
 
     <update id="updatePost">

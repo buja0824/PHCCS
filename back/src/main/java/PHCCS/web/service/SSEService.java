@@ -1,6 +1,8 @@
 package PHCCS.web.service;
 
+import PHCCS.domain.ChatRoom;
 import PHCCS.domain.Comment;
+import PHCCS.domain.Pet;
 import PHCCS.web.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

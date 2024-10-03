@@ -68,7 +68,7 @@ public class ChatService {
         List<ChatRoom> memberJoinRooms = new ArrayList<>();
         while(iterator.hasNext()){
             ChatRoom next = iterator.next();
-            if(next.getCreateMemberId() == memberId || next.getParticipatingMemberId() == memberId){
+            if(next.getCreateMemberId().equals(memberId) || next.getParticipatingMemberId().equals(memberId)){
                 memberJoinRooms.add(chatRooms.get(next.getRoomId()));
             }
         }
@@ -91,7 +91,11 @@ public class ChatService {
                 .participatingMemberId(participatingMember.getId())
                 .build();
 
+        // 메모리에 방을 저장해서 빠른 접근이 가능하게 하기 위함
         chatRooms.put(roomId, chatRoom); //방 생성 후 방 목록에 추가
+        // 데이터베이스에 저장하여 방 생성 내역을 저장
+        chatRepository.saveChatRoom(chatRoom);
+
         log.info("##웹 소켓으로 통신 업그레이드 시키면 됨##");
         return chatRoom;
     }
@@ -225,6 +229,7 @@ public class ChatService {
                     if(bindSenderAndRoom.getRoomId().equals(roomId) && bindSenderAndRoom.getEntryId().equals(entryId)){
                         sessions.remove(bindSenderAndRoom);
                         chatRooms.remove(roomId);
+                        chatRepository.deleteRoom(roomId);
                     }
                 }
                 break;
