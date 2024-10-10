@@ -1,9 +1,9 @@
 package PHCCS.web.controller;
 
-import PHCCS.domain.Comment;
-import PHCCS.web.repository.domain.CommentDTO;
-import PHCCS.web.service.CommentService;
-import PHCCS.web.service.SSEService;
+import PHCCS.service.comment.Comment;
+import PHCCS.service.comment.dto.CommentDTO;
+import PHCCS.service.comment.CommentService;
+import PHCCS.common.sse.SSEService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

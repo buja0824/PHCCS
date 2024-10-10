@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="PHCCS.web.repository.mapper.PostMapper">
+<mapper namespace="PHCCS.service.post.repository.mapper.PostMapper">
     <insert id="save" keyProperty="post.id" useGeneratedKeys="true">
         insert into
         <choose>

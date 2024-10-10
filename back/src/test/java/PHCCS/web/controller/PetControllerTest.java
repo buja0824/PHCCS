@@ -1,9 +1,9 @@
 package PHCCS.web.controller;
 
-import PHCCS.domain.Pet;
-import PHCCS.web.service.domain.PetDTO;
-import PHCCS.web.repository.domain.PetUpdateDTO;
-import PHCCS.web.service.PetService;
+import PHCCS.service.pet.Pet;
+import PHCCS.service.pet.dto.PetDTO;
+import PHCCS.service.pet.dto.PetUpdateDTO;
+import PHCCS.service.pet.PetService;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;

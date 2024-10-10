@@ -1,6 +1,6 @@
 package PHCCS.web.repository.mapper;
 
-import PHCCS.domain.RefreshToken;
+import PHCCS.service.member.token.RefreshToken;
 import org.apache.ibatis.annotations.Param;
 
 public interface TokenMapper {
