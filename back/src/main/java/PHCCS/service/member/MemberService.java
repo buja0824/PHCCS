@@ -63,7 +63,6 @@ public class MemberService {
     */
     // JWT 기반 로그인
     public Map<String, String> login(MemberDTO memberDto){
-
         Optional<Member> optionalMember = findMemberByEmail(memberDto.getEmail());
 
         if(!optionalMember.isPresent()) {
