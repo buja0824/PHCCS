@@ -44,25 +44,26 @@ public class MemberService {
     }
 
     /** // 세션기반 로그인
-// service 계층에서 ResponseBody 반환하는것을 최대한 제한하고자 함
-    public Optional<SessionMemberDTO> login(Member member, MemberDTO memberDto) {
+     // service 계층에서 ResponseBody 반환하는것을 최대한 제한하고자 함
+     public Optional<SessionMemberDTO> login(Member member, MemberDTO memberDto) {
 
-            SessionMemberDTO sessionMember = new SessionMemberDTO();
+     SessionMemberDTO sessionMember = new SessionMemberDTO();
 
-            //비밀번호 확인
-        if (member.getPwd().equals(memberDto.getPwd())) {
-            // 맞다면 sessionMember 필드값 설정
-            sessionMember.setId(member.getId());
-            sessionMember.setEmail(member.getEmail());
-            sessionMember.setPwd(member.getPwd());
-            sessionMember.setRole(member.getRole());
-            return Optional.of(sessionMember);
-        }
-        return Optional.empty();
-    }
-    */
+     //비밀번호 확인
+     if (member.getPwd().equals(memberDto.getPwd())) {
+     // 맞다면 sessionMember 필드값 설정
+     sessionMember.setId(member.getId());
+     sessionMember.setEmail(member.getEmail());
+     sessionMember.setPwd(member.getPwd());
+     sessionMember.setRole(member.getRole());
+     return Optional.of(sessionMember);
+     }
+     return Optional.empty();
+     }
+     */
     // JWT 기반 로그인
     public Map<String, String> login(MemberDTO memberDto){
+
         Optional<Member> optionalMember = findMemberByEmail(memberDto.getEmail());
 
         if(!optionalMember.isPresent()) {
@@ -122,4 +123,5 @@ public class MemberService {
         return new DuplicateCheckDto(emailDuplicate, nicknameDuplicate, phoNoDuplicate);
     }
 }
+
 

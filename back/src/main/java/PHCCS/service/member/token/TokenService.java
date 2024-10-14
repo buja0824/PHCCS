@@ -2,6 +2,8 @@ package PHCCS.service.member.token;
 
 
 import PHCCS.common.jwt.JwtUtil;
+import PHCCS.common.jwt.TokenStatus;
+import PHCCS.common.jwt.TokenValidationException;
 import PHCCS.service.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,46 +24,36 @@ public class TokenService {
     private final TokenRepository tokenRepository;
     private final MemberRepository memberRepository;
 
-    public void storeRefreshToken(String refreshToken) {
-        tokenRepository.saveRefreshToken(refreshToken);
+    public void storeRefreshToken(String tokenId, String refreshToken) {
+        tokenRepository.saveRefreshToken(tokenId, refreshToken);
     }
 
-    public boolean removeRefreshToken(String refreshToken){
-        return tokenRepository.removeRefreshToken(refreshToken);
+    public boolean removeRefreshToken(String tokenId, String refreshToken) {
+        return tokenRepository.removeRefreshToken(tokenId, refreshToken);
     }
 
     public Map<String, String> refreshAccessToken(String refreshToken) {
-        String storedRefreshToken = tokenRepository.getRefreshTokenByToken(refreshToken);
-        // [LOG] 저장된 refreshToken
-        log.info("storedTokens: {}", storedRefreshToken);
-        // 받은 토큰과 일치하는 토큰이 없을때
-        if(storedRefreshToken == null){
-            return null;
-        }
-        // 저장된 토큰 만료 확인
-        boolean isSuccess = jwtUtil.isTokenExpired(refreshToken);
 
-        if(isSuccess){
-            // 만료된 토큰을 삭제
-            removeRefreshToken(refreshToken);
-            return null;
+        // JwtUtil을 사용하여 리프레시 토큰 검증
+        TokenStatus status = jwtUtil.validateRefreshToken(refreshToken);
+
+        // 검증 결과가 VALID가 아닌 경우, 예외 발생
+        if (status != TokenStatus.VALID) {
+            log.info("토큰 서비스 리프레시어세스토큰체크");
+            throw new TokenValidationException("리프레시 토큰이 유효하지 않습니다.", status);
         }
 
+        // 유효한 리프레시 토큰일 경우 새로운 액세스 토큰 생성
+        Long userId = jwtUtil.extractSubject(refreshToken);
+        int role = memberRepository.findRoleById(userId);
+        String newAccessToken = jwtUtil.createAccessToken(userId, role);
+
+        // 액세스 토큰과 리프레시 토큰을 Map에 저장하여 반환
         Map<String, String> tokens = new HashMap<>();
-
-        Long id = jwtUtil.extractSubject(storedRefreshToken);
-        String newAccessToken = jwtUtil.createAccessToken(id, memberRepository.findRoleById(id));
-        log.info("새로운 accessToken: {}", newAccessToken);
-        log.info("새로운 accessToken 만료시간: {}", jwtUtil.extractExpiration(newAccessToken));
         tokens.put("accessToken", newAccessToken);
-
-
         tokens.put("refreshToken", refreshToken);
 
-        // [LOG] 새로 생성된 accessToken, refreshToken
-        log.info("new tokens: {}", tokens);
-
+        log.info("새로 발급된 AccessToken: {}", newAccessToken);
         return tokens;
     }
-
 }
