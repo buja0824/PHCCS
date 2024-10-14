@@ -35,10 +35,7 @@ public class ChatController {
     }
 
     @GetMapping("/chat")
-    public List<ChatRoom> findAllRoom(
-            @RequestHeader("Authorization") String token
-    ) {
-
+    public List<ChatRoom> findAllRoom(@RequestHeader("Authorization") String token) {
         Long loginMember = jwtUtil.extractSubject(token);
         // 특정 사용자가 참여중인 방 보여주기
         return chatService.findAllRoom(loginMember);

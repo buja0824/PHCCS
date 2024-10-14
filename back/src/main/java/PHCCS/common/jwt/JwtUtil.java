@@ -1,11 +1,12 @@
 package PHCCS.common.jwt;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import PHCCS.web.repository.TokenRepository;
+import PHCCS.web.service.TokenService;
+import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -15,7 +16,7 @@ import java.util.*;
 @Component
 public class JwtUtil {
 
-    @Autowired
+    private final TokenRepository tokenRepository;
     private final JwtProperties jwtProperties;
 
 
@@ -32,14 +33,49 @@ public class JwtUtil {
         return createToken(claims, id.toString(), jwtProperties.getRefreshTokenExpiration());
     }
 
-    public Boolean validateToken(String token){
-        try{
-            extractAllClaims(token);
-            return true;
-        } catch (Exception e){
-            return false;
+    public TokenStatus validateAccessToken(String token){
+        try {
+            extractAllClaims(token); // JWT 파싱 및 유효성 검사
+            return TokenStatus.VALID; // 유효한 토큰일 경우
+        } catch (ExpiredJwtException e) {
+            log.info("토큰이 만료되었습니다: {}", e.getMessage());
+            return TokenStatus.EXPIRED; // 만료된 토큰
+        } catch (SignatureException e) {
+            log.info("서명이 잘못된 토큰입니다: {}", e.getMessage());
+            return TokenStatus.INVALID_SIGNATURE; // 서명이 잘못된 토큰
+        } catch (MalformedJwtException e) {
+            log.info("잘못된 형식의 토큰입니다: {}", e.getMessage());
+            return TokenStatus.MALFORMED; // 형식이 잘못된 토큰
+        } catch (Exception e) {
+            log.info("알 수 없는 오류로 인해 토큰 검증에 실패했습니다: {}", e.getMessage());
+            return TokenStatus.UNKNOWN_ERROR; // 기타 모든 예외에 대한 처리
         }
     }
+
+    public TokenStatus validateRefreshToken(String token){
+        try {
+            // 토큰의 기본 유효성 검증 (서명 확인)
+           extractAllClaims(token);
+
+            // 서버에 저장된 리프레시 토큰과 일치하는지 확인
+            String storedRefreshToken = tokenRepository.getRefreshTokenByToken(extractId(token), token);
+            log.info("storedRefreshToken: {}", storedRefreshToken);
+            if (storedRefreshToken == null || !storedRefreshToken.equals(actual(token))) {
+                return TokenStatus.INVALID;
+            }
+
+            return TokenStatus.VALID;
+        } catch (ExpiredJwtException e) {
+            return TokenStatus.EXPIRED;
+        } catch (SignatureException e) {
+            return TokenStatus.INVALID_SIGNATURE;
+        } catch (MalformedJwtException e) {
+            return TokenStatus.MALFORMED;
+        } catch (Exception e) {
+            return TokenStatus.UNKNOWN_ERROR;
+        }
+    }
+
 
     public Integer extractRole(String token){
         return (Integer) extractAllClaims(token).get("role");
@@ -47,12 +83,16 @@ public class JwtUtil {
 
     // token에서 memberId를 추출할때 사용
     public Long extractSubject(String token){
-        return Long.parseLong(extractAllClaims(actual(token)).getSubject());
+        return Long.parseLong(extractAllClaims(token).getSubject());
     }
 
-    private static String actual(String token) {
-        return token.replace("Bearer ", "");
+    public static String actual(String token) {
+        if (token != null && token.startsWith("Bearer ")) {
+            return token.substring(7); // 'Bearer ' 이후의 순수한 JWT 반환
+        }
+        return token;
     }
+
     public Date extractExpiration(String token) {
         return extractAllClaims(token).getExpiration();
     }
@@ -67,7 +107,11 @@ public class JwtUtil {
 
     // token에서 id를 추출할때 사용(id는 토큰 고유의 식별 id를 의미, memberId X)
     public String extractId(String token){
-        return extractAllClaims(token).getId();
+        log.info("extractId에서 토큰값: {}", token);
+        Claims claims = extractAllClaims(token);
+        String jti = claims.getId();
+        log.info("추출된 jti: {}", jti);
+        return jti;
     }
 
     private byte[] getSigningKey(String secret) {
@@ -80,9 +124,11 @@ public class JwtUtil {
         long currentTimeMillis = System.currentTimeMillis();
         log.info("토큰 생성 시간: {}", new Date(currentTimeMillis));
         log.info("토큰 만료 시간: {}", new Date(currentTimeMillis + expirationTime));
+        String jti = UUID.randomUUID().toString();
+        log.info("생성된 UUID: {}", jti);
         return Jwts.builder()
-                .setId(UUID.randomUUID().toString())
                 .setClaims(claims)
+                .setId(jti)
                 .setSubject(subject)
                 .setIssuer(jwtProperties.getIssuer())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
@@ -92,10 +138,15 @@ public class JwtUtil {
     }
 
     private Claims extractAllClaims(String token) {
+        log.info("extractallclaims 에서 받은 토큰:{}", token);
+        log.info("extractallclaims에서 받은 추출을 위한 리프레시 토큰:{}", actual(token));
+        String actualToken = actual(token);
+        log.info("actualToken: {}", actualToken);
+        log.info("signkey: {}", getSigningKey(jwtProperties.getSecretKey()));
         return Jwts.parserBuilder()
                 .setSigningKey(getSigningKey(jwtProperties.getSecretKey()))
                 .build()
-                .parseClaimsJws(token)
+                .parseClaimsJws(actualToken)
                 .getBody();
     }
 
