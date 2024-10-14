@@ -1,7 +1,7 @@
 package PHCCS.web.controller;
 
-import PHCCS.web.service.PostService;
-import PHCCS.web.service.domain.PostDTO;
+import PHCCS.service.post.PostService;
+import PHCCS.service.post.PostDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

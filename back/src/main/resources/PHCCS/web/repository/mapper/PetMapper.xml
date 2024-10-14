@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="PHCCS.web.repository.mapper.PetMapper">
+<mapper namespace="PHCCS.service.pet.repository.mapper.PetMapper">
 
     <insert id="save">
         insert into member_pet(member_id, name, breed, age, gender, reg_no)

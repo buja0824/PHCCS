@@ -9,7 +9,7 @@
             values (#{id}, #{subject}, #{issuer}, #{claims}, #{issuedAt}, #{expiration}, #{createdAt})
     </insert>
     
-    <select id="getRefreshTokenById" resultType="PHCCS.domain.RefreshToken">
+    <select id="getRefreshTokenById" resultType="PHCCS.service.member.token.RefreshToken">
         select * from refresh_tokens where id = #{id}
     </select>
 

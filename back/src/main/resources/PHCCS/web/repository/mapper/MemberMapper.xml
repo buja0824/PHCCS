@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="PHCCS.web.repository.mapper.MemberMapper">
+<mapper namespace="PHCCS.service.member.repository.mapper.MemberMapper">
 
     <insert id="save" useGeneratedKeys="true" keyProperty="id">
         insert into member(email, pwd, name, nick_name, pho_no, created, role)
@@ -25,7 +25,7 @@
         where id = #{id}
     </update>
 
-    <select id="findMemberProfileById" resultType="PHCCS.web.service.domain.MemberProfileDTO">
+    <select id="findMemberProfileById" resultType="PHCCS.service.member.dto.MemberProfileDTO">
         select email, pwd, name, nick_name, pho_no
         from member
         where id = #{id}
