@@ -6,6 +6,9 @@ import PHCCS.service.member.dto.MemberDTO;
 import PHCCS.service.member.dto.MemberModifyDTO;
 import PHCCS.service.member.dto.MemberProfileDTO;
 import PHCCS.service.member.token.TokenService;
+import PHCCS.common.jwt.TokenStatus;
+import PHCCS.common.jwt.TokenValidationException;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -56,22 +59,19 @@ public class MemberController {
 
     @PostMapping("/auth/logout")
     public ResponseEntity<?> logout(@RequestHeader("Authorization") String token) {
-        String actualToken = token.replace("Bearer ", "");
 
-        boolean isSuccess = service.logout(actualToken);
+        boolean isSuccess = service.logout(token);
 
         if(isSuccess) {
             return ResponseEntity.ok("로그아웃 되었습니다.");
-        }else {return ResponseEntity.badRequest().body("잘못된 접근.");}
+        }else {return ResponseEntity.badRequest().body("로그아웃 실패(refreshToken 삭제 실패)");}
     }
 
     @PatchMapping("/member/update")
     public ResponseEntity<?> update(@RequestHeader("Authorization") String token
-    , @RequestBody MemberModifyDTO ModifyDto){
+            , @RequestBody MemberModifyDTO ModifyDto){
 
-        String actualToken = token.replace("Bearer ", "");
-
-        int isSuccess = service.modifyMember(jwtUtil.extractSubject(actualToken), ModifyDto);
+        int isSuccess = service.modifyMember(jwtUtil.extractSubject(token), ModifyDto);
 
         if(isSuccess == 1){
             return ResponseEntity.ok("수정 되었습니다.");
@@ -80,8 +80,7 @@ public class MemberController {
 
     @GetMapping("/auth/me")
     public ResponseEntity<?> getMyProfile(@RequestHeader("Authorization") String token){
-        String actualToken = token.replace("Bearer ", "");
-        Optional<MemberProfileDTO> memberProfile = service.findMyProfileById(Long.valueOf(jwtUtil.extractSubject(actualToken)));
+        Optional<MemberProfileDTO> memberProfile = service.findMyProfileById(Long.valueOf(jwtUtil.extractSubject(token)));
 
         if(memberProfile.isPresent()) {
             return ResponseEntity.ok(memberProfile.get());
@@ -90,8 +89,7 @@ public class MemberController {
 
     @DeleteMapping("/member/delete")
     public ResponseEntity<?> deleteMember(@RequestHeader("Authorization") String token){
-        String actualToken = token.replace("Bearer ", "");
-        int isSuccess = service.deleteMember(jwtUtil.extractSubject(actualToken));
+        int isSuccess = service.deleteMember(jwtUtil.extractSubject(token));
 
         if(isSuccess == 1){
             return ResponseEntity.ok("회원탈퇴 되었습니다.");
@@ -99,10 +97,35 @@ public class MemberController {
     }
 
     @GetMapping("/auth/refresh")
-    public Map<String, String> refreshAccessToken(@RequestHeader("Authorization") String token){
+    public ResponseEntity<Map<String, String>> refreshAccessToken(@RequestHeader("Authorization") String token) {
         log.info("받은 RefreshToken: {}", token);
-        String actualToken = token.replace("Bearer ", "");
-        return tokenService.refreshAccessToken(actualToken);
-    }
 
+        try {
+            // 서비스 계층에서 토큰 갱신 로직 수행
+            Map<String, String> tokens = tokenService.refreshAccessToken(token);
+            return ResponseEntity.ok(tokens); // 상태 코드 200 OK와 함께 갱신된 토큰 반환
+
+        } catch (TokenValidationException e) {
+            // 토큰 검증에 실패했을 때, 예외의 상태에 따라 적절한 응답 처리
+            if (e.getStatus() == TokenStatus.EXPIRED) {
+                // 리프레시 토큰이 만료된 경우 401 상태 코드 반환
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(Map.of("error", "리프레시 토큰이 만료되었습니다. 다시 로그인하세요."));
+                // 로그인 유도해야함
+            } else if (e.getStatus() == TokenStatus.INVALID) {
+                // 유효하지 않은 리프레시 토큰인 경우 401 상태 코드 반환
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(Map.of("error", "유효하지 않은 리프레시 토큰입니다."));
+            } else {
+                // 기타 검증 실패의 경우 400 상태 코드 반환
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(Map.of("error", "잘못된 리프레시 토큰 형식입니다."));
+            }
+        } catch (Exception e) {
+            // 예기치 못한 서버 오류의 경우 500 상태 코드 반환
+            log.error("토큰 갱신 중 서버 오류 발생: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "서버 오류가 발생했습니다."));
+        }
+    }
 }

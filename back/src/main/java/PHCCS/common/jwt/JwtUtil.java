@@ -1,7 +1,7 @@
 package PHCCS.common.jwt;
 
-import PHCCS.web.repository.TokenRepository;
-import PHCCS.web.service.TokenService;
+import PHCCS.service.member.token.TokenRepository;
+import PHCCS.service.member.token.TokenService;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -55,7 +55,7 @@ public class JwtUtil {
     public TokenStatus validateRefreshToken(String token){
         try {
             // 토큰의 기본 유효성 검증 (서명 확인)
-           extractAllClaims(token);
+            extractAllClaims(token);
 
             // 서버에 저장된 리프레시 토큰과 일치하는지 확인
             String storedRefreshToken = tokenRepository.getRefreshTokenByToken(extractId(token), token);
