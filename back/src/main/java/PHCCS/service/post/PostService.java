@@ -190,6 +190,14 @@ public class PostService {
         }
     }
 
+    public List<MyPostDTO> showMyPost(Long memberId){
+        return repository.showMyPost(memberId);
+    }
+
+    public void likePost(Long memberId, String category, Long postId){
+        repository.likePost(memberId, category, postId);
+    }
+
     public Resource sendFile(String filename, FileDTO dto) throws MalformedURLException {
         String fullPath = fileStore.getFullPath(dto.getCategory(), dto.getId(), dto.getTitle(), filename);
         return new UrlResource("file:" + fullPath);

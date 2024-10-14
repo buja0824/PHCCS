@@ -1,5 +1,6 @@
 package PHCCS.service.post.repository;
 
+import PHCCS.service.post.MyPostDTO;
 import PHCCS.service.post.Post;
 import PHCCS.service.post.PostUpdateDTO;
 
@@ -15,4 +16,6 @@ public interface PostRepository {
     String findPostDir(String category, Long postId);
     void incrementViewCount(String category, Long postId);
     Long findAuthorId(String category, Long postId);
+    List<MyPostDTO> showMyPost(Long memberId);
+    void likePost(Long memberId,String category, Long postId);
 }

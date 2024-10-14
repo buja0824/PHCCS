@@ -29,16 +29,13 @@ public class BoardController {
             @RequestPart("dto") PostDTO dto,
             @RequestPart(value = "imageFiles", required = false) List<MultipartFile> imageFiles,
             @RequestPart(value = "videoFiles", required = false) List<MultipartFile> videoFiles)  throws IOException {
+
         log.info("|co|createPost()");
-//        if(!isLogin(loginMember)){
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인하지 않은 사용자는 접근할 수 없습니다.");
-//        }
         Long memberId = jwtUtil.extractSubject(token);
 
         ResponseEntity<?> save = service.save(memberId, dto, imageFiles, videoFiles);
         return save;
     }
-
 
     @GetMapping("/show/{category}/{id}")
     public ResponseEntity<?> showPost(
@@ -133,11 +130,22 @@ public class BoardController {
         return ResponseEntity.ok().body("삭제 완료");
     }
 
-    @PostMapping("like/{category}/{id}")
+    @GetMapping("/my")
+    public ResponseEntity<?> showMyPost(@RequestHeader("Authorization") String token){
+        Long memberId = jwtUtil.extractSubject(token);
+        List<MyPostDTO> posts = service.showMyPost(memberId);
+        return ResponseEntity.ok(posts);
+    }
+
+
+    @PostMapping("/like/{category}/{id}")
     public ResponseEntity<?> likePost(
+        @RequestHeader("Authorization") String token,
+        @PathVariable("category") String category,
+        @PathVariable("id") Long id){
 
-    ){
-
+        Long memberId = jwtUtil.extractSubject(token);
+        service.likePost(memberId, category, id);
 
         return null;
     }

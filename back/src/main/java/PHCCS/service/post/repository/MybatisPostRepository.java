@@ -1,5 +1,6 @@
 package PHCCS.service.post.repository;
 
+import PHCCS.service.post.MyPostDTO;
 import PHCCS.service.post.Post;
 import PHCCS.service.post.PostUpdateDTO;
 import PHCCS.service.post.repository.mapper.PostMapper;
@@ -64,6 +65,16 @@ public class MybatisPostRepository implements PostRepository {
     @Override
     public Long findAuthorId(String category, Long postId) {
         return mapper.findAuthorId(category, postId);
+    }
+
+    @Override
+    public List<MyPostDTO> showMyPost(Long memberId) {
+        return mapper.showMyPost(memberId);
+    }
+
+    @Override
+    public void likePost(Long memberId, String category, Long postId) {
+        mapper.likePost(memberId, category, postId);
     }
 
 }

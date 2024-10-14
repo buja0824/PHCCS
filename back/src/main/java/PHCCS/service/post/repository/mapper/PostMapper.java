@@ -1,5 +1,6 @@
 package PHCCS.service.post.repository.mapper;
 
+import PHCCS.service.post.MyPostDTO;
 import PHCCS.service.post.Post;
 import PHCCS.service.post.PostUpdateDTO;
 import org.apache.ibatis.annotations.Mapper;
@@ -19,4 +20,6 @@ public interface PostMapper {
     String findPostDir(@Param("category") String category, @Param("id") Long postId);
     void incrementViewCount(@Param("category") String category, @Param("id") Long postId);
     Long findAuthorId(@Param("category") String category, @Param("id") Long postId);
+    List<MyPostDTO> showMyPost(Long memberId);
+    void likePost(@Param("memberId") Long memberId, @Param("category") String category, @Param("id") Long postId);
 }
