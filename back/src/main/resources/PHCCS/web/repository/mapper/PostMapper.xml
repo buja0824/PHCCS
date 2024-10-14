@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="PHCCS.service.post.repository.mapper.PostMapper">
+    <insert id="save" keyProperty="post.id" useGeneratedKeys="true">
+        insert into
+        <choose>
+            <when test="category == 'qna_board'">
+                qna_board
+            </when>
+            <when test="category == 'vet_board'">
+                vet_board
+            </when>
+            <when test="category == 'community_board'">
+                community_board
+            </when>
+        </choose>
+        (member_id, author, title, content, create_date,update_date, file_dir, view_cnt)
+        values (#{post.memberId}, #{post.author}, #{post.title}, #{post.content}, #{post.writeTime},#{post.updateTime}, #{post.fileDir}, 0)
+    </insert>
+
+    <select id="findAuthorId" resultType="Long">
+        select member_id
+        from
+        <choose>
+            <when test= "category == 'qna_board'">
+                qna_board
+            </when>
+            <when test= "category == 'community_board'">
+                community_board
+            </when>
+            <when test= "category == 'vet_board'">
+                vet_board
+            </when>
+        </choose>
+        where id = #{id}
+    </select>
+    
+    <select id="showPost" resultType="Post">
+        select id, member_id, author, title, content, view_cnt, create_date as writeTime, update_date, file_dir
+        from
+        <choose>
+            <when test= "category == 'qna_board'">
+                qna_board
+            </when>
+            <when test= "category == 'community_board'">
+                community_board
+            </when>
+            <when test= "category == 'vet_board'">
+                vet_board
+            </when>
+        </choose>
+        where id = #{id}
+    </select>
+
+    <select id="showAllPost" resultType="Post">
+        select id, member_id, author, title, view_cnt, create_date as writeTime
+        from
+        <choose>
+            <when test= "category == 'qna_board'">
+                qna_board
+            </when>
+            <when test= "category == 'community_board'">
+                community_board
+            </when>
+            <when test= "category == 'vet_board'">
+                vet_board
+            </when>
+        </choose>
+        order by id desc
+        limit #{size} offset ${offset}
+    </select>
+
+    <update id="updatePost">
+        update
+        <choose>
+            <when test="dto.category == 'qna_board'">
+                qna_board
+            </when>
+            <when test="dto.category == 'vet_board'">
+                vet_board
+            </when>
+            <when test="dto.category == 'community_board'">
+                community_board
+            </when>
+        </choose>
+        set title = #{param.title},
+            content = #{param.content},
+            update_date = #{param.modifyTime},
+            file_dir = #{dir}
+        where member_id = #{memberId} and id = #{postId}
+    </update>
+
+    <delete id="deletePost">
+        delete from
+        <choose>
+            <when test= "category == 'qna_board'">
+                qna_board
+            </when>
+            <when test= "category == 'community_board'">
+                community_board
+            </when>
+            <when test= "category == 'vet_board'">
+                vet_board
+            </when>
+        </choose>
+        where member_id = #{memberId} and id = #{postId}
+    </delete>
+
+    <select id="showMyPost" resultType="MyPostDTO">
+        select * from(
+            SELECT q.id AS id, q.title AS title, q.create_date, 'qna_board' AS category
+            FROM qna_board q
+            WHERE member_id = #{memberId}
+            UNION ALL
+            SELECT c.id AS id, c.title AS title, c.create_date, 'community_board' AS category
+            FROM community_board c
+            WHERE member_id = #{memberId}
+            UNION ALL
+            SELECT v.id AS id, v.title AS title, v.create_date, 'vet_board' AS category
+            FROM vet_board v
+            WHERE member_id = #{memberId}
+        ) as result
+        order by create_date desc
+    </select>
+
+    <insert id="likePost">
+
+    </insert>
+
+    <select id="findPostDir" resultType="String">
+        select file_dir
+        from
+        <choose>
+            <when test="category == 'qna_board'">
+                qna_board
+            </when>
+            <when test="category == 'vet_board'">
+                vet_board
+            </when>
+            <when test="category == 'community_board'">
+                community_board
+            </when>
+        </choose>
+        where id = #{id}
+    </select>
+    
+    <update id="incrementViewCount">
+        update
+        <choose>
+            <when test="category eq 'qna_board'">
+                qna_board
+            </when>
+            <when test="category eq 'vet_board'">
+                vet_board
+            </when>
+            <when test="category eq 'community_board'">
+                community_board
+            </when>
+        </choose>
+        set view_cnt = view_cnt + 1
+        where id = #{id}
+    </update>
+</mapper>
+
