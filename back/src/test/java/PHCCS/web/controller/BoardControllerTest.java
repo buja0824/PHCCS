@@ -22,7 +22,7 @@ class BoardControllerTest {
     void addPostTest() throws IOException {
         PostDTO postDto = new PostDTO();
         postDto.setAuthor("작성자");
-        postDto.setCategory("qna_board");
+        postDto.setCategory("vet_board");
         postDto.setContent("테스트코드에서 작성");
         postDto.setTitle("테스트코드에서 작성한 제목");
         postDto.setWriteTime(LocalDateTime.now());
@@ -31,7 +31,7 @@ class BoardControllerTest {
 
     @Test
     void showPostTest(){
-        ResponseEntity<?> responseEntity = service.showPost("qna_board", 6L);
+        ResponseEntity<?> responseEntity = service.showPost("vet_board", 2L);
         log.info(responseEntity.toString());
     }
 }

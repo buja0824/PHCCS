@@ -34,7 +34,6 @@ public class SSEController {
             log.error(e.getMessage(), e);
             throw new RuntimeException(e);
         }
-        log.info("이거 나옴?");
         return ResponseEntity.ok().body(emitter);
     }
 //

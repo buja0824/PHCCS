@@ -1,5 +1,6 @@
 package PHCCS.service.chatroom;
 
+import PHCCS.common.jwt.JwtUtil;
 import PHCCS.service.chatroom.dto.ChatConnectDTO;
 import PHCCS.service.member.Member;
 import PHCCS.service.Message.Message;
@@ -42,7 +43,7 @@ public class ChatService {
         }
     }
 
-    private static final String SECRET_KEY = "OapJ2D0zLQs4S1FdY5TgRhYKJffpMq7RaNmbN4XURRs";
+//    private static final String SECRET_KEY = "OapJ2D0zLQs4S1FdY5TgRhYKJffpMq7RaNmbN4XURRs";
     private final MemberRepository memberRepository;
     private final ObjectMapper objectMapper;
     // key : roomId - value : ChatRoom
@@ -54,6 +55,7 @@ public class ChatService {
      */
     private Map<ChatRoom, Message> chatLog;
     private final ChatRepository chatRepository;
+    private final JwtUtil jwtUtil;
 
     @PostConstruct //모든 Bean 의존성 주입이 완료되고 실행되어야 하는 메서드에 사용
     private void init() { // 마지막에 초기화가 진행되어진다
@@ -259,32 +261,34 @@ public class ChatService {
         return queryMap;
     }
 
-    private static Long getEntryId(WebSocketSession session) {
-        String token = getAuthToken(session);
-        Long entryId = extractUserIdFromToken(token);
+    private Long getEntryId(WebSocketSession session) {
+        Long entryId = getAuthToken(session);
         return entryId;
     }
 
-    private static String getAuthToken(WebSocketSession session) {
+    private Long getAuthToken(WebSocketSession session) {
         HttpHeaders handshakeHeaders = session.getHandshakeHeaders();
         List<String> auth = handshakeHeaders.get("authorization");
-        String token = auth.get(0).substring(7);
-        log.info("token = {}" ,token);
-        return token;
+        log.info("auth : {}", auth);
+        Long entryId = jwtUtil.extractSubject(auth.get(0));
+
+//        String token = auth.get(0).substring(7);
+        log.info("entryId = {}" ,entryId);
+        return entryId;
     }
 
     /**
      * 멤버의 토큰을 가져오는 기능이 아직 머지 안되어서 임시용 으로 만든 메서드
      * */
-    private static Long extractUserIdFromToken(String token) {
-        // 토큰에서 Claims 추출
-        Claims payload = Jwts.parserBuilder()
-                .setSigningKey(SECRET_KEY)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
-        // Claims에서 id 값 추출
-        Long entryId = Long.parseLong(payload.get("id").toString());
-        return entryId;
-    }
+//    private static Long extractUserIdFromToken(String token) {
+//        // 토큰에서 Claims 추출
+//        Claims payload = Jwts.parserBuilder()
+//                .setSigningKey(SECRET_KEY)
+//                .build()
+//                .parseClaimsJws(token)
+//                .getBody();
+//        // Claims에서 id 값 추출
+//        Long entryId = Long.parseLong(payload.get("id").toString());
+//        return entryId;
+//    }
 }
