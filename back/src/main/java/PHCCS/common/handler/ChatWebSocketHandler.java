@@ -29,7 +29,6 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
      * @param session
      * @param message
      * @throws Exception
-     * 전달하는 메시지는 messageType,
      */
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {

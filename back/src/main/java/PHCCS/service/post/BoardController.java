@@ -42,7 +42,6 @@ public class BoardController {
             @RequestHeader("Authorization") String token,
             @PathVariable("category") String category,
             @PathVariable("id") Long id){
-
         log.info("showPost()");
         Long memberId = jwtUtil.extractSubject(token);
 
