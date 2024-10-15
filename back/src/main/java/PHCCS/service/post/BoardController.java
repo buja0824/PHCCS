@@ -84,7 +84,6 @@ public class BoardController {
 //            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인하지 않은 사용자는 접근할 수 없습니다.");
 //        }
 
-
         if(category == null || category.isEmpty())
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("잘못된 접근 입니다.");
 
