@@ -17,7 +17,7 @@
                 community_board
             </when>
         </choose>
-        (member_id, author, title, content, create_date,update_date, file_dir, view_cnt)
+        (member_id, nick_name, title, content, create_date,update_date, file_dir, view_cnt)
         values (#{post.memberId}, #{post.author}, #{post.title}, #{post.content}, #{post.writeTime},#{post.updateTime}, #{post.fileDir}, 0)
     </insert>
 
@@ -39,7 +39,7 @@
     </select>
     
     <select id="showPost" resultType="Post">
-        select id, member_id, author, title, content, view_cnt, create_date as writeTime, update_date, file_dir
+        select id, member_id, nick_name, title, content, view_cnt, create_date as writeTime, update_date, file_dir
         from
         <choose>
             <when test= "category == 'qna_board'">
@@ -56,7 +56,7 @@
     </select>
 
     <select id="showAllPost" resultType="Post">
-        select id, member_id, author, title, view_cnt, create_date as writeTime
+        select id, member_id, nick_name, title, view_cnt, create_date as writeTime
         from
         <choose>
             <when test= "category == 'qna_board'">
@@ -69,6 +69,11 @@
                 vet_board
             </when>
         </choose>
+        <where>
+            <if test="searchName != null">
+                and title like concat ('%' , #{searchName}, '%')
+            </if>
+        </where>
         order by id desc
         limit #{size} offset ${offset}
     </select>

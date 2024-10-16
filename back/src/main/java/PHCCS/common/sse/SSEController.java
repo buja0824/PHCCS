@@ -24,7 +24,7 @@ public class SSEController {
         log.info("sse connect");
         log.info("token = {}", token);
         Long memberId = jwtUtil.extractSubject(token);
-        SseEmitter emitter = new SseEmitter(1000*1000L);
+        SseEmitter emitter = new SseEmitter(1000*3600L);
         sseService.add(memberId, emitter);
         try {
             emitter.send(SseEmitter.event()
@@ -36,20 +36,5 @@ public class SSEController {
         }
         return ResponseEntity.ok().body(emitter);
     }
-//
-//    private static Long exMemberId(HttpServletRequest request) {
-//        String SECRET_KEY = "OapJ2D0zLQs4S1FdY5TgRhYKJffpMq7RaNmbN4XURRs";
-//
-//        String authorization = request.getHeader("Authorization");
-//        String token = authorization.substring(7);
-//        // 토큰에서 Claims 추출
-//        Claims payload = Jwts.parserBuilder()
-//                .setSigningKey(SECRET_KEY)
-//                .build()
-//                .parseClaimsJws(token)
-//                .getBody();
-//        // Claims에서 id 값 추출
-//        Long entryId = Long.parseLong(payload.get("id").toString());
-//        return entryId;
-//    }
+
 }

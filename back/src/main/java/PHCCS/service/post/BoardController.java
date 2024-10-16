@@ -23,12 +23,15 @@ public class BoardController {
 
     private final JwtUtil jwtUtil;
     private final PostService service;
+
     @PostMapping(value = "/post", consumes = "multipart/form-data")
+//    @PostMapping(value = "/post") //1
     public ResponseEntity<?> createPost(
             @RequestHeader("Authorization") String token,
+//            @RequestBody PostDTO dto,
             @RequestPart("dto") PostDTO dto,
             @RequestPart(value = "imageFiles", required = false) List<MultipartFile> imageFiles,
-            @RequestPart(value = "videoFiles", required = false) List<MultipartFile> videoFiles)  throws IOException {
+            @RequestPart(value = "videoFiles", required = false) List<MultipartFile> videoFiles) throws IOException {
 
         log.info("|co|createPost()");
         Long memberId = jwtUtil.extractSubject(token);
@@ -77,6 +80,7 @@ public class BoardController {
     public ResponseEntity<?> showAllPost(
             @RequestHeader("Authorization") String token,
             @PathVariable("category") String category,
+            @RequestParam(name = "searchName") String searchName,
             @RequestParam(name = "page", defaultValue = "1") Long page,
             @RequestParam(name = "size", defaultValue = "15") Long size){
         log.info("showAllPost() Category: {}, Page: {}, Size: {}", category, page, size);
@@ -86,8 +90,8 @@ public class BoardController {
 
         if(category == null || category.isEmpty())
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("잘못된 접근 입니다.");
-
-        List<Post> posts = service.showAllPost(category, page, size);
+        log.info("searchName = {}", searchName);
+        List<Post> posts = service.showAllPost(category,searchName, page, size);
         if(posts == null) return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("게시글을 불러오지 못하였습니다.");
         return ResponseEntity.ok(posts);
     }
