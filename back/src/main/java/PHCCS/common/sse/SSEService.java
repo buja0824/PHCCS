@@ -21,14 +21,16 @@ public class SSEService {
     public void add(Long memberId, SseEmitter emitter){
         sseEmitterMap.put(memberId, emitter);
         emitter.onCompletion(()-> {
-            log.info("연결이 끊어지는가");
                 sseEmitterMap.remove(memberId);
                 log.info("연결이 끊어짐");
+                emitter.complete();
             });
+
         emitter.onTimeout(()->{
-                log.info("타임아웃 예정 멤버 {}", memberId);
                 sseEmitterMap.remove(memberId);
-                log.info("타임아웃");
+                log.info("타임아웃 {}", memberId);
+                emitter.complete();
+
             });
     }
 
@@ -47,9 +49,6 @@ public class SSEService {
     }
 
     /**
-     * @param category
-     * @param postId
-     * @param comment
      * 알림 보낼 사용자 찾고, 알림 보낼 내용은 댓글이 등록되었습니다. 작성자 : 댓글내용
      * 알림 보낼 사용자 찾는건 게시글 작성자 찾는것과 동일
      */

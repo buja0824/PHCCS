@@ -31,10 +31,9 @@ public class MybatisPostRepository implements PostRepository {
     }
 
     @Override
-    public List<Post> showAllPost(String category, Long offset, Long size) {
+    public List<Post> showAllPost(String category, String searchName, Long offset, Long size) {
         log.info("|se|re|showAllPost()");
-
-        List<Post> posts = mapper.showAllPost(category, offset, size);
+        List<Post> posts = mapper.showAllPost(category, searchName, offset, size);
         log.info("repo = {}",posts.toString());
         return posts;
     }

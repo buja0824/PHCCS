@@ -276,19 +276,4 @@ public class ChatService {
         log.info("entryId = {}" ,entryId);
         return entryId;
     }
-
-    /**
-     * 멤버의 토큰을 가져오는 기능이 아직 머지 안되어서 임시용 으로 만든 메서드
-     * */
-//    private static Long extractUserIdFromToken(String token) {
-//        // 토큰에서 Claims 추출
-//        Claims payload = Jwts.parserBuilder()
-//                .setSigningKey(SECRET_KEY)
-//                .build()
-//                .parseClaimsJws(token)
-//                .getBody();
-//        // Claims에서 id 값 추출
-//        Long entryId = Long.parseLong(payload.get("id").toString());
-//        return entryId;
-//    }
 }

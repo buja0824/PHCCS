@@ -5,6 +5,8 @@ import PHCCS.common.file.FileStore;
 import PHCCS.common.file.FileDTO;
 
 
+import PHCCS.service.member.dto.MemberProfileDTO;
+import PHCCS.service.member.repository.MemberRepository;
 import PHCCS.service.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +30,7 @@ public class PostService {
     @Value("${file.dir}")
     private String fileDir;
     private final PostRepository repository;
+    private final MemberRepository memberRepository;
     private final FileStore fileStore;
 
     @Transactional
@@ -62,12 +65,13 @@ public class PostService {
                 log.info("storeVids: {}", storeVids);
             }
             log.info("storedDir = {}", storedDir);
+            String nickName = memberRepository.findMemberProfileById(memberId).get().getNickName();
             Post post = new Post();
             post.setMemberId(memberId);
             post.setCategory(dto.getCategory());
             post.setTitle(dto.getTitle());
             post.setContent(dto.getContent());
-            post.setAuthor(dto.getAuthor());
+            post.setAuthor(nickName);
             post.setWriteTime(dto.getWriteTime());
             post.setFileDir(storedDir);
             post.setViewCnt(0L);
@@ -104,12 +108,12 @@ public class PostService {
         }
     }
 
-    public List<Post> showAllPost(String category, Long page, Long size){
+    public List<Post> showAllPost(String category, String searchName, Long page, Long size){
         log.info("|se|showAllPost()");
         Long offset = (page - 1) * size; // 사이즈의 배수로 페이지 단위를 끊어서 읽어오게 하기 위함
 
         try {
-            List<Post> posts = repository.showAllPost(category, offset, size);
+            List<Post> posts = repository.showAllPost(category, searchName, offset, size);
             log.info("posts = {}", posts.toString());
             if(posts != null && !posts.isEmpty()){
                 return posts;
