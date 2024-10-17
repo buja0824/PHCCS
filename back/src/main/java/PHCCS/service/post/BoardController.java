@@ -4,10 +4,7 @@ import PHCCS.service.member.Member;
 import PHCCS.common.jwt.JwtUtil;
 import PHCCS.common.file.FileDTO;
 
-import PHCCS.service.post.dto.MyPostDTO;
-import PHCCS.service.post.dto.PostDTO;
-import PHCCS.service.post.dto.PostHeaderDTO;
-import PHCCS.service.post.dto.PostUpdateDTO;
+import PHCCS.service.post.dto.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
@@ -141,6 +138,13 @@ public class BoardController {
         Long memberId = jwtUtil.extractSubject(token);
         List<MyPostDTO> posts = service.showMyPost(memberId);
         return ResponseEntity.ok(posts);
+    }
+    @GetMapping("/liked-posts")
+    public ResponseEntity<?> likedPosts(@RequestHeader("Authorization") String token){
+        Long memberId = jwtUtil.extractSubject(token);
+        List<LikedPostDTO> likedPosts = service.showLikedPosts(memberId);
+
+        return ResponseEntity.ok(likedPosts);
     }
 
 

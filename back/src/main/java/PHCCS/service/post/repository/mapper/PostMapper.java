@@ -1,5 +1,6 @@
 package PHCCS.service.post.repository.mapper;
 
+import PHCCS.service.post.dto.LikedPostDTO;
 import PHCCS.service.post.dto.MyPostDTO;
 import PHCCS.service.post.Post;
 import PHCCS.service.post.dto.PostHeaderDTO;
@@ -22,6 +23,7 @@ public interface PostMapper {
     void incrementViewCount(@Param("category") String category, @Param("id") Long postId);
     Long findAuthorId(@Param("category") String category, @Param("id") Long postId);
     List<MyPostDTO> showMyPost(Long memberId);
+    List<LikedPostDTO> showLikedPosts(Long memberId);
     void incrementLike(@Param("category") String category, @Param("postId") Long postId);
     Boolean isLikeMember(@Param("memberId") Long memberId, @Param("category") String category, @Param("postId") Long postId);
     void likeMember(@Param("memberId") Long memberId, @Param("category") String category, @Param("postId") Long postId);

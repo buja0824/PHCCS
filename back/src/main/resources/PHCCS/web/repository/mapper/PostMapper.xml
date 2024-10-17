@@ -115,21 +115,38 @@
     </delete>
 
     <select id="showMyPost" resultType="MyPostDTO">
-        select id, title, create_date, update_date, category
+        select id, title, view_cnt, like_cnt, create_date, update_date, category
         from(
-            SELECT q.id AS id, q.title AS title, q.create_date, ifnull(update_date, "--") as update_date,  'qna_board' AS category
+            SELECT q.id AS id, q.title AS title, q.view_cnt, q.like_cnt, q.create_date, ifnull(update_date, "--") as update_date,  'qna_board' AS category
             FROM qna_board q
             WHERE member_id = #{memberId}
             UNION ALL
-            SELECT c.id AS id, c.title AS title, c.create_date, ifnull(update_date, "--") as update_date, 'community_board' AS category
+            SELECT c.id AS id, c.title AS title, c.view_cnt, c.like_cnt, c.create_date, ifnull(update_date, "--") as update_date, 'community_board' AS category
             FROM community_board c
             WHERE member_id = #{memberId}
             UNION ALL
-            SELECT v.id AS id, v.title AS title, v.create_date, ifnull(update_date, "--") as update_date, 'vet_board' AS category
+            SELECT v.id AS id, v.title AS title, v.view_cnt, v.like_cnt, v.create_date, ifnull(update_date, "--") as update_date, 'vet_board' AS category
             FROM vet_board v
             WHERE member_id = #{memberId}
         ) as result
         order by create_date desc
+    </select>
+
+    <select id="showLikedPosts" resultType="LikedPostDTO">
+        select id, nick_name, title, view_cnt, like_cnt, create_date, update_date, 'qna_board' as category
+        from qna_board as qb join qna_like as ql
+        on qb.id = ql.post_id
+        where ql.member_id = #{memberId}
+        union all
+        select id, nick_name, title, view_cnt, like_cnt, create_date, update_date, 'community_board' as category
+        from community_board as cb join community_like as cl
+        on cb.id = cl.post_id
+        where cl.member_id = #{memberId}
+        union all
+        select id, nick_name, title, view_cnt, like_cnt, create_date, update_date, 'vet_board' as category
+        from vet_board as vb join vet_like as vl
+        on vb.id = vl.post_id
+        where vl.member_id = #{memberId}
     </select>
 
     <select id="isLikeMember">

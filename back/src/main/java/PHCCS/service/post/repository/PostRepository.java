@@ -1,5 +1,6 @@
 package PHCCS.service.post.repository;
 
+import PHCCS.service.post.dto.LikedPostDTO;
 import PHCCS.service.post.dto.MyPostDTO;
 import PHCCS.service.post.Post;
 import PHCCS.service.post.dto.PostHeaderDTO;
@@ -25,6 +26,7 @@ public interface PostRepository {
     Long findAuthorId(String category, Long postId);
 
     List<MyPostDTO> showMyPost(Long memberId);
+    List<LikedPostDTO> showLikedPosts(Long memberId);
 
     void incrementLike(String category, Long postId);
     Boolean isLikeMember(Long memberId,String category, Long postId);

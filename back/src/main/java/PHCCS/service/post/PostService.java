@@ -6,10 +6,7 @@ import PHCCS.common.file.FileDTO;
 
 
 import PHCCS.service.member.repository.MemberRepository;
-import PHCCS.service.post.dto.MyPostDTO;
-import PHCCS.service.post.dto.PostDTO;
-import PHCCS.service.post.dto.PostHeaderDTO;
-import PHCCS.service.post.dto.PostUpdateDTO;
+import PHCCS.service.post.dto.*;
 import PHCCS.service.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -200,6 +197,10 @@ public class PostService {
 
     public List<MyPostDTO> showMyPost(Long memberId){
         return repository.showMyPost(memberId);
+    }
+
+    public List<LikedPostDTO> showLikedPosts(Long memberId){
+        return repository.showLikedPosts(memberId);
     }
 
     @Transactional

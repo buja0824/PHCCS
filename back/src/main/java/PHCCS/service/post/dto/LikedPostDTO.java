@@ -3,9 +3,10 @@ package PHCCS.service.post.dto;
 import lombok.Data;
 
 @Data
-public class MyPostDTO {
+public class LikedPostDTO {
 
     private Long id;
+    private String nickName;
     private String title;
     private Long viewCnt;
     private Long likeCnt;

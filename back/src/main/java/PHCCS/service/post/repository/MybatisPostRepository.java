@@ -1,5 +1,6 @@
 package PHCCS.service.post.repository;
 
+import PHCCS.service.post.dto.LikedPostDTO;
 import PHCCS.service.post.dto.MyPostDTO;
 import PHCCS.service.post.Post;
 import PHCCS.service.post.dto.PostHeaderDTO;
@@ -70,6 +71,11 @@ public class MybatisPostRepository implements PostRepository {
     @Override
     public List<MyPostDTO> showMyPost(Long memberId) {
         return mapper.showMyPost(memberId);
+    }
+
+    @Override
+    public List<LikedPostDTO> showLikedPosts(Long memberId) {
+        return mapper.showLikedPosts(memberId);
     }
 
     @Override
