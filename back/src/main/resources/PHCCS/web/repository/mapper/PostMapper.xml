@@ -55,8 +55,8 @@
         where id = #{id}
     </select>
 
-    <select id="showAllPost" resultType="Post">
-        select id, member_id, nick_name, title, view_cnt, create_date as writeTime
+    <select id="showAllPost" resultType="PostHeaderDTO">
+        select id, member_id, nick_name, title, view_cnt, create_date, ifnull(update_date, "--") as update_date
         from
         <choose>
             <when test= "category == 'qna_board'">
@@ -115,24 +115,71 @@
     </delete>
 
     <select id="showMyPost" resultType="MyPostDTO">
-        select * from(
-            SELECT q.id AS id, q.title AS title, q.create_date, 'qna_board' AS category
+        select id, title, create_date, update_date, category
+        from(
+            SELECT q.id AS id, q.title AS title, q.create_date, ifnull(update_date, "--") as update_date,  'qna_board' AS category
             FROM qna_board q
             WHERE member_id = #{memberId}
             UNION ALL
-            SELECT c.id AS id, c.title AS title, c.create_date, 'community_board' AS category
+            SELECT c.id AS id, c.title AS title, c.create_date, ifnull(update_date, "--") as update_date, 'community_board' AS category
             FROM community_board c
             WHERE member_id = #{memberId}
             UNION ALL
-            SELECT v.id AS id, v.title AS title, v.create_date, 'vet_board' AS category
+            SELECT v.id AS id, v.title AS title, v.create_date, ifnull(update_date, "--") as update_date, 'vet_board' AS category
             FROM vet_board v
             WHERE member_id = #{memberId}
         ) as result
         order by create_date desc
     </select>
 
-    <insert id="likePost">
+    <select id="isLikeMember">
+        select is_like
+        from
+        <choose>
+            <when test= "category == 'qna_board'">
+                qna_like
+            </when>
+            <when test= "category == 'community_board'">
+                community_like
+            </when>
+            <when test= "category == 'vet_board'">
+                vet_like
+            </when>
+        </choose>
+        where member_id = #{memberId} and post_id = #{postId}
+    </select>
 
+    <update id="incrementLike">
+        update
+        <choose>
+            <when test="category eq 'qna_board'">
+                qna_board
+            </when>
+            <when test="category eq 'vet_board'">
+                vet_board
+            </when>
+            <when test="category eq 'community_board'">
+                community_board
+            </when>
+        </choose>
+        set like_cnt = like_cnt + 1
+        where id = #{postId}
+    </update>
+
+    <insert id="likeMember">
+        insert into
+        <choose>
+            <when test="category eq 'qna_board'">
+                qna_like
+            </when>
+            <when test="category eq 'vet_board'">
+                vet_like
+            </when>
+            <when test="category eq 'community_board'">
+                community_like
+            </when>
+        </choose>
+        values (#{postId}, #{memberId}, 1)
     </insert>
 
     <select id="findPostDir" resultType="String">

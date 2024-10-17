@@ -101,6 +101,22 @@
                 community_comment_like
             </when>
         </choose>
-        where member_id = #{memberId} and comment_id = #{commentId}
+        where member_id = #{memberId} and comment_id = #{commentId} and post_id = #{postId}
     </select>
+
+    <insert id="likeMember">
+        insert into
+        <choose>
+            <when test="category eq 'qna_board'">
+                qna_comment_like
+            </when>
+            <when test="category eq 'vet_board'">
+                vet_comment_like
+            </when>
+            <when test="category eq 'community_board'">
+                community_comment_like
+            </when>
+        </choose>
+        values (#{commentId}, #{memberId}, #{postId}, 1)
+    </insert>
 </mapper>

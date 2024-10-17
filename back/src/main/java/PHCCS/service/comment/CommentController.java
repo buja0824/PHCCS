@@ -106,7 +106,11 @@ public class CommentController {
         if(loginMember == null){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인하지 않은 사용자는 접근할 수 없습니다.");
         }
-        service.incrementLike(/*loginMember.getId()*/2L, category, postId, commentId);
-        return ResponseEntity.ok(HttpStatus.OK);
+        boolean like = service.incrementLike(loginMember, category, postId, commentId);
+        if(like){
+            return ResponseEntity.ok(HttpStatus.OK);
+        }else{
+            return ResponseEntity.ok("이미 좋아요를 누른 댓글");
+        }
     }
 }

@@ -15,4 +15,6 @@ public interface CommentMapper {
     void deleteComment(@Param("category") String category, @Param("postId") Long postId, @Param("commentId") Long commentId);
     void incrementLike(@Param("category") String category, @Param("postId") Long postId, @Param("commentId") Long commentId);
     Boolean isLikeMember(@Param("memberId")Long memberId, @Param("category") String category, @Param("postId") Long postId, @Param("commentId") Long commentId);
+    void likeMember(@Param("memberId")Long memberId, @Param("category") String category, @Param("postId") Long postId, @Param("commentId") Long commentId);
+
 }
