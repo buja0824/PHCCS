@@ -12,7 +12,7 @@ public class AIImageTester {
 
     public void sendImage(String dir){
         webConfig.aiImageServer().get()
-                .uri("/{dir}", dir)
+                .uri("/{dir}", dir);
     }
 
 }
