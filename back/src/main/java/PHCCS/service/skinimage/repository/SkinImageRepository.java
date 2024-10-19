@@ -1,8 +1,8 @@
 package PHCCS.service.skinimage.repository;
 
-import org.springframework.web.multipart.MultipartFile;
+import PHCCS.service.skinimage.SkinImage;
 
 public interface SkinImageRepository {
 
-    void savePath(Long memberId, String dir);
+    void saveImgInfo(SkinImage imgInfo);
 }

@@ -28,14 +28,14 @@ public class SkinImageController {
     public ResponseEntity<?> imageReceiver(
             @RequestHeader("Authorization") String token,
             @RequestPart(value = "imageFile")MultipartFile image
-    ){
+    ) throws IOException {
 
         Long memberId = jwtUtil.extractSubject(token);
         log.info("memberId = {}", memberId);
 
-        imageService.imageSaveAndSend(image, memberId);
+        String testResult = imageService.imageSaveAndSend(image, memberId);
 
-        return null;
+        return ResponseEntity.ok().body(testResult);
     }
 
 }
