@@ -78,15 +78,14 @@ public class MemberService {
         Map<String, String> tokens = new HashMap<>();
         String newAccessToken = jwtUtil.createAccessToken(member.getId(), member.getRole());
         tokens.put("accessToken", newAccessToken);
-        log.info("accestokenId: {}", jwtUtil.extractId(newAccessToken));
-        log.info("accestokenrole: {}", jwtUtil.extractRole(newAccessToken));
+        // log.info("accestokenId: {}", jwtUtil.extractId(newAccessToken));
+        // log.info("accestokenrole: {}", jwtUtil.extractRole(newAccessToken));
         String refreshToken = jwtUtil.createRefreshToken(member.getId());
         tokenService.storeRefreshToken(jwtUtil.extractId(refreshToken), jwtUtil.actual(refreshToken));
-        log.info("allcaims확인 role 꺼내기: {}", UUID.randomUUID().toString());
         tokens.put("refreshToken", refreshToken);
 
         // [LOG] 토큰 발급 확인
-        log.info("tokens: {}", tokens);
+        log.info("보내는 토큰: {}", tokens);
 
         return tokens;
     }
