@@ -22,11 +22,6 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-
-
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -69,7 +64,7 @@ public class ChatService {
         List<ChatRoom> memberJoinRooms = new ArrayList<>();
         while(iterator.hasNext()){
             ChatRoom next = iterator.next();
-            if(next.getCreateMemberId().equals(memberId) || next.getParticipatingMemberId().equals(memberId)){
+            if(next.getCreateMemberId().equals(memberId) || next.getInvitedMemberId().equals(memberId)){
                 memberJoinRooms.add(chatRooms.get(next.getRoomId()));
             }
         }

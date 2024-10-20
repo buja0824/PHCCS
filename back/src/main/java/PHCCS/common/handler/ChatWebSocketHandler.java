@@ -13,6 +13,8 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 @Component
 @RequiredArgsConstructor
 public class ChatWebSocketHandler extends TextWebSocketHandler {
+    //TextWebSocketHandler 는 AbstractWebSocketHandler 를 상속 받음 그 클래스의 메서드들을 현재 오버라이딩 한거고
+    //TextWebSocketHandler 를 명시적으로 적은 이유는 바이너리 데이터를 처리하는 handleBinaryMessage 를 추후에 추가할 예정이었어서
     private final ChatService chatService;
 
     /**

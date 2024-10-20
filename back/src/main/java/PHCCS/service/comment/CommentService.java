@@ -41,15 +41,19 @@ public class CommentService {
     }
 
     @Transactional
-    public void incrementLike(Long memberId, String category, Long postId, Long commentId) {
+    public boolean incrementLike(Long memberId, String category, Long postId, Long commentId) {
         log.info("|se|incrementLike()");
 
         Boolean likeMember = repository.isLikeMember(memberId, category, postId, commentId);
+        log.info("|se|likeMember = {}", likeMember);
         if (likeMember == null || !likeMember){
             repository.incrementLike(category, postId, commentId);
+            repository.likeMember(memberId, category, postId, commentId);
+            return true;
         }
         else{
-            return;
+            log.info("이미 좋아요를 누름" );
+            return false;
         }
     }
 

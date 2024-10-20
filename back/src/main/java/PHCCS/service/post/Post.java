@@ -19,7 +19,7 @@ public class Post { // 회원과 게시판은 1:N 관계일듯
     private LocalDateTime writeTime; // 게시글 작성날짜와 시간
     private LocalDateTime updateTime;// 게시글 수정날짜와 시간
     private Long viewCnt;
-
+    private Long likeCnt;
     //file 관련 멤버변수
 //    private List<UploadFile> imageFiles;
 //    private List<UploadFile> videoFiles;

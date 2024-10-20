@@ -5,8 +5,8 @@ import PHCCS.common.file.FileStore;
 import PHCCS.common.file.FileDTO;
 
 
-import PHCCS.service.member.dto.MemberProfileDTO;
 import PHCCS.service.member.repository.MemberRepository;
+import PHCCS.service.post.dto.*;
 import PHCCS.service.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -75,6 +75,7 @@ public class PostService {
             post.setWriteTime(dto.getWriteTime());
             post.setFileDir(storedDir);
             post.setViewCnt(0L);
+            post.setLikeCnt(0L);
 //        post.setImageFiles(storeImgs);
 //        post.setVideoFiles(storeVids);
 
@@ -108,12 +109,12 @@ public class PostService {
         }
     }
 
-    public List<Post> showAllPost(String category, String searchName, Long page, Long size){
+    public List<PostHeaderDTO> showAllPost(String category, String searchName, Long page, Long size){
         log.info("|se|showAllPost()");
         Long offset = (page - 1) * size; // 사이즈의 배수로 페이지 단위를 끊어서 읽어오게 하기 위함
 
         try {
-            List<Post> posts = repository.showAllPost(category, searchName, offset, size);
+            List<PostHeaderDTO> posts = repository.showAllPost(category, searchName, offset, size);
             log.info("posts = {}", posts.toString());
             if(posts != null && !posts.isEmpty()){
                 return posts;
@@ -198,8 +199,24 @@ public class PostService {
         return repository.showMyPost(memberId);
     }
 
-    public void likePost(Long memberId, String category, Long postId){
-        repository.likePost(memberId, category, postId);
+    public List<LikedPostDTO> showLikedPosts(Long memberId){
+        return repository.showLikedPosts(memberId);
+    }
+
+    @Transactional
+    public boolean likePost(Long memberId, String category, Long postId){
+        log.info("|se|incrementLike()");
+
+        Boolean likeMember = repository.isLikeMember(memberId, category, postId);
+        if (likeMember == null || !likeMember){
+            repository.incrementLike(category, postId);
+            repository.likeMember(memberId, category, postId);
+            return true;
+        }
+        else{
+            log.info("이미 좋아요를 누름" );
+            return false;
+        }
     }
 
     public Resource sendFile(String filename, FileDTO dto) throws MalformedURLException {

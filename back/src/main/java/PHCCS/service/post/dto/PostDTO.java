@@ -1,4 +1,4 @@
-package PHCCS.service.post;
+package PHCCS.service.post.dto;
 
 import lombok.Data;
 

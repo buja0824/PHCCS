@@ -7,14 +7,14 @@ import lombok.Data;
 public class ChatRoom {
     private String roomId;
     private Long createMemberId;
-    private Long participatingMemberId;
+    private Long invitedMemberId;
 //    private Set<WebSocketSession> sessions = new HashSet<>();
 
     @Builder
     public ChatRoom(String roomId, Long createMemberId, Long participatingMemberId) {
         this.roomId = roomId;
         this.createMemberId = createMemberId;
-        this.participatingMemberId = participatingMemberId;
+        this.invitedMemberId = participatingMemberId;
     }
 //    public void handlerActions(WebSocketSession session, Message chatMessage, ChatService chatService) {
 //        if (chatMessage.getType().equals(Message.MessageType.ENTER)) {

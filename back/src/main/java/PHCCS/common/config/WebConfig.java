@@ -8,8 +8,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.MediaType;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.net.http.HttpHeaders;
 
 @RequiredArgsConstructor
 @Configuration
@@ -49,4 +53,11 @@ public class WebConfig implements WebMvcConfigurer {
         return filterRegistrationBean;
     }
 
+    @Bean
+    public WebClient aiImageServer(){
+        return WebClient.builder()
+                .baseUrl("http:local:3030/ai-server")
+                .defaultHeader("Content-type", MediaType.APPLICATION_JSON_VALUE)
+                .build();
+    }
 }

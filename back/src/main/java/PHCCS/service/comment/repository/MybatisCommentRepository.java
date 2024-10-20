@@ -35,6 +35,12 @@ public class MybatisCommentRepository implements CommentRepository {
     public void deleteComment(String category, Long postId, Long commentId) {
         mapper.deleteComment(category, postId, commentId);
     }
+    @Override
+    public Boolean isLikeMember(Long memberId, String category, Long postId, Long commentId) {
+        Boolean likeMember = mapper.isLikeMember(memberId, category, postId, commentId);
+        log.info("likeMember : {}", likeMember);
+        return likeMember;
+    }
 
     @Override
     public void incrementLike(String category, Long postId, Long commentId) {
@@ -42,9 +48,7 @@ public class MybatisCommentRepository implements CommentRepository {
     }
 
     @Override
-    public Boolean isLikeMember(Long memberId, String category, Long postId, Long commentId) {
-        Boolean likeMember = mapper.isLikeMember(memberId, category, postId, commentId);
-        log.info("likeMember : {}", likeMember);
-        return likeMember;
+    public void likeMember(Long memberId, String category, Long postId, Long commentId) {
+        mapper.likeMember(memberId, category, postId, commentId);
     }
 }

@@ -4,6 +4,7 @@ import PHCCS.service.member.Member;
 import PHCCS.common.jwt.JwtUtil;
 import PHCCS.common.file.FileDTO;
 
+import PHCCS.service.post.dto.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
@@ -91,7 +92,7 @@ public class BoardController {
         if(category == null || category.isEmpty())
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("잘못된 접근 입니다.");
         log.info("searchName = {}", searchName);
-        List<Post> posts = service.showAllPost(category,searchName, page, size);
+        List<PostHeaderDTO> posts = service.showAllPost(category,searchName, page, size);
         if(posts == null) return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("게시글을 불러오지 못하였습니다.");
         return ResponseEntity.ok(posts);
     }
@@ -138,6 +139,13 @@ public class BoardController {
         List<MyPostDTO> posts = service.showMyPost(memberId);
         return ResponseEntity.ok(posts);
     }
+    @GetMapping("/liked-posts")
+    public ResponseEntity<?> likedPosts(@RequestHeader("Authorization") String token){
+        Long memberId = jwtUtil.extractSubject(token);
+        List<LikedPostDTO> likedPosts = service.showLikedPosts(memberId);
+
+        return ResponseEntity.ok(likedPosts);
+    }
 
 
     @PostMapping("/like/{category}/{id}")
@@ -147,9 +155,12 @@ public class BoardController {
         @PathVariable("id") Long id){
 
         Long memberId = jwtUtil.extractSubject(token);
-        service.likePost(memberId, category, id);
-
-        return null;
+        boolean like = service.likePost(memberId, category, id);
+        if(like){
+            return ResponseEntity.ok(HttpStatus.OK);
+        }else{
+            return ResponseEntity.ok("이미 좋아요를 누른글");
+        }
     }
 
     private static boolean isLogin(Member loginMember){

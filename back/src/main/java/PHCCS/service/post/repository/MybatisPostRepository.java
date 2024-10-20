@@ -1,8 +1,10 @@
 package PHCCS.service.post.repository;
 
-import PHCCS.service.post.MyPostDTO;
+import PHCCS.service.post.dto.LikedPostDTO;
+import PHCCS.service.post.dto.MyPostDTO;
 import PHCCS.service.post.Post;
-import PHCCS.service.post.PostUpdateDTO;
+import PHCCS.service.post.dto.PostHeaderDTO;
+import PHCCS.service.post.dto.PostUpdateDTO;
 import PHCCS.service.post.repository.mapper.PostMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,9 +33,9 @@ public class MybatisPostRepository implements PostRepository {
     }
 
     @Override
-    public List<Post> showAllPost(String category, String searchName, Long offset, Long size) {
+    public List<PostHeaderDTO> showAllPost(String category, String searchName, Long offset, Long size) {
         log.info("|se|re|showAllPost()");
-        List<Post> posts = mapper.showAllPost(category, searchName, offset, size);
+        List<PostHeaderDTO> posts = mapper.showAllPost(category, searchName, offset, size);
         log.info("repo = {}",posts.toString());
         return posts;
     }
@@ -72,8 +74,23 @@ public class MybatisPostRepository implements PostRepository {
     }
 
     @Override
-    public void likePost(Long memberId, String category, Long postId) {
-        mapper.likePost(memberId, category, postId);
+    public List<LikedPostDTO> showLikedPosts(Long memberId) {
+        return mapper.showLikedPosts(memberId);
+    }
+
+    @Override
+    public Boolean isLikeMember(Long memberId, String category, Long postId) {
+        return mapper.isLikeMember(memberId, category, postId);
+    }
+
+    @Override
+    public void incrementLike(String category, Long postId) {
+        mapper.incrementLike(category, postId);
+    }
+
+    @Override
+    public void likeMember(Long memberId, String category, Long postId) {
+        mapper.likeMember(memberId, category, postId);
     }
 
 }
