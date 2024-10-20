@@ -88,10 +88,10 @@ public class BoardController {
 //        if(!isLogin(loginMember)){
 //            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인하지 않은 사용자는 접근할 수 없습니다.");
 //        }
-
         if(category == null || category.isEmpty())
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("잘못된 접근 입니다.");
         log.info("searchName = {}", searchName);
+
         List<PostHeaderDTO> posts = service.showAllPost(category,searchName, page, size);
         if(posts == null) return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("게시글을 불러오지 못하였습니다.");
         return ResponseEntity.ok(posts);

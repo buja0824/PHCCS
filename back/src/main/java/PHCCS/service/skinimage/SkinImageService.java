@@ -35,6 +35,7 @@ public class SkinImageService {
             imgInfo.setDir(dir);
             imgInfo.setCreateAt(LocalDate.now());
             //            imageRepository.savePath(memberId, dir);
+            // 파이썬 서버에 전송
             webConfig.aiImageServer()
                     .get()
                     .uri("/{dir}", dir)
