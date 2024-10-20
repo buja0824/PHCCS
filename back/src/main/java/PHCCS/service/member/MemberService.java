@@ -86,7 +86,7 @@ public class MemberService {
         tokens.put("refreshToken", refreshToken);
 
         // [LOG] 토큰 발급 확인
-        log.info("tokens: {}", tokens);
+        log.info("보내는 토큰: {}", tokens);
 
         return tokens;
     }
