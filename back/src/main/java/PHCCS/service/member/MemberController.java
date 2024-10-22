@@ -9,6 +9,8 @@ import PHCCS.service.member.token.TokenService;
 import PHCCS.common.jwt.TokenStatus;
 import PHCCS.common.jwt.TokenValidationException;
 
+import PHCCS.service.member.vet.VetSignupDTO;
+import PHCCS.service.member.vet.VetService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -23,10 +25,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MemberController {
     private final MemberService service;
+    private final VetService vetService;
     private final TokenService tokenService;
     private final JwtUtil jwtUtil;
 
-    @PostMapping("/auth/signup")
+    @PostMapping("/auth/signup/member")
     public ResponseEntity<?> add(@RequestBody Member member) {
 
         // 서비스에서 중복 체크
@@ -51,6 +54,34 @@ public class MemberController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원가입 저장 중 오류");
         }
     }
+
+    // 수의사 회원 가입
+    @PostMapping("/auth/signup/vet")
+    public ResponseEntity<?> addVet(@RequestBody VetSignupDTO vetSignupDTO) {
+
+        /**
+        // 서비스에서 중복 체크
+        DuplicateCheckDto duplicateCheckDto = vetService.isDuplicateVet(vetRequest.getEmail(), vetRequest.getLicenseNo());
+
+        // 중복 체크 후 처리
+        if (duplicateCheckDto.isAnyDuplicate()) {
+            StringBuilder message = new StringBuilder("수의사 회원가입 실패: ");
+            if (duplicateCheckDto.isEmailDuplicate()) message.append("이메일 중복. ");
+            if (duplicateCheckDto.isLicenseNoDuplicate()) message.append("면허번호 중복.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(message.toString());
+        }
+         */
+
+        // 수의사 인증 요청 및 저장
+        Boolean isSuccess = vetService.processSaveAndRequest(vetSignupDTO);
+
+        if(isSuccess) {
+            return ResponseEntity.ok("수의사 회원 가입이 완료되었습니다.");
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원가입 저장 중 오류");
+        }
+    }
+
 
     @PostMapping("/auth/signin")
     public Map<String, String> login(@RequestBody MemberDTO memberDto) {
