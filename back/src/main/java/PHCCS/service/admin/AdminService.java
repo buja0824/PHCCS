@@ -11,7 +11,9 @@ import org.springframework.stereotype.Service;
 public class AdminService {
     final private MemberRepository memberRepository;
 
+    /**
     public Boolean approveVet(){
         // member -> vet 수의사로 승격, 0 -> 1로 변경
     }
+     **/
 }

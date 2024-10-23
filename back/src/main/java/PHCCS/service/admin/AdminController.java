@@ -26,5 +26,5 @@ public class AdminController {
         model.addAttribute("pendingRequests", vetRequestModels); // 모델에 값 넣기
         return "vet-signup-allow"; // html 파일
     }
-    
+
 }

@@ -5,6 +5,7 @@ import PHCCS.service.member.dto.DuplicateCheckDto;
 import PHCCS.service.member.dto.MemberDTO;
 import PHCCS.service.member.dto.MemberModifyDTO;
 import PHCCS.service.member.dto.MemberProfileDTO;
+import PHCCS.service.member.exception.LoginFailedException;
 import PHCCS.service.member.repository.MemberRepository;
 import PHCCS.service.member.token.TokenService;
 import lombok.RequiredArgsConstructor;
@@ -63,13 +64,13 @@ public class MemberService {
         Optional<Member> optionalMember = findMemberByEmail(memberDto.getEmail());
 
         if(!optionalMember.isPresent()) {
-            throw new RuntimeException("회원을 찾을 수 없음.");
+            throw new LoginFailedException("아이디 틀림.");
         }
 
         Member member = optionalMember.get();
 
         if(!member.getPwd().equals(memberDto.getPwd())){
-            throw new RuntimeException("검증 되지 않음.");
+            throw new LoginFailedException("비번 틀림.");
         }
 
         Map<String, String> tokens = new HashMap<>();
