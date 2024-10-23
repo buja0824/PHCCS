@@ -34,18 +34,24 @@ public class VetService {
         member.setName(vetSignupDTO.getName());
         member.setNickName(vetSignupDTO.getNickName());
         member.setPhoNo(vetSignupDTO.getPhoNo());
+        member.setCreated(LocalDate.now());
         // 우선 일반회원으로 권한 설정 어드민 인증후 1로 변경
         member.setRole(0);
 
 
         //  requestApproval(VetRequestDTO), save(member) 실행
         saveRequest(vetRequestDTO);
-        Boolean isSaveSuccess = memberRepository.save(member) > 0;
+        Boolean isSaveSuccess = (memberRepository.save(member) > 0);
 
        return isSaveSuccess;
     }
-    public void saveRequest(VetRequestDTO vetRequestDTO){
-        // 인증 요청을 저장하는 매서드
+    public boolean saveRequest(VetRequestDTO vetRequestDTO){
+
+        vetRequestDTO.setRequestDate(LocalDate.now());
+
+        Boolean isSaveRequestSuccess = repository.save(vetRequestDTO) > 0;
+
+       return isSaveRequestSuccess;
     }
 
 }

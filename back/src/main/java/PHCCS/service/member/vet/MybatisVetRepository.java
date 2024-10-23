@@ -11,8 +11,8 @@ public class MybatisVetRepository implements VetRepository{
     final private VetMapper mapper;
 
     @Override
-    public int save(VetSignupDTO vetSignupDTO) {
-        int save = mapper.save(vetSignupDTO);
+    public int save(VetRequestDTO vetRequestDTO) {
+        int save = mapper.save(vetRequestDTO);
         return save;
     }
 }

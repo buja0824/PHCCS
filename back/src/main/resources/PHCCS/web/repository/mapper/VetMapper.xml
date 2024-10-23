@@ -6,8 +6,8 @@
 <mapper namespace="PHCCS.service.member.vet.VetMapper">
 
     <insert id="save" useGeneratedKeys="true" keyProperty="id">
-        insert into member(name, email, hospital_name, request_date)
-        values (#{name}, #{email}, #{hospitalName}, #{requestDate})
+        insert into member(license_no, email, name,hospital_name, hospital_addr, request_date)
+        values (#{licenseNo}, #{email}, #{name}, #{hospitalName}, #{hospitalAddr} #{requestDate})
     </insert>
 
 </mapper>
