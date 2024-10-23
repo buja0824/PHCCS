@@ -3,9 +3,12 @@ package PHCCS.service.skinimage;
 import PHCCS.common.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 
@@ -24,8 +27,8 @@ public class SkinImageController {
     private final SkinImageService imageService;
     private final JwtUtil jwtUtil;
 
-    @PostMapping("/camera")
-    public ResponseEntity<?> imageReceiver(
+    @PostMapping(value = "/camera", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Mono<String>> imageReceiver(
             @RequestHeader("Authorization") String token,
             @RequestPart(value = "imageFile")MultipartFile image
     ) throws IOException {
@@ -33,9 +36,10 @@ public class SkinImageController {
         Long memberId = jwtUtil.extractSubject(token);
         log.info("memberId = {}", memberId);
 
-        String testResult = imageService.imageSaveAndSend(image, memberId);
-
-        return ResponseEntity.ok().body(testResult);
+        Mono<String> stringMono = imageService.imageSaveAndSend(image, memberId);
+        log.info("stringMono : {}", stringMono);
+        return ResponseEntity.ok()
+                .body(stringMono);
     }
 
 }

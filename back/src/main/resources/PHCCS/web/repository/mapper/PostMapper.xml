@@ -17,8 +17,8 @@
                 community_board
             </when>
         </choose>
-        (member_id, nick_name, title, content, create_date,update_date, file_dir, view_cnt)
-        values (#{post.memberId}, #{post.author}, #{post.title}, #{post.content}, #{post.writeTime},#{post.updateTime}, #{post.fileDir}, 0)
+        (member_id, nick_name, title, content, create_date,update_date, file_dir, view_cnt, like_cnt)
+        values (#{post.memberId}, #{post.author}, #{post.title}, #{post.content}, #{post.writeTime},#{post.updateTime}, #{post.fileDir}, 0, 0)
     </insert>
 
     <select id="findAuthorId" resultType="Long">

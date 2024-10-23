@@ -1,6 +1,7 @@
 package PHCCS.service.chatroom;
 
 import PHCCS.common.jwt.JwtUtil;
+import PHCCS.common.sse.SSEService;
 import PHCCS.service.chatroom.dto.ChatConnectDTO;
 import PHCCS.service.member.Member;
 import PHCCS.service.Message.Message;
@@ -37,27 +38,17 @@ public class ChatService {
             this.roomId = roomId;
         }
     }
-
-//    private static final String SECRET_KEY = "OapJ2D0zLQs4S1FdY5TgRhYKJffpMq7RaNmbN4XURRs";
     private final MemberRepository memberRepository;
     private final ObjectMapper objectMapper;
     // key : roomId - value : ChatRoom
-    private Map<String, ChatRoom> chatRooms; // 채팅방들의 목록
+    private Map<String, ChatRoom> chatRooms = new ConcurrentHashMap<>(); // 채팅방들의 목록
     // key : bindSenderAndRoom - value webSocketSession
-    private Map<BindSenderAndRoom, WebSocketSession> sessions; // 연결된 세션들의 목
-    /**
-     * 채팅 내역을 저장할 맵 키는 챗룸, 벨류는 음..리스트??
-     */
-    private Map<ChatRoom, Message> chatLog;
+    private Map<BindSenderAndRoom, WebSocketSession> sessions= new ConcurrentHashMap<>(); // 연결된 세션들의 목
+
+    private Map<ChatRoom, Message> chatLog= new ConcurrentHashMap<>();
     private final ChatRepository chatRepository;
     private final JwtUtil jwtUtil;
 
-    @PostConstruct //모든 Bean 의존성 주입이 완료되고 실행되어야 하는 메서드에 사용
-    private void init() { // 마지막에 초기화가 진행되어진다
-        chatRooms = new ConcurrentHashMap<>();
-        sessions = new ConcurrentHashMap<>();
-        chatLog = new ConcurrentHashMap<>();
-    }
     // 사용자가 참여중인 모든 방을 찾는 메서드
     public List<ChatRoom> findAllRoom(Long memberId) {
         Iterator<ChatRoom> iterator = chatRooms.values().iterator();
@@ -88,25 +79,20 @@ public class ChatService {
         chatRooms.put(roomId, chatRoom); //방 생성 후 방 목록에 추가
         // 데이터베이스에 저장하여 방 생성 내역을 저장
 //        chatRepository.saveChatRoom(chatRoom);
-
         log.info("##웹 소켓으로 통신 업그레이드 시키면 됨##");
         return chatRoom;
     }
 
     public void enterRoom(WebSocketSession session){
-        log.info("##세션.getLocalAddress() : {}", session.getLocalAddress());
-        log.info("##세션.getRemoteAddress() : {}", session.getRemoteAddress());
-        log.info("##세션.getHandshakeHeaders() : {}", session.getHandshakeHeaders());
-        log.info("##세션.getAcceptedProtocol() : {}", session.getAcceptedProtocol());
-        log.info("##세션.getAttributes() : {}", session.getAttributes());
-        log.info("##세션.getId() : {}", session.getId());
-        log.info("##세션.getUri() : {}", session.getUri());
-        log.info("##세션.getQuery() : {}", session.getUri().getQuery());
         Map<String, String> queryMap = getQueryVal(session);
         String roomId = queryMap.get("roomId");
-//        String type = queryMap.get("type");
-
+//        Long participatingMember = Long.parseLong(queryMap.get("another")); // 상대방의 PK 받아오기
         Long entryId = getEntryId(session);
+//        ChatConnectDTO chatConnectDTO = new ChatConnectDTO();
+//        chatConnectDTO.setCreateMemberId(entryId);
+//        chatConnectDTO.setParticipatingMemberId(participatingMember);
+//        ChatRoom room = createRoom(chatConnectDTO);
+//        String roomId = room.getRoomId();
         /**
          * 토큰에서 사용자 정보 추출 -> 사용자의 ID 추출
          * 사용자의 ID와 쿼리 파라미터로 넘어온 roomId를 이용해서 생성된 방이 있는지 찾기
@@ -118,10 +104,11 @@ public class ChatService {
             log.error("생성된 채팅방이 존재하지 않습니다.");
             return;
         }
-        BindSenderAndRoom bindSenderAndRoom = BindSenderAndRoom.builder()
-                .sender(entryId)
-                .roomId(roomId)
-                .build();
+        BindSenderAndRoom bindSenderAndRoom =
+                BindSenderAndRoom.builder()
+                    .sender(entryId)
+                    .roomId(roomId)
+                    .build();
 
         sessions.put(bindSenderAndRoom, session);
         Message message = new Message();
@@ -240,8 +227,8 @@ public class ChatService {
 
     // 채팅방 기본키 생성 어떤식으로 해야할지
     private static String createRoomId(Member createMember, Member participatingMember) {
-        return createMember.getEmail() +"-"+ createMember.getId() +"-"+
-                participatingMember.getEmail() +"-"+ participatingMember.getId();
+        return createMember.getId() +"-"+
+                participatingMember.getId();
     }
 
     private static Map<String, String> getQueryVal(WebSocketSession session) {
@@ -257,8 +244,7 @@ public class ChatService {
     }
 
     private Long getEntryId(WebSocketSession session) {
-        Long entryId = getAuthToken(session);
-        return entryId;
+        return getAuthToken(session);
     }
 
     private Long getAuthToken(WebSocketSession session) {

@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.reactive.function.BodyInserters;
+import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -22,7 +24,7 @@ public class SkinImageService {
     private final FileStore fileStore;
     private final WebConfig webConfig;
 
-    public String imageSaveAndSend(MultipartFile image, Long memberId) throws IOException {
+    public Mono<String> imageSaveAndSend(MultipartFile image, Long memberId) throws IOException {
 
         UploadFile storeFile;
         SkinImage imgInfo = new SkinImage();
@@ -31,24 +33,21 @@ public class SkinImageService {
             storeFile = fileStore.storeFile(image, memberId);
             // 저장경로 반환
             dir = storeFile.getFileDir();
+            log.info("dir : {}", dir);
+            String json = "{\"dir\": \"" + dir + "\"}";
             imgInfo.setMemberId(memberId);
             imgInfo.setDir(dir);
             imgInfo.setCreateAt(LocalDate.now());
             //            imageRepository.savePath(memberId, dir);
             // 파이썬 서버에 전송
-            webConfig.aiImageServer()
-                    .get()
-                    .uri("/{dir}", dir)
+            return webConfig.aiImageServer()
+                    .post()
+                    .body(BodyInserters.fromValue(json))
                     .retrieve()
-                    .bodyToMono(ImgResultDTO.class)
-                    .subscribe(it -> {
-                        imgInfo.setResult(it.getResult());
-                        imageRepository.saveImgInfo(imgInfo);
-                    });
+                    .bodyToMono(String.class);
         } catch (Exception e) {
             if(!dir.isEmpty()) fileStore.deleteFiles(dir);
             throw e;
         }
-        return imgInfo.getResult();
     }
 }

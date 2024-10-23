@@ -25,7 +25,7 @@ public class BoardController {
     private final JwtUtil jwtUtil;
     private final PostService service;
 
-    @PostMapping(value = "/post", consumes = "multipart/form-data")
+    @PostMapping(value = "/post", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 //    @PostMapping(value = "/post") //1
     public ResponseEntity<?> createPost(
             @RequestHeader("Authorization") String token,
@@ -81,7 +81,7 @@ public class BoardController {
     public ResponseEntity<?> showAllPost(
             @RequestHeader("Authorization") String token,
             @PathVariable("category") String category,
-            @RequestParam(name = "searchName") String searchName,
+            @RequestParam(name = "searchName", defaultValue = "") String searchName,
             @RequestParam(name = "page", defaultValue = "1") Long page,
             @RequestParam(name = "size", defaultValue = "15") Long size){
         log.info("showAllPost() Category: {}, Page: {}, Size: {}", category, page, size);
@@ -139,6 +139,8 @@ public class BoardController {
         List<MyPostDTO> posts = service.showMyPost(memberId);
         return ResponseEntity.ok(posts);
     }
+
+    //내가 좋아요 누른글 목록
     @GetMapping("/liked-posts")
     public ResponseEntity<?> likedPosts(@RequestHeader("Authorization") String token){
         Long memberId = jwtUtil.extractSubject(token);

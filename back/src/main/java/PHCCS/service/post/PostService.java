@@ -74,8 +74,6 @@ public class PostService {
             post.setAuthor(nickName);
             post.setWriteTime(dto.getWriteTime());
             post.setFileDir(storedDir);
-            post.setViewCnt(0L);
-            post.setLikeCnt(0L);
 //        post.setImageFiles(storeImgs);
 //        post.setVideoFiles(storeVids);
 

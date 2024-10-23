@@ -24,6 +24,8 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionEstablished(WebSocketSession session){
         log.info("##세션 : {}", session);
+        log.info("##uri : {}", session.getUri());
+
         chatService.enterRoom(session);
     }
 
