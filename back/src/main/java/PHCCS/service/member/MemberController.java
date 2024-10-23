@@ -9,7 +9,7 @@ import PHCCS.service.member.token.TokenService;
 import PHCCS.common.jwt.TokenStatus;
 import PHCCS.common.jwt.TokenValidationException;
 
-import PHCCS.service.member.vet.VetSignupDTO;
+import PHCCS.service.member.vet.dto.VetSignupDTO;
 import PHCCS.service.member.vet.VetService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

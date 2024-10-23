@@ -28,12 +28,9 @@ public class MemberService {
         LocalDate currentDate = LocalDate.now();
         member.setCreated(currentDate);
 
-        int resultRow = repository.save(member);
+        Boolean isSaveSuccess  = repository.save(member) > 0;
 
-        if (resultRow == 1) {
-            return true;
-        }
-        return false;
+        return isSaveSuccess;
     }
 
     public Optional<Member> findMemberByEmail(String email){

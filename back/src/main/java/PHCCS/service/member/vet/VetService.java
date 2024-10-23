@@ -2,6 +2,9 @@ package PHCCS.service.member.vet;
 
 import PHCCS.service.member.Member;
 import PHCCS.service.member.repository.MemberRepository;
+import PHCCS.service.member.vet.dto.VetRequestDTO;
+import PHCCS.service.member.vet.dto.VetSignupDTO;
+import PHCCS.service.member.vet.repository.VetRequestRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -13,7 +16,7 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 public class VetService {
 
-    final private VetRepository repository;
+    final private VetRequestRepository repository;
     final private MemberRepository memberRepository;
 
     public Boolean processSaveAndRequest(VetSignupDTO vetSignupDTO){
@@ -41,6 +44,7 @@ public class VetService {
 
         //  requestApproval(VetRequestDTO), save(member) 실행
         saveRequest(vetRequestDTO);
+
         Boolean isSaveSuccess = (memberRepository.save(member) > 0);
 
        return isSaveSuccess;

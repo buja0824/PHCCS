@@ -1,4 +1,4 @@
-package PHCCS.service.member.vet;
+package PHCCS.service.member.vet.dto;
 
 import lombok.Data;
 
