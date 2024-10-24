@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +22,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 @Slf4j
@@ -98,7 +101,7 @@ public class PostService {
             if(fileDir != null) {
                 List<String> fileNames = fileStore.findFiles(fileDir);
                 post.setFileList(fileNames);
-                post.setFileDir("");
+                post.setFileDir(fileDir);
             }
             post.setCategory(category);
             return ResponseEntity.ok(post);
@@ -151,7 +154,7 @@ public class PostService {
             afterPost.setViewCnt(beforePost.getViewCnt());
             afterPost.setFileDir(storedDir);
             afterPost.setWriteTime(beforePost.getWriteTime());
-            afterPost.setUpdateTime(param.getModifyTime());
+            afterPost.setUpdateTime(param.getModifyTime()+"");
             if(repository.save(param.getCategory(), afterPost) <=0){
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("내부 오류 발생 게시글 등록 실패");
             }else {
@@ -217,8 +220,11 @@ public class PostService {
         }
     }
 
-    public Resource sendFile(String filename, FileDTO dto) throws MalformedURLException {
+    public Path getPath(String filename, FileDTO dto) throws MalformedURLException {
         String fullPath = fileStore.getFullPath(dto.getCategory(), dto.getId(), dto.getTitle(), filename);
-        return new UrlResource("file:" + fullPath);
+        Path filePath = Paths.get(fullPath).normalize();
+//        return new UrlResource("file:" + fullPath);
+//        return new UrlResource(filePath.toUri());
+        return filePath;
     }
 }

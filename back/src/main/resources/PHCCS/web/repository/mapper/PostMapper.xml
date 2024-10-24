@@ -39,7 +39,7 @@
     </select>
     
     <select id="showPost" resultType="Post">
-        select id, member_id, nick_name, title, content, view_cnt, create_date as writeTime, update_date, file_dir
+        select id, member_id, nick_name as author , title, content, view_cnt, like_cnt, create_date as writeTime, ifnull(update_date, "--") as updateTime, file_dir
         from
         <choose>
             <when test= "category == 'qna_board'">
@@ -91,9 +91,9 @@
                 community_board
             </when>
         </choose>
-        set title = #{param.title},
-            content = #{param.content},
-            update_date = #{param.modifyTime},
+        set title = #{dto.title},
+            content = #{dto.content},
+            update_date = #{dtoe.modifyTime},
             file_dir = #{dir}
         where member_id = #{memberId} and id = #{postId}
     </update>
