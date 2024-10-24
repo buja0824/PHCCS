@@ -5,15 +5,20 @@ import PHCCS.common.jwt.JwtUtil;
 import PHCCS.common.file.FileDTO;
 
 import PHCCS.service.post.dto.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.print.attribute.standard.Media;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 @Slf4j
@@ -24,18 +29,19 @@ public class BoardController {
 
     private final JwtUtil jwtUtil;
     private final PostService service;
-
-    @PostMapping(value = "/post", consumes = "multipart/form-data")
+    private final ObjectMapper mapper = new ObjectMapper();
+    @PostMapping(value = "/post", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 //    @PostMapping(value = "/post") //1
     public ResponseEntity<?> createPost(
             @RequestHeader("Authorization") String token,
 //            @RequestBody PostDTO dto,
-            @RequestPart("dto") PostDTO dto,
+            @RequestPart("dto") String dtoJson,
             @RequestPart(value = "imageFiles", required = false) List<MultipartFile> imageFiles,
             @RequestPart(value = "videoFiles", required = false) List<MultipartFile> videoFiles) throws IOException {
 
         log.info("|co|createPost()");
         Long memberId = jwtUtil.extractSubject(token);
+        PostDTO dto = mapper.readValue(dtoJson, PostDTO.class);
 
         ResponseEntity<?> save = service.save(memberId, dto, imageFiles, videoFiles);
         return save;
@@ -53,35 +59,42 @@ public class BoardController {
         return post;
     }
 
-    @GetMapping("/image/{uuid}")
-    public ResponseEntity<Resource> sendImgFile(
+    @GetMapping("/file/{uuid}")
+    public ResponseEntity<Resource> getFile(
             @PathVariable("uuid") String filename,
-            @RequestBody FileDTO dto) throws MalformedURLException {
-        Resource resource = service.sendFile(filename, dto);
-        MediaType mediaType = determineImgMediaType(filename);
+            @RequestBody FileDTO dto) throws IOException {
 
+        Path path = service.getPath(filename, dto);
+        log.info("path: {} ", path);
+//        MediaType mediaType = determineImgMediaType(filename);
+        MediaType mediaType = MediaType.parseMediaType(Files.probeContentType(path));
+        log.info("mediaType: {}", mediaType);
+        Resource resource = new UrlResource(path.toUri());
+        log.info("resource: {}", resource);
         return ResponseEntity.ok()
                 .contentType(mediaType)
                 .body(resource);
     }
-    @GetMapping("/video/{uuid}")
-    public ResponseEntity<Resource> sendVidFile(
-            @PathVariable("uuid") String filename,
-            @RequestBody FileDTO dto) throws MalformedURLException {
-
-        Resource resource = service.sendFile(filename, dto);
-        MediaType mediaType = determineVideoMediaType(filename);
-
-        return ResponseEntity.ok()
-                .contentType(mediaType)
-                .body(resource);
-    }
+//    @GetMapping("/video/{uuid}")
+//    public ResponseEntity<Resource> getVidFile(
+//            @PathVariable("uuid") String filename,
+//            @RequestBody FileDTO dto) throws MalformedURLException {
+//
+//        Resource resource = service.sendFile(filename, dto);
+//        log.info("resource: {} ", resource);
+//        MediaType mediaType = determineVideoMediaType(filename);
+//        log.info("mediaType: {}", mediaType);
+//
+//        return ResponseEntity.ok()
+//                .contentType(mediaType)
+//                .body(resource);
+//    }
 
     @GetMapping("/show/{category}")
     public ResponseEntity<?> showAllPost(
             @RequestHeader("Authorization") String token,
             @PathVariable("category") String category,
-            @RequestParam(name = "searchName") String searchName,
+            @RequestParam(name = "searchName", defaultValue = "") String searchName,
             @RequestParam(name = "page", defaultValue = "1") Long page,
             @RequestParam(name = "size", defaultValue = "15") Long size){
         log.info("showAllPost() Category: {}, Page: {}, Size: {}", category, page, size);
@@ -97,12 +110,12 @@ public class BoardController {
         return ResponseEntity.ok(posts);
     }
 
-    @PutMapping(value = "/update/{category}/{id}", consumes = "multipart/form-data")
+    @PutMapping(value = "/update/{category}/{id}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updatePost(
             @RequestHeader("Authorization") String token,
             @PathVariable("category") String category,
             @PathVariable("id") Long postId,
-            @RequestPart("updateParam") PostUpdateDTO updateParam,
+            @RequestPart("updateParam") String updateDTO,
             @RequestPart(value = "imageFiles", required = false) List<MultipartFile> imgFiles,
             @RequestPart(value = "videoFiles", required = false) List<MultipartFile> vidFiles) throws IOException {
 
@@ -110,10 +123,7 @@ public class BoardController {
         log.info("imgFiles = {}", imgFiles);
         log.info("vidFiles = {}", vidFiles);
         Long memberId = jwtUtil.extractSubject(token);
-
-//        if(!isLogin(loginMember)){
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인하지 않은 사용자는 접근할 수 없습니다.");
-//        }
+        PostUpdateDTO updateParam = mapper.readValue(updateDTO, PostUpdateDTO.class);
         ResponseEntity<?> responseEntity = service.updatePost(memberId, category, postId, updateParam, imgFiles, vidFiles);
         return responseEntity;
     }
@@ -139,6 +149,8 @@ public class BoardController {
         List<MyPostDTO> posts = service.showMyPost(memberId);
         return ResponseEntity.ok(posts);
     }
+
+    //내가 좋아요 누른글 목록
     @GetMapping("/liked-posts")
     public ResponseEntity<?> likedPosts(@RequestHeader("Authorization") String token){
         Long memberId = jwtUtil.extractSubject(token);
