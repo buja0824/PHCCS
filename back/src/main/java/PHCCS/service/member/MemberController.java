@@ -58,6 +58,8 @@ public class MemberController {
     // 수의사 회원 가입
     @PostMapping("/auth/signup/vet")
     public ResponseEntity<?> addVet(@RequestBody VetSignupDTO vetSignupDTO) {
+        log.info("MemberController - addVet 시작");
+        log.info("addVet - VetSignupDTO: {}", vetSignupDTO);
 
         /**
         // 서비스에서 중복 체크
@@ -76,8 +78,10 @@ public class MemberController {
         Boolean isSuccess = vetService.processSaveAndRequest(vetSignupDTO);
 
         if(isSuccess) {
+            log.info("MemberController - addVet 완료");
             return ResponseEntity.ok("수의사 회원 가입이 완료되었습니다.");
         } else {
+            log.info("MemberController - addVet 오류");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원가입 저장 중 오류");
         }
     }

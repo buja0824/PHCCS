@@ -1,8 +1,10 @@
 package PHCCS.service.member.vet.dto;
 
 import lombok.Data;
+import lombok.ToString;
 
 @Data
+@ToString
 public class VetSignupDTO {
     // member 정보
     private Long id;

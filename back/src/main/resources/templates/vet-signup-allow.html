@@ -14,7 +14,9 @@
         <tr>
             <th>이름</th>
             <th>이메일</th>
+            <th>면허번호</th>
             <th>병원 이름</th>
+            <th>병원 주소</th>
             <th>신청일</th>
             <th>승인</th>
         </tr>
@@ -24,7 +26,9 @@
         <tr th:each="request : ${pendingRequests}">
             <td th:text="${request.name}"></td>
             <td th:text="${request.email}"></td>
+            <td th:text="${request.licenseNo}"></td> <!-- 면허번호 추가 -->
             <td th:text="${request.hospitalName}"></td>
+            <td th:text="${request.hospitalAddr}"></td> <!-- 병원 주소 추가 -->
             <td th:text="${request.requestDate}"></td>
             <td>
                 <!-- 승인 버튼 -->

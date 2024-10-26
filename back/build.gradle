@@ -28,6 +28,8 @@ dependencies {
 	testCompileOnly 'org.projectlombok:lombok'
 	testAnnotationProcessor 'org.projectlombok:lombok'
 
+	// Thymeleaf
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	// swagger
 	implementation 'io.springfox:springfox-swagger-ui:3.0.0'
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'

@@ -21,9 +21,11 @@ public class AdminController {
 
     @GetMapping("/admin")
     public String admin(Model model){ // 모델 호출
-        log.info("admin 호출");
+        log.info("AdminController - admin 실행");
         List<VetRequestModel> vetRequestModels = vetRequestRepository.findAll(); // 디비 에서 값 꺼내기 ( 임시라 메모리로 함)
+        log.info("admin - List<VetRequestModel>: {}", vetRequestModels);
         model.addAttribute("pendingRequests", vetRequestModels); // 모델에 값 넣기
+        log.info("AdminController - admin 완료");
         return "vet-signup-allow"; // html 파일
     }
 

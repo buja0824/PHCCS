@@ -20,6 +20,8 @@ public class VetService {
     final private MemberRepository memberRepository;
 
     public Boolean processSaveAndRequest(VetSignupDTO vetSignupDTO){
+        log.info("VetService - processSaveAndRequest 실행");
+        log.info("processSaveAndRequest - VetSignupDTO: {}", vetSignupDTO);
         VetRequestDTO vetRequestDTO = new VetRequestDTO();
         Member member = new Member();
 
@@ -28,8 +30,9 @@ public class VetService {
         vetRequestDTO.setEmail(vetSignupDTO.getEmail());
         vetRequestDTO.setName(vetSignupDTO.getName());
         vetRequestDTO.setHospitalName(vetSignupDTO.getHospitalName());
-        vetRequestDTO.setHospitalAddr(vetRequestDTO.getHospitalAddr());
+        vetRequestDTO.setHospitalAddr(vetSignupDTO.getHospitalAddr());
         vetRequestDTO.setRequestDate(LocalDate.now());
+        log.info("processSaveAndRequest - VetRequestDTO: {}", vetRequestDTO);
 
         // VetSignupDTO -> Member로 나누기
         member.setEmail(vetSignupDTO.getEmail());
@@ -40,21 +43,22 @@ public class VetService {
         member.setCreated(LocalDate.now());
         // 우선 일반회원으로 권한 설정 어드민 인증후 1로 변경
         member.setRole(0);
+        log.info("processSaveAndRequest - Member: {}", member);
 
 
         //  requestApproval(VetRequestDTO), save(member) 실행
+        Boolean isSaveSuccess = (memberRepository.save(member) > 0);
         saveRequest(vetRequestDTO);
 
-        Boolean isSaveSuccess = (memberRepository.save(member) > 0);
-
+        log.info("processSaveAndRequest 완료");
        return isSaveSuccess;
     }
     public boolean saveRequest(VetRequestDTO vetRequestDTO){
-
-        vetRequestDTO.setRequestDate(LocalDate.now());
-
+        log.info("VetService - saveRequest 실행");
+        log.info("saveRequest - VetRequestDTO: {}", vetRequestDTO);
         Boolean isSaveRequestSuccess = repository.save(vetRequestDTO) > 0;
 
+        log.info("VetService - saveRequest 완료");
        return isSaveRequestSuccess;
     }
 

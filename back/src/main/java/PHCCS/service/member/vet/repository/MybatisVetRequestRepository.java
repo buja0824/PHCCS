@@ -17,12 +17,15 @@ public class MybatisVetRequestRepository implements VetRequestRepository {
 
     @Override
     public int save(VetRequestDTO vetRequestDTO) {
+        log.info("MybatisVetRequestRepository - save 실행");
         int save = mapper.save(vetRequestDTO);
+        log.info("MybatisVetRequestRepository - save 완료");
         return save;
     }
 
     @Override
     public List<VetRequestModel> findAll(){
+        log.info("MybatisVetRequestRepository - findAll 실행");
         return mapper.findAll();
     }
 }

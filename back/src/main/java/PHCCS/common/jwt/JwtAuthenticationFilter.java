@@ -13,7 +13,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter implements Filter {
 
-    private static final String[] whitelist = {"/", "/auth/signup", "/auth/signin", "/auth/refresh", "/css/*", "/v3/**","/swagger-ui/**" };
+    private static final String[] whitelist = {"/", "/auth/signup/*", "/auth/signin", "/auth/refresh", "/css/*", "/v3/**","/swagger-ui/**", "/admin" };
 
     private final JwtUtil jwtUtil;
 

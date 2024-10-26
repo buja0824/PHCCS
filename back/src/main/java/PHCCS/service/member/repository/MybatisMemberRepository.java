@@ -19,7 +19,9 @@ public class MybatisMemberRepository implements MemberRepository {
 
     @Override
     public int save(Member member) {
+        log.info("MybatisMemberRepository - save 실행");
         int save = mapper.save(member);
+        log.info("MybatisMemberRepository - save 완료");
         return save;
     }
 

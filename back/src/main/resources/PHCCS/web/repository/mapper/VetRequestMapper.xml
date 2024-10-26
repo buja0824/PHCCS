@@ -6,8 +6,8 @@
 <mapper namespace="PHCCS.service.member.vet.repository.mapper.VetRequestMapper">
 
     <insert id="save" useGeneratedKeys="true" keyProperty="id">
-        insert into member(license_no, email, name,hospital_name, hospital_addr, request_date)
-        values (#{licenseNo}, #{email}, #{name}, #{hospitalName}, #{hospitalAddr} #{requestDate})
+        insert into vet_request (license_no, email, name, hospital_name, hospital_addr, request_date)
+        values (#{licenseNo}, #{email}, #{name}, #{hospitalName}, #{hospitalAddr}, #{requestDate})
     </insert>
 
     <!-- 모든 VetRequestModel을 조회하는 select문 -->
@@ -16,6 +16,5 @@
         hospital_addr AS hospitalAddr, request_date AS requestDate
         from vet_request
     </select>
-
 
 </mapper>
