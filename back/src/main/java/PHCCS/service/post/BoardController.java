@@ -1,5 +1,6 @@
 package PHCCS.service.post;
 
+import PHCCS.common.exception.InternalServerEx;
 import PHCCS.service.member.Member;
 import PHCCS.common.jwt.JwtUtil;
 import PHCCS.common.file.FileDTO;
@@ -8,10 +9,12 @@ import PHCCS.service.post.dto.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.BadRequestException;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.print.attribute.standard.Media;
@@ -75,20 +78,6 @@ public class BoardController {
                 .contentType(mediaType)
                 .body(resource);
     }
-//    @GetMapping("/video/{uuid}")
-//    public ResponseEntity<Resource> getVidFile(
-//            @PathVariable("uuid") String filename,
-//            @RequestBody FileDTO dto) throws MalformedURLException {
-//
-//        Resource resource = service.sendFile(filename, dto);
-//        log.info("resource: {} ", resource);
-//        MediaType mediaType = determineVideoMediaType(filename);
-//        log.info("mediaType: {}", mediaType);
-//
-//        return ResponseEntity.ok()
-//                .contentType(mediaType)
-//                .body(resource);
-//    }
 
     @GetMapping("/show/{category}")
     public ResponseEntity<?> showAllPost(
@@ -159,7 +148,6 @@ public class BoardController {
         return ResponseEntity.ok(likedPosts);
     }
 
-
     @PostMapping("/like/{category}/{id}")
     public ResponseEntity<?> likePost(
         @RequestHeader("Authorization") String token,
@@ -179,31 +167,31 @@ public class BoardController {
         if(loginMember == null) return false;
         else return true;
     }
-
-    private MediaType determineImgMediaType(String filename) {
-        if (filename.endsWith(".jpg")) {
-            return MediaType.IMAGE_JPEG;
-        } else if (filename.endsWith(".jpeg")) {
-            return MediaType.IMAGE_JPEG;
-        } else if (filename.endsWith(".png")) {
-            return MediaType.IMAGE_PNG;
-        } else if (filename.endsWith(".gif")) {
-            return MediaType.IMAGE_GIF;
-        }
-        return MediaType.ALL;
-    }
-
-    private MediaType determineVideoMediaType(String filename) {
-        if (filename.endsWith(".mp4")) {
-            return MediaType.parseMediaType("video/mp4");
-        } else if (filename.endsWith(".avi")) {
-            return MediaType.parseMediaType("video/x-msvideo");
-        } else if (filename.endsWith(".mov")) {
-            return MediaType.parseMediaType("video/quicktime");
-        } else if (filename.endsWith(".mkv")) {
-            return MediaType.parseMediaType("video/x-matroska");
-        }
-        return MediaType.APPLICATION_OCTET_STREAM; // 기본 값인데 이걸 보내는게 맞나?
-    }
+//
+//    private MediaType determineImgMediaType(String filename) {
+//        if (filename.endsWith(".jpg")) {
+//            return MediaType.IMAGE_JPEG;
+//        } else if (filename.endsWith(".jpeg")) {
+//            return MediaType.IMAGE_JPEG;
+//        } else if (filename.endsWith(".png")) {
+//            return MediaType.IMAGE_PNG;
+//        } else if (filename.endsWith(".gif")) {
+//            return MediaType.IMAGE_GIF;
+//        }
+//        return MediaType.ALL;
+//    }
+//
+//    private MediaType determineVideoMediaType(String filename) {
+//        if (filename.endsWith(".mp4")) {
+//            return MediaType.parseMediaType("video/mp4");
+//        } else if (filename.endsWith(".avi")) {
+//            return MediaType.parseMediaType("video/x-msvideo");
+//        } else if (filename.endsWith(".mov")) {
+//            return MediaType.parseMediaType("video/quicktime");
+//        } else if (filename.endsWith(".mkv")) {
+//            return MediaType.parseMediaType("video/x-matroska");
+//        }
+//        return MediaType.APPLICATION_OCTET_STREAM; // 기본 값인데 이걸 보내는게 맞나?
+//    }
 
 }
