@@ -38,8 +38,8 @@ public class MybatisPetRepository implements PetRepository {
     }
 
     @Override
-    public void deletePet(Long memberId, List<String> petNames ) {
-        mapper.deletePet(memberId, petNames);
+    public int deletePet(Long memberId, List<String> petNames ) {
+        return mapper.deletePet(memberId, petNames);
     }
 
     @Override

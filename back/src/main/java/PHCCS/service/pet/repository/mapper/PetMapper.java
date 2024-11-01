@@ -17,7 +17,7 @@ public interface PetMapper {
 
     void updatePet(@Param("memberId") Long memberId, @Param("name") String name, @Param("updateDto") PetUpdateDTO updateDto);
 
-    void deletePet(@Param("memberId") Long memberId, @Param("petNames") List<String> petNames);
+    int deletePet(@Param("memberId") Long memberId, @Param("petNames") List<String> petNames);
 
     void testDelete();
 }

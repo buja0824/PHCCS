@@ -1,5 +1,6 @@
 package PHCCS.service.post;
 
+import PHCCS.common.exception.BadRequestEx;
 import PHCCS.service.member.Member;
 import PHCCS.common.jwt.JwtUtil;
 import PHCCS.common.file.FileDTO;
@@ -41,8 +42,8 @@ public class BoardController {
         Long memberId = jwtUtil.extractSubject(token);
         PostDTO dto = mapper.readValue(dtoJson, PostDTO.class);
 
-        ResponseEntity<?> save = service.save(memberId, dto, imageFiles, videoFiles);
-        return save;
+        service.save(memberId, dto, imageFiles, videoFiles);
+        return ResponseEntity.ok().body("게시글을 등록 하였습니다.");
     }
 
     @GetMapping("/show/{category}/{id}")
@@ -53,8 +54,8 @@ public class BoardController {
         log.info("showPost()");
         Long memberId = jwtUtil.extractSubject(token);
 
-        ResponseEntity<?> post = service.showPost(category, id);
-        return post;
+        Post post = service.showPost(category, id);
+        return ResponseEntity.ok(post);
     }
 
     @GetMapping("/file/{uuid}")
@@ -85,8 +86,10 @@ public class BoardController {
 //        if(!isLogin(loginMember)){
 //            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인하지 않은 사용자는 접근할 수 없습니다.");
 //        }
-        if(category == null || category.isEmpty())
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("잘못된 접근 입니다.");
+        if(category == null || category.isEmpty()) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("잘못된 접근 입니다.");
+            throw new BadRequestEx("잘못된 접근 입니다.");
+        }
         log.info("searchName = {}", searchName);
 
         List<PostHeaderDTO> posts = service.showAllPost(category,searchName, page, size);
@@ -108,8 +111,9 @@ public class BoardController {
         log.info("vidFiles = {}", vidFiles);
         Long memberId = jwtUtil.extractSubject(token);
         PostUpdateDTO updateParam = mapper.readValue(updateDTO, PostUpdateDTO.class);
-        ResponseEntity<?> responseEntity = service.updatePost(memberId, category, postId, updateParam, imgFiles, vidFiles);
-        return responseEntity;
+//        ResponseEntity<?> responseEntity = service.updatePost(memberId, category, postId, updateParam, imgFiles, vidFiles);
+        service.updatePost(memberId, category, postId, updateParam, imgFiles, vidFiles);
+        return ResponseEntity.ok("수정완료");
     }
 
     @DeleteMapping("/delete/{category}/{id}")

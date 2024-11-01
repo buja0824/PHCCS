@@ -1,5 +1,6 @@
 package PHCCS.service.pet;
 
+import PHCCS.common.exception.BadRequestEx;
 import PHCCS.service.pet.dto.PetDTO;
 import PHCCS.service.pet.dto.PetUpdateDTO;
 import PHCCS.service.pet.repository.PetRepository;
@@ -28,7 +29,8 @@ public class PetService {
 
         int resultRow = repository.save(pet);
         if (resultRow < 0) {
-            return ResponseEntity.badRequest().body("펫 등록에 실패하였습니다.");
+            throw new BadRequestEx("반려동물 등록에 실패 했습니다.");
+
         }
         return ResponseEntity.ok("정상적으로 등록 되었습니다.");
     }
@@ -46,11 +48,11 @@ public class PetService {
         repository.updatePet(memberId, petName, updateParam);
     }
 
-    public void deletePet(Long memberId, List<String> petNames){
+    public int deletePet(Long memberId, List<String> petNames){
         if(petNames.isEmpty() || petNames == null){
-            throw new IllegalArgumentException("삭제할 데이터가 없습니다.");
+            throw new BadRequestEx("삭제할 데이터가 없습니다.");
         }
-        repository.deletePet(memberId, petNames);
+        return repository.deletePet(memberId, petNames);
     }
 
     public void testDelete(){
