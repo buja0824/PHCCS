@@ -1,6 +1,7 @@
 package PHCCS.service.post;
 
 import PHCCS.common.exception.BadRequestEx;
+import PHCCS.common.response.ApiResponse;
 import PHCCS.service.member.Member;
 import PHCCS.common.jwt.JwtUtil;
 import PHCCS.common.file.FileDTO;
@@ -43,7 +44,7 @@ public class BoardController {
         PostDTO dto = mapper.readValue(dtoJson, PostDTO.class);
 
         service.save(memberId, dto, imageFiles, videoFiles);
-        return ResponseEntity.ok().body("게시글을 등록 하였습니다.");
+        return ApiResponse.successCreate();
     }
 
     @GetMapping("/show/{category}/{id}")
@@ -113,7 +114,7 @@ public class BoardController {
         PostUpdateDTO updateParam = mapper.readValue(updateDTO, PostUpdateDTO.class);
 //        ResponseEntity<?> responseEntity = service.updatePost(memberId, category, postId, updateParam, imgFiles, vidFiles);
         service.updatePost(memberId, category, postId, updateParam, imgFiles, vidFiles);
-        return ResponseEntity.ok("수정완료");
+        return ApiResponse.successUpdate();
     }
 
     @DeleteMapping("/delete/{category}/{id}")
@@ -128,7 +129,7 @@ public class BoardController {
         Long memberId = jwtUtil.extractSubject(token);
 
         service.deletePost(category, memberId, postId);
-        return ResponseEntity.ok().body("삭제 완료");
+        return ApiResponse.successDelete();
     }
 
     @GetMapping("/my")

@@ -190,6 +190,10 @@ public class PostService {
     public void deletePost(String category, Long memberId, Long postId){
         log.info("|se|deletePost()");
         String findFileDir = repository.findPostDir(category, postId);
+
+        Post post = repository.showPost(category, postId);
+        if(post == null) throw new BadRequestEx("게시글이 존재하지 않습니다.");
+
         repository.deletePost(category, memberId, postId);
 
         if(findFileDir != null){

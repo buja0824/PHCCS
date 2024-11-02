@@ -1,6 +1,7 @@
 package PHCCS.service.pet.repository;
 
 import PHCCS.service.pet.Pet;
+import PHCCS.service.pet.dto.PetDTO;
 import PHCCS.service.pet.dto.PetUpdateDTO;
 import PHCCS.service.pet.repository.mapper.PetMapper;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +28,7 @@ public class MybatisPetRepository implements PetRepository {
     }
 
     @Override
-    public List<Pet> findPetsByMember(Long id) {
+    public List<PetDTO> findPetsByMember(Long id) {
         return mapper.findPetsByMember(id);
     }
 
@@ -38,8 +39,8 @@ public class MybatisPetRepository implements PetRepository {
     }
 
     @Override
-    public int deletePet(Long memberId, List<String> petNames ) {
-        return mapper.deletePet(memberId, petNames);
+    public int deletePet(Long memberId, List<String> regNo ) {
+        return mapper.deletePet(memberId, regNo);
     }
 
     @Override

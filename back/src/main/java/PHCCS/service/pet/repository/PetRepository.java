@@ -1,6 +1,7 @@
 package PHCCS.service.pet.repository;
 
 import PHCCS.service.pet.Pet;
+import PHCCS.service.pet.dto.PetDTO;
 import PHCCS.service.pet.dto.PetUpdateDTO;
 
 import java.util.List;
@@ -11,9 +12,9 @@ public interface PetRepository {
 
     Pet findByRegNo(String regNo);
 
-    List<Pet> findPetsByMember(Long id);
+    List<PetDTO> findPetsByMember(Long id);
 
     void updatePet(Long memberId, String name, PetUpdateDTO updateDto);
-    int deletePet(Long memberId, List<String> petNames);
+    int deletePet(Long memberId, List<String> regNo);
     void testDelete();
 }
