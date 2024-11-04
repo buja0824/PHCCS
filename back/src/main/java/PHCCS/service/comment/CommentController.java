@@ -1,6 +1,9 @@
 package PHCCS.service.comment;
 
+import PHCCS.common.exception.BadRequestEx;
+import PHCCS.common.exception.InternalServerEx;
 import PHCCS.common.jwt.JwtUtil;
+import PHCCS.common.response.ApiResponse;
 import PHCCS.common.sse.SSEService;
 import PHCCS.service.comment.dto.CommentDTO;
 import lombok.RequiredArgsConstructor;
@@ -32,14 +35,18 @@ public class CommentController {
         log.info("postComment()");
         Long loginMember = jwtUtil.extractSubject(token);
         if(loginMember == null){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인하지 않은 사용자는 접근할 수 없습니다.");
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인하지 않은 사용자는 접근할 수 없습니다.");
+            throw new BadRequestEx("로그인하지 않은 사용자는 접근할 수 없습니다.");
         }
         boolean isSave = service.save(category, postId, comment);
         if(isSave){
             sseService.addCommentAlarm(category, postId, comment);
-            return ResponseEntity.ok("댓글 저장이 완료되었습니다.");
+//            return ResponseEntity.ok("댓글 저장이 완료되었습니다.");
+            return ApiResponse.successCreate();
+        }else {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("댓글 저장에 오류가 발생하였습니다.");
+            throw new InternalServerEx("댓글 저장에 오류가 발생했습니다.");
         }
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("댓글 저장에 오류가 발생하였습니다.");
     }
 
     @GetMapping("/show/{category}/{id}")
@@ -52,7 +59,8 @@ public class CommentController {
         log.info("findAllComment()");
         Long loginMember = jwtUtil.extractSubject(token);
         if(loginMember == null){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인하지 않은 사용자는 접근할 수 없습니다.");
+            //            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인하지 않은 사용자는 접근할 수 없습니다.");
+            throw new BadRequestEx("로그인하지 않은 사용자는 접근할 수 없습니다.");
         }
         List<Comment> allComment = service.findAllComment(category, postId);
         return ResponseEntity.ok(allComment);
@@ -70,11 +78,12 @@ public class CommentController {
         log.info("updateComment()");
         Long loginMember = jwtUtil.extractSubject(token);
         if(loginMember == null){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인하지 않은 사용자는 접근할 수 없습니다.");
+            //            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인하지 않은 사용자는 접근할 수 없습니다.");
+            throw new BadRequestEx("로그인하지 않은 사용자는 접근할 수 없습니다.");
         }
         service.updateComment(category, postId, commentId, dto);
 
-        return ResponseEntity.ok(HttpStatus.OK);
+        return ApiResponse.successUpdate();
     }
 
     @DeleteMapping("delete/{category}/{postId}/{commentId}")
@@ -88,10 +97,11 @@ public class CommentController {
         log.info("deleteComment()");
         Long loginMember = jwtUtil.extractSubject(token);
         if(loginMember == null){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인하지 않은 사용자는 접근할 수 없습니다.");
+            //            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인하지 않은 사용자는 접근할 수 없습니다.");
+            throw new BadRequestEx("로그인하지 않은 사용자는 접근할 수 없습니다.");
         }
         service.deleteComment(category, postId, commentId);
-        return null;
+        return ApiResponse.successDelete();
     }
 
     @PostMapping("/like/{category}/{postId}/{commentId}")
@@ -104,11 +114,13 @@ public class CommentController {
         log.info("incrementLike()");
         Long loginMember = jwtUtil.extractSubject(token);
         if(loginMember == null){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인하지 않은 사용자는 접근할 수 없습니다.");
+            //            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인하지 않은 사용자는 접근할 수 없습니다.");
+            throw new BadRequestEx("로그인하지 않은 사용자는 접근할 수 없습니다.");
         }
         boolean like = service.incrementLike(loginMember, category, postId, commentId);
         if(like){
-            return ResponseEntity.ok(HttpStatus.OK);
+//            return ResponseEntity.ok(HttpStatus.OK);
+            return ApiResponse.successCreate();
         }else{
             return ResponseEntity.ok("이미 좋아요를 누른 댓글");
         }

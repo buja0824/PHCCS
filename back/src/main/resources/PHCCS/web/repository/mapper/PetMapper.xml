@@ -10,7 +10,7 @@
         values (#{pet.memberId}, #{pet.petName}, #{pet.petBreed}, #{pet.petAge}, #{pet.petGender}, #{pet.petRegNo})
     </insert>
 
-    <select id="findPetsByMember" resultType="Pet">
+    <select id="findPetsByMember" resultType="PetDTO">
         select name as petName, age as petAge, breed as petBreed, gender as petGender, reg_no as petRegNo
         from member_pet
         where member_id = #{id}
@@ -34,9 +34,9 @@
     <delete id="deletePet">
         delete
         from member_pet
-        where member_id = #{memberId} and name in
-        <foreach item="petName" collection="petNames" open="(" separator="," close=")">
-            #{petName}
+        where member_id = #{memberId} and reg_no in
+        <foreach item="regNo" collection="regNos" open="(" separator="," close=")">
+            #{regNo}
         </foreach>
     </delete>
 
