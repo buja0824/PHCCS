@@ -1,12 +1,13 @@
 package PHCCS.service.pet;
 
+import PHCCS.common.exception.BadRequestEx;
 import PHCCS.service.pet.dto.PetDTO;
 import PHCCS.service.pet.dto.PetUpdateDTO;
 import PHCCS.service.pet.repository.PetRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -17,7 +18,7 @@ public class PetService {
 
     private final PetRepository repository;
 
-    public ResponseEntity<?> save(Long memberId, PetDTO dto) {
+    public void save(Long memberId, PetDTO dto) {
         Pet pet = new Pet();
         pet.setPetRegNo(dto.getPetRegNo());
         pet.setMemberId(memberId);
@@ -28,12 +29,11 @@ public class PetService {
 
         int resultRow = repository.save(pet);
         if (resultRow < 0) {
-            return ResponseEntity.badRequest().body("펫 등록에 실패하였습니다.");
+            throw new BadRequestEx("반려동물 등록에 실패 했습니다.");
         }
-        return ResponseEntity.ok("정상적으로 등록 되었습니다.");
     }
 
-    public List<Pet> findPetsByMember(Long id){
+    public List<PetDTO> findPetsByMember(Long id){
         return repository.findPetsByMember(id);
     }
 
@@ -46,11 +46,15 @@ public class PetService {
         repository.updatePet(memberId, petName, updateParam);
     }
 
-    public void deletePet(Long memberId, List<String> petNames){
-        if(petNames.isEmpty() || petNames == null){
-            throw new IllegalArgumentException("삭제할 데이터가 없습니다.");
+    public void deletePet(Long memberId, List<String> regNo){
+        if(regNo.isEmpty()){
+            throw new BadRequestEx("반려동물을 선택해주세요.");
         }
-        repository.deletePet(memberId, petNames);
+        regNo.forEach(it -> {
+            Pet pet = repository.findByRegNo(it);
+            if(pet==null) throw new BadRequestEx("반려동물이 존재하지 않습니다.");
+        });
+        repository.deletePet(memberId, regNo);
     }
 
     public void testDelete(){

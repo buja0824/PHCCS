@@ -1,5 +1,7 @@
 package PHCCS.service.post;
 
+import PHCCS.common.exception.BadRequestEx;
+import PHCCS.common.exception.InternalServerEx;
 import PHCCS.common.file.UploadFile;
 import PHCCS.common.file.FileStore;
 import PHCCS.common.file.FileDTO;
@@ -37,7 +39,7 @@ public class PostService {
     private final FileStore fileStore;
 
     @Transactional
-    public ResponseEntity<?> save(Long memberId, PostDTO dto, List<MultipartFile> imageFiles, List<MultipartFile> videoFiles) throws IOException {
+    public void save(Long memberId, PostDTO dto, List<MultipartFile> imageFiles, List<MultipartFile> videoFiles) throws IOException {
 
         String storedDir = null;
         List<UploadFile> storeImgs = null;
@@ -81,21 +83,23 @@ public class PostService {
 //        post.setVideoFiles(storeVids);
 
             if (repository.save(dto.getCategory(), post) <= 0) {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("내부 오류 발생 게시글 등록 실패");
+//                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("내부 오류 발생 게시글 등록 실패");
+                throw new InternalServerEx("내부 오류 발생 게시글 등록 실패");
             }
         }catch (Exception e){
             if(storeImgs != null || storeVids != null) fileStore.deleteFiles(storedDir);
             throw e;
         }
-        return ResponseEntity.ok("게시글을 등록 하였습니다.");
+//        return ResponseEntity.ok("게시글을 등록 하였습니다.");
     }
     @Transactional
-    public ResponseEntity<?> showPost(String category, Long id){
+    public Post showPost(String category, Long id){
         if(category != null && !category.isEmpty() && id != 0L){
             repository.incrementViewCount(category, id);
             Post post = repository.showPost(category, id);
             if(post == null){
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("게시글을 찾을 수 없습니다.");
+//                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("게시글을 찾을 수 없습니다.");
+                throw new BadRequestEx("게시글을 찾을 수 없습니다.");
             }
             String fileDir = post.getFileDir();
             if(fileDir != null) {
@@ -104,9 +108,11 @@ public class PostService {
                 post.setFileDir(fileDir);
             }
             post.setCategory(category);
-            return ResponseEntity.ok(post);
+//            return ResponseEntity.ok(post);
+            return post;
         }else{
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("게시글을 찾을수 없습니다.");
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("게시글을 찾을수 없습니다.");
+            throw new BadRequestEx("게시글을 찾을 수 없습니다.");
         }
     }
 
@@ -134,7 +140,7 @@ public class PostService {
      * 수정에 관해서는 디렉터리의 파일들을 삭제하고 재등록하는 과정이 존재하니 트랜잭션의 적용이 필요해보임
      */
     @Transactional
-    public ResponseEntity<?> updatePost(Long memberId, String category, Long postId, PostUpdateDTO param, List<MultipartFile> imgs, List<MultipartFile> vids) throws IOException {
+    public void updatePost(Long memberId, String category, Long postId, PostUpdateDTO param, List<MultipartFile> imgs, List<MultipartFile> vids) throws IOException {
         log.info("|se|updatePost()");
         String storedDir =
                 fileDir + param.getCategory() + "/" + memberId + "/" + param.getTitle() +"/"; // 새로운 저장 경로
@@ -156,7 +162,8 @@ public class PostService {
             afterPost.setWriteTime(beforePost.getWriteTime());
             afterPost.setUpdateTime(param.getModifyTime()+"");
             if(repository.save(param.getCategory(), afterPost) <=0){
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("내부 오류 발생 게시글 등록 실패");
+//                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("내부 오류 발생 게시글 등록 실패");
+                throw new InternalServerEx("내부 오류 발생 게시글 등록 실패");
             }else {
                 repository.deletePost(category, memberId, postId);
                 log.info("삭제 끝");
@@ -176,13 +183,17 @@ public class PostService {
         if(vids != null && !vids.isEmpty()){
             fileStore.storeFiles(vids, memberId, param.getTitle(), param.getCategory());
         }
-        return ResponseEntity.ok().body("수정완료");
+//        return ResponseEntity.ok().body("수정완료");
     }
 
     @Transactional
     public void deletePost(String category, Long memberId, Long postId){
         log.info("|se|deletePost()");
         String findFileDir = repository.findPostDir(category, postId);
+
+        Post post = repository.showPost(category, postId);
+        if(post == null) throw new BadRequestEx("게시글이 존재하지 않습니다.");
+
         repository.deletePost(category, memberId, postId);
 
         if(findFileDir != null){

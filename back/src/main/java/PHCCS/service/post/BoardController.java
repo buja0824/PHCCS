@@ -1,5 +1,7 @@
 package PHCCS.service.post;
 
+import PHCCS.common.exception.BadRequestEx;
+import PHCCS.common.response.ApiResponse;
 import PHCCS.service.member.Member;
 import PHCCS.common.jwt.JwtUtil;
 import PHCCS.common.file.FileDTO;
@@ -14,9 +16,7 @@ import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.print.attribute.standard.Media;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -43,8 +43,8 @@ public class BoardController {
         Long memberId = jwtUtil.extractSubject(token);
         PostDTO dto = mapper.readValue(dtoJson, PostDTO.class);
 
-        ResponseEntity<?> save = service.save(memberId, dto, imageFiles, videoFiles);
-        return save;
+        service.save(memberId, dto, imageFiles, videoFiles);
+        return ApiResponse.successCreate();
     }
 
     @GetMapping("/show/{category}/{id}")
@@ -55,8 +55,8 @@ public class BoardController {
         log.info("showPost()");
         Long memberId = jwtUtil.extractSubject(token);
 
-        ResponseEntity<?> post = service.showPost(category, id);
-        return post;
+        Post post = service.showPost(category, id);
+        return ResponseEntity.ok(post);
     }
 
     @GetMapping("/file/{uuid}")
@@ -75,20 +75,6 @@ public class BoardController {
                 .contentType(mediaType)
                 .body(resource);
     }
-//    @GetMapping("/video/{uuid}")
-//    public ResponseEntity<Resource> getVidFile(
-//            @PathVariable("uuid") String filename,
-//            @RequestBody FileDTO dto) throws MalformedURLException {
-//
-//        Resource resource = service.sendFile(filename, dto);
-//        log.info("resource: {} ", resource);
-//        MediaType mediaType = determineVideoMediaType(filename);
-//        log.info("mediaType: {}", mediaType);
-//
-//        return ResponseEntity.ok()
-//                .contentType(mediaType)
-//                .body(resource);
-//    }
 
     @GetMapping("/show/{category}")
     public ResponseEntity<?> showAllPost(
@@ -101,8 +87,10 @@ public class BoardController {
 //        if(!isLogin(loginMember)){
 //            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인하지 않은 사용자는 접근할 수 없습니다.");
 //        }
-        if(category == null || category.isEmpty())
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("잘못된 접근 입니다.");
+        if(category == null || category.isEmpty()) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("잘못된 접근 입니다.");
+            throw new BadRequestEx("잘못된 접근 입니다.");
+        }
         log.info("searchName = {}", searchName);
 
         List<PostHeaderDTO> posts = service.showAllPost(category,searchName, page, size);
@@ -124,8 +112,9 @@ public class BoardController {
         log.info("vidFiles = {}", vidFiles);
         Long memberId = jwtUtil.extractSubject(token);
         PostUpdateDTO updateParam = mapper.readValue(updateDTO, PostUpdateDTO.class);
-        ResponseEntity<?> responseEntity = service.updatePost(memberId, category, postId, updateParam, imgFiles, vidFiles);
-        return responseEntity;
+//        ResponseEntity<?> responseEntity = service.updatePost(memberId, category, postId, updateParam, imgFiles, vidFiles);
+        service.updatePost(memberId, category, postId, updateParam, imgFiles, vidFiles);
+        return ApiResponse.successUpdate();
     }
 
     @DeleteMapping("/delete/{category}/{id}")
@@ -140,7 +129,7 @@ public class BoardController {
         Long memberId = jwtUtil.extractSubject(token);
 
         service.deletePost(category, memberId, postId);
-        return ResponseEntity.ok().body("삭제 완료");
+        return ApiResponse.successDelete();
     }
 
     @GetMapping("/my")
@@ -158,7 +147,6 @@ public class BoardController {
 
         return ResponseEntity.ok(likedPosts);
     }
-
 
     @PostMapping("/like/{category}/{id}")
     public ResponseEntity<?> likePost(
@@ -179,31 +167,31 @@ public class BoardController {
         if(loginMember == null) return false;
         else return true;
     }
-
-    private MediaType determineImgMediaType(String filename) {
-        if (filename.endsWith(".jpg")) {
-            return MediaType.IMAGE_JPEG;
-        } else if (filename.endsWith(".jpeg")) {
-            return MediaType.IMAGE_JPEG;
-        } else if (filename.endsWith(".png")) {
-            return MediaType.IMAGE_PNG;
-        } else if (filename.endsWith(".gif")) {
-            return MediaType.IMAGE_GIF;
-        }
-        return MediaType.ALL;
-    }
-
-    private MediaType determineVideoMediaType(String filename) {
-        if (filename.endsWith(".mp4")) {
-            return MediaType.parseMediaType("video/mp4");
-        } else if (filename.endsWith(".avi")) {
-            return MediaType.parseMediaType("video/x-msvideo");
-        } else if (filename.endsWith(".mov")) {
-            return MediaType.parseMediaType("video/quicktime");
-        } else if (filename.endsWith(".mkv")) {
-            return MediaType.parseMediaType("video/x-matroska");
-        }
-        return MediaType.APPLICATION_OCTET_STREAM; // 기본 값인데 이걸 보내는게 맞나?
-    }
+//
+//    private MediaType determineImgMediaType(String filename) {
+//        if (filename.endsWith(".jpg")) {
+//            return MediaType.IMAGE_JPEG;
+//        } else if (filename.endsWith(".jpeg")) {
+//            return MediaType.IMAGE_JPEG;
+//        } else if (filename.endsWith(".png")) {
+//            return MediaType.IMAGE_PNG;
+//        } else if (filename.endsWith(".gif")) {
+//            return MediaType.IMAGE_GIF;
+//        }
+//        return MediaType.ALL;
+//    }
+//
+//    private MediaType determineVideoMediaType(String filename) {
+//        if (filename.endsWith(".mp4")) {
+//            return MediaType.parseMediaType("video/mp4");
+//        } else if (filename.endsWith(".avi")) {
+//            return MediaType.parseMediaType("video/x-msvideo");
+//        } else if (filename.endsWith(".mov")) {
+//            return MediaType.parseMediaType("video/quicktime");
+//        } else if (filename.endsWith(".mkv")) {
+//            return MediaType.parseMediaType("video/x-matroska");
+//        }
+//        return MediaType.APPLICATION_OCTET_STREAM; // 기본 값인데 이걸 보내는게 맞나?
+//    }
 
 }
