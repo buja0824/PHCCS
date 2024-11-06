@@ -76,4 +76,10 @@
             END AS is_PhoNo_duplicate;
     </select>
 
+    <update id="promoteToVet" parameterType="Long">
+        UPDATE member
+        SET role = 1
+        WHERE id = #{id}
+    </update>
+
 </mapper>

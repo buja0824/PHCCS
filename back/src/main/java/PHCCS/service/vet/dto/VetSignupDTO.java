@@ -1,4 +1,4 @@
-package PHCCS.service.member.vet.dto;
+package PHCCS.service.vet.dto;
 
 import lombok.Data;
 import lombok.ToString;

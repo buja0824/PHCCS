@@ -30,4 +30,6 @@ public interface MemberMapper {
     int existsByNickName(@Param("nickName") String nickName);
 
     int existsByPhoNo(@Param("phoNo") String phoNo);
+
+    int promoteToVet(@Param("id") Long id);
 }

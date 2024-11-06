@@ -1,4 +1,4 @@
-package PHCCS.service.member.vet.dto;
+package PHCCS.service.vet.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,12 +9,11 @@ import java.time.LocalDate;
 @Data
 @ToString
 @NoArgsConstructor
-public class VetRequestDTO {
+public class VetInfoDTO {
     private Long id;
+    private Long memberId;
     private String licenseNo;
-    private String email;
-    private String name;
-    private String hospitalName;
+    private String licenseProfile;
+    private String HospitalName;
     private String hospitalAddr;
-    private LocalDate requestDate;
 }

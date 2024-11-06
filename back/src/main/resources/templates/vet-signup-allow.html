@@ -12,6 +12,7 @@
     <table class="table table-bordered mt-4">
         <thead>
         <tr>
+            <th>회원 ID</th>
             <th>이름</th>
             <th>이메일</th>
             <th>면허번호</th>
@@ -24,6 +25,7 @@
         <tbody>
         <!-- 수의사 요청 리스트를 반복해서 출력 -->
         <tr th:each="request : ${pendingRequests}">
+            <td th:text="${request.memberId}"></td>
             <td th:text="${request.name}"></td>
             <td th:text="${request.email}"></td>
             <td th:text="${request.licenseNo}"></td> <!-- 면허번호 추가 -->
@@ -32,13 +34,13 @@
             <td th:text="${request.requestDate}"></td>
             <td>
                 <!-- 승인 버튼 -->
-                <form th:action="@{/admin/approve-vet}" method="post" class="d-inline">
-                    <input type="hidden" th:value="${request.id}" name="requestId">
+                <form th:action="@{/admin/approveVet}" method="post" class="d-inline">
+                    <input type="hidden" th:value="${request.id}" name="id">
                     <button type="submit" class="btn btn-success">승인</button>
                 </form>
                 <!-- 거절 버튼 -->
-                <form th:action="@{/admin/reject-vet}" method="post" class="d-inline">
-                    <input type="hidden" th:value="${request.id}" name="requestId">
+                <form th:action="@{/admin/rejectVet}" method="post" class="d-inline">
+                    <input type="hidden" th:value="${request.id}" name="id">
                     <button type="submit" class="btn btn-danger">거절</button>
                 </form>
             </td>

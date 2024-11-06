@@ -1,7 +1,7 @@
 package PHCCS.service.member;
 
 import PHCCS.common.jwt.JwtUtil;
-import PHCCS.service.member.dto.DuplicateCheckDto;
+import PHCCS.service.member.dto.DuplicateCheckDTO;
 import PHCCS.service.member.dto.MemberDTO;
 import PHCCS.service.member.dto.MemberModifyDTO;
 import PHCCS.service.member.dto.MemberProfileDTO;
@@ -110,13 +110,13 @@ public class MemberService {
         return isSuccess;
     }
     // public Map<String, String> login(MemberDto memberDto) 에서 호출
-    public DuplicateCheckDto isDuplicateMember(String email, String nickname, String phoNo) {
+    public DuplicateCheckDTO isDuplicateMember(String email, String nickname, String phoNo) {
         // existsByEmail = 1 이면 true, 0(다른값) 이면 false
         boolean emailDuplicate = (repository.existsByEmail(email) == 1);
         boolean nicknameDuplicate = (repository.existsByNickname(nickname) == 1);
         boolean phoNoDuplicate = (repository.existsByPhoNo(phoNo) == 1);
 
-        return new DuplicateCheckDto(emailDuplicate, nicknameDuplicate, phoNoDuplicate);
+        return new DuplicateCheckDTO(emailDuplicate, nicknameDuplicate, phoNoDuplicate);
     }
 }
 

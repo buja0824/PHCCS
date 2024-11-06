@@ -1,8 +1,8 @@
-package PHCCS.service.member.vet.repository;
+package PHCCS.service.vet.repository;
 
 import PHCCS.service.admin.model.VetRequestModel;
-import PHCCS.service.member.vet.dto.VetRequestDTO;
-import PHCCS.service.member.vet.repository.mapper.VetRequestMapper;
+import PHCCS.service.vet.dto.VetRequestDTO;
+import PHCCS.service.vet.repository.mapper.VetRequestMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
@@ -17,6 +17,7 @@ public class MybatisVetRequestRepository implements VetRequestRepository {
 
     @Override
     public int save(VetRequestDTO vetRequestDTO) {
+
         log.info("MybatisVetRequestRepository - save 실행");
         int save = mapper.save(vetRequestDTO);
         log.info("MybatisVetRequestRepository - save 완료");
@@ -28,4 +29,20 @@ public class MybatisVetRequestRepository implements VetRequestRepository {
         log.info("MybatisVetRequestRepository - findAll 실행");
         return mapper.findAll();
     }
+
+    @Override
+    public VetRequestDTO findById(Long id) {
+        return mapper.findById(id);
+    }
+
+    @Override
+    public Long findMemberIdById(Long id) {
+        return mapper.findMemberIdById(id);
+    }
+
+    @Override
+    public int deleteById(Long id) {
+        return mapper.deleteById(id);
+    }
+
 }

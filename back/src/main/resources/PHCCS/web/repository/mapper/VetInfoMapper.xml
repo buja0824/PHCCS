@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="PHCCS.service.vet.repository.mapper.VetInfoMapper">
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+        insert into vet_info (member_id, license_no, hospital_name, hospital_addr)
+        values (#{memberId}, #{licenseNo}, #{hospitalName}, #{hospitalAddr})
+    </insert>
+
+    <select id="existsByLicenseNo">
+        SELECT
+        CASE
+        WHEN EXISTS (SELECT 1 FROM vet_info WHERE license_no = #{licenseNo})
+        THEN 1
+        ELSE 0
+        END AS is_licenseNo_duplicate;
+    </select>
+
+</mapper>

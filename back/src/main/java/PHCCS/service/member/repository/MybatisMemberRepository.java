@@ -75,4 +75,9 @@ public class MybatisMemberRepository implements MemberRepository {
     public int existsByPhoNo(String phoNo) {
         return mapper.existsByPhoNo(phoNo);
     }
+
+    @Override
+    public int promoteToVet(Long id) {
+        return mapper.promoteToVet(id);
+    }
 }
