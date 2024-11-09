@@ -4,5 +4,5 @@ import lombok.Data;
 
 @Data
 public class ImgResultDTO {
-    private String result;
+    private String imgResult;
 }

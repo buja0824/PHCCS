@@ -13,7 +13,7 @@ import java.util.List;
 @Mapper
 public interface PostMapper {
 
-    int save(@Param("category")String category , @Param("post") Post post);
+    int save(@Param("category")String category, @Param("post") Post post);
 
     Post showPost(@Param("category") String category, @Param("id") Long id);
     List<PostHeaderDTO> showAllPost(@Param("category") String category, @Param("searchName") String searchName, @Param("offset") Long offset, @Param("size") Long size);

@@ -31,10 +31,8 @@ public class BoardController {
     private final PostService service;
     private final ObjectMapper mapper = new ObjectMapper();
     @PostMapping(value = "/post", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-//    @PostMapping(value = "/post") //1
     public ResponseEntity<?> createPost(
             @RequestHeader("Authorization") String token,
-//            @RequestBody PostDTO dto,
             @RequestPart("dto") String dtoJson,
             @RequestPart(value = "imageFiles", required = false) List<MultipartFile> imageFiles,
             @RequestPart(value = "videoFiles", required = false) List<MultipartFile> videoFiles) throws IOException {
