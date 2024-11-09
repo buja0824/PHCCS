@@ -24,41 +24,49 @@ repositories {
 }
 
 dependencies {
-	// 테스트에서 롬복
-	testCompileOnly 'org.projectlombok:lombok'
-	testAnnotationProcessor 'org.projectlombok:lombok'
-
 	// Thymeleaf
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-	// swagger
+
+	// Swagger
 	implementation 'io.springfox:springfox-swagger-ui:3.0.0'
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
 
+	// MyBatis
 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
 	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.3'
 
+	// Validation
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+	// Web and WebSocket
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	// 웹 소켓 사용하기
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
-	// 외부 서버와 API 통신 위한 의존성 주입.
+
+	// WebFlux (API 통신용)
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
-
-	//jwt
+	// JWT
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
 	implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
 	implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
+	// Spring Security
+	// implementation 'org.springframework.boot:spring-boot-starter-security'
+	// Spring Security Test
+	// testImplementation 'org.springframework.security:spring-security-test'
+
+	// Lombok
 	compileOnly 'org.projectlombok:lombok'
-	runtimeOnly 'com.mysql:mysql-connector-j'
 	annotationProcessor 'org.projectlombok:lombok'
+	testCompileOnly 'org.projectlombok:lombok'
+	testAnnotationProcessor 'org.projectlombok:lombok'
+
+	// MySQL
+	runtimeOnly 'com.mysql:mysql-connector-j'
+
+	// Test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-	//jjwt
-	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
-	implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
-	implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 }
 
 tasks.named('test') {
