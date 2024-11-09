@@ -24,12 +24,12 @@ public class CommentController {
     private final CommentService service;
     private final SSEService sseService;
 
-    @PostMapping("/add/{category}/{id}")
+    @PostMapping("/add/{category}/{postId}")
     public ResponseEntity<?> addComment(
 //            @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
             @RequestHeader("Authorization") String token,
             @PathVariable("category") String category,
-            @PathVariable("id") Long postId,
+            @PathVariable("postId") Long postId,
             @RequestBody Comment comment){
 
         log.info("postComment()");
@@ -49,12 +49,12 @@ public class CommentController {
         }
     }
 
-    @GetMapping("/show/{category}/{id}")
+    @GetMapping("/show/{category}/{postId}")
     public ResponseEntity<?> findAllComment(
 //            @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
             @RequestHeader("Authorization") String token,
             @PathVariable("category") String category,
-            @PathVariable("id") Long postId){
+            @PathVariable("postId") Long postId){
 
         log.info("findAllComment()");
         Long loginMember = jwtUtil.extractSubject(token);

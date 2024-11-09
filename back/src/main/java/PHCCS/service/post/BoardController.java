@@ -67,6 +67,7 @@ public class BoardController {
 //        MediaType mediaType = determineImgMediaType(filename);
         MediaType mediaType = MediaType.parseMediaType(Files.probeContentType(path));
         log.info("mediaType: {}", mediaType);
+        log.info("path.toUri(): {} ", path.toUri());
         Resource resource = new UrlResource(path.toUri());
         log.info("resource: {}", resource);
         return ResponseEntity.ok()

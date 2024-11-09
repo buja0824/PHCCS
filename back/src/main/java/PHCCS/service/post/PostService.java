@@ -109,6 +109,7 @@ public class PostService {
             }
             post.setCategory(category);
 //            return ResponseEntity.ok(post);
+            log.info("|se|post = {}", post);
             return post;
         }else{
 //            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("게시글을 찾을수 없습니다.");
@@ -232,7 +233,7 @@ public class PostService {
     }
 
     public Path getPath(String filename, FileDTO dto) throws MalformedURLException {
-        String fullPath = fileStore.getFullPath(dto.getCategory(), dto.getId(), dto.getTitle(), filename);
+        String fullPath = fileStore.getFullPath(dto.getCategory(), dto.getMemberId(), dto.getTitle(), filename);
         Path filePath = Paths.get(fullPath).normalize();
 //        return new UrlResource("file:" + fullPath);
 //        return new UrlResource(filePath.toUri());
