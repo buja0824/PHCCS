@@ -1,6 +1,7 @@
 package PHCCS.service.comment.repository;
 
 import PHCCS.service.comment.Comment;
+import PHCCS.service.comment.dto.CommentAddDTO;
 import PHCCS.service.comment.dto.CommentDTO;
 import PHCCS.service.comment.repository.mapper.CommentMapper;
 import lombok.RequiredArgsConstructor;
@@ -17,8 +18,8 @@ public class MybatisCommentRepository implements CommentRepository {
     private final CommentMapper mapper;
 
     @Override
-    public int save(String category, Comment comment) {
-        return mapper.save(category, comment);
+    public int save(Long loginMember, String category, Long postId, CommentAddDTO comment) {
+        return mapper.save(loginMember,category, postId, comment);
     }
 
     @Override

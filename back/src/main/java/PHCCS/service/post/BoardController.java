@@ -57,11 +57,19 @@ public class BoardController {
         return ResponseEntity.ok(post);
     }
 
-    @GetMapping("/file/{uuid}")
+    @GetMapping("/file/{uuid}/{category}/{postId}")
     public ResponseEntity<Resource> getFile(
             @PathVariable("uuid") String filename,
-            @RequestBody FileDTO dto) throws IOException {
+            @PathVariable("category") String category,
+//            @PathVariable("memberId") Long memberId,
+            @PathVariable("postId") Long postId
+//            @PathVariable("title") String title
+            /*@RequestBody FileDTO dto*/) throws IOException {
 
+        FileDTO dto = new FileDTO();
+        dto.setCategory(category);
+        dto.setPostId(postId);
+//        dto.setTitle(title);
         Path path = service.getPath(filename, dto);
         log.info("path: {} ", path);
 //        MediaType mediaType = determineImgMediaType(filename);

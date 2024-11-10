@@ -6,7 +6,8 @@ import lombok.Data;
 public class FileDTO {
 
     private String category;
-    private Long memberId;
-    private String title;
+//    private Long memberId;
+    private Long postId;
+//    private String title;
 
 }

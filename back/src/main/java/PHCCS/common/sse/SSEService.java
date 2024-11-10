@@ -1,6 +1,7 @@
 package PHCCS.common.sse;
 
 import PHCCS.service.comment.Comment;
+import PHCCS.service.comment.dto.CommentAddDTO;
 import PHCCS.service.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -51,7 +52,7 @@ public class SSEService {
      * 알림 보낼 사용자 찾고, 알림 보낼 내용은 댓글이 등록되었습니다. 작성자 : 댓글내용
      * 알림 보낼 사용자 찾는건 게시글 작성자 찾는것과 동일
      */
-    public void addCommentAlarm(String category, Long postId, Comment comment){
+    public void addCommentAlarm(String category, Long postId, CommentAddDTO comment){
         Long authorId = postRepository.findAuthorId(category, postId);
         try {
             sseEmitterMap.get(authorId).send(SseEmitter.event()

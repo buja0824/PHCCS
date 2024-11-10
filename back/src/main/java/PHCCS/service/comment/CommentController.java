@@ -5,6 +5,7 @@ import PHCCS.common.exception.InternalServerEx;
 import PHCCS.common.jwt.JwtUtil;
 import PHCCS.common.response.ApiResponse;
 import PHCCS.common.sse.SSEService;
+import PHCCS.service.comment.dto.CommentAddDTO;
 import PHCCS.service.comment.dto.CommentDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +31,7 @@ public class CommentController {
             @RequestHeader("Authorization") String token,
             @PathVariable("category") String category,
             @PathVariable("postId") Long postId,
-            @RequestBody Comment comment){
+            @RequestBody CommentAddDTO comment){
 
         log.info("postComment()");
         Long loginMember = jwtUtil.extractSubject(token);
@@ -38,9 +39,9 @@ public class CommentController {
 //            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인하지 않은 사용자는 접근할 수 없습니다.");
             throw new BadRequestEx("로그인하지 않은 사용자는 접근할 수 없습니다.");
         }
-        boolean isSave = service.save(category, postId, comment);
+        boolean isSave = service.save(loginMember, category, postId, comment);
         if(isSave){
-            sseService.addCommentAlarm(category, postId, comment);
+//            sseService.addCommentAlarm(category, postId, comment);
 //            return ResponseEntity.ok("댓글 저장이 완료되었습니다.");
             return ApiResponse.successCreate();
         }else {

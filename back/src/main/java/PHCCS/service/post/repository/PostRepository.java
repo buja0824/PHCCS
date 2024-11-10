@@ -9,7 +9,9 @@ import PHCCS.service.post.dto.PostUpdateDTO;
 import java.util.List;
 
 public interface PostRepository {
-    int save(String category, Post post);
+    Long save(String category, Post post);
+
+    void insertDir(String category, Long postId, String dir);
 
     Post showPost(String category, Long postId);
 

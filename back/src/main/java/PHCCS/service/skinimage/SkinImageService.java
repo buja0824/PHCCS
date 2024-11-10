@@ -53,7 +53,7 @@ public class SkinImageService {
                 .retrieve()
                 .bodyToMono(String.class);
         log.info("testResult = {}", testResult);
-        String finalDir = dir; // 람다식 내부에서 사용되는 변수는 변경이 불가능한 상태로 들어와ㅑㅇ 하기때문에
+        final String finalDir = dir; // 람다식 내부에서 사용되는 변수는 변경이 불가능한 상태로 들어와ㅑㅇ 하기때문에
         testResult.subscribe(result ->{
             String s;
             try {
@@ -70,7 +70,6 @@ public class SkinImageService {
             imgInfo.setCreateAt(LocalDateTime.now());
             imageRepository.saveImgInfo(imgInfo);
         });
-        log.info("다 해야 결과 나오겠지?");
         return testResult;
     }
 
