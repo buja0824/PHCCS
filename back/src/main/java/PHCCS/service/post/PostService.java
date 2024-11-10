@@ -167,6 +167,7 @@ public class PostService {
             afterPost.setUpdateTime(param.getModifyTime()+"");
 
             Long savedPostId = repository.save(param.getCategory(), afterPost);
+            log.info("savedPostId = {}", savedPostId);
             if(savedPostId <=0){
 //                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("내부 오류 발생 게시글 등록 실패");
                 throw new InternalServerEx("내부 오류 발생 게시글 등록 실패");
