@@ -20,8 +20,13 @@ public class MybatisPostRepository implements PostRepository {
     private final PostMapper mapper;
 
     @Override
-    public int save(String category, Post post) {
+    public Long save(String category, Post post) {
         return mapper.save(category, post);
+    }
+
+    @Override
+    public void insertDir(String category, Long postId, String dir) {
+        mapper.insertDir(category, postId, dir);
     }
 
     @Override

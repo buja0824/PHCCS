@@ -2,13 +2,14 @@ package PHCCS.service.comment.repository;
 
 
 import PHCCS.service.comment.Comment;
+import PHCCS.service.comment.dto.CommentAddDTO;
 import PHCCS.service.comment.dto.CommentDTO;
 
 import java.util.List;
 
 public interface CommentRepository {
 
-    int save(String category, Comment comment);
+    int save(Long loginMember, String category, Long postId, CommentAddDTO comment);
 
     List<Comment> findAllComment(String category, Long postId);
 

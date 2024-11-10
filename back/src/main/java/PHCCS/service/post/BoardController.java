@@ -31,10 +31,8 @@ public class BoardController {
     private final PostService service;
     private final ObjectMapper mapper = new ObjectMapper();
     @PostMapping(value = "/post", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-//    @PostMapping(value = "/post") //1
     public ResponseEntity<?> createPost(
             @RequestHeader("Authorization") String token,
-//            @RequestBody PostDTO dto,
             @RequestPart("dto") String dtoJson,
             @RequestPart(value = "imageFiles", required = false) List<MultipartFile> imageFiles,
             @RequestPart(value = "videoFiles", required = false) List<MultipartFile> videoFiles) throws IOException {
@@ -59,16 +57,25 @@ public class BoardController {
         return ResponseEntity.ok(post);
     }
 
-    @GetMapping("/file/{uuid}")
+    @GetMapping("/file/{uuid}/{category}/{postId}")
     public ResponseEntity<Resource> getFile(
             @PathVariable("uuid") String filename,
-            @RequestBody FileDTO dto) throws IOException {
+            @PathVariable("category") String category,
+//            @PathVariable("memberId") Long memberId,
+            @PathVariable("postId") Long postId
+//            @PathVariable("title") String title
+            /*@RequestBody FileDTO dto*/) throws IOException {
 
+        FileDTO dto = new FileDTO();
+        dto.setCategory(category);
+        dto.setPostId(postId);
+//        dto.setTitle(title);
         Path path = service.getPath(filename, dto);
         log.info("path: {} ", path);
 //        MediaType mediaType = determineImgMediaType(filename);
         MediaType mediaType = MediaType.parseMediaType(Files.probeContentType(path));
         log.info("mediaType: {}", mediaType);
+        log.info("path.toUri(): {} ", path.toUri());
         Resource resource = new UrlResource(path.toUri());
         log.info("resource: {}", resource);
         return ResponseEntity.ok()

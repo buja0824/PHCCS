@@ -17,8 +17,25 @@
                 community_board
             </when>
         </choose>
-        (member_id, nick_name, title, content, create_date,update_date, file_dir, view_cnt, like_cnt)
-        values (#{post.memberId}, #{post.author}, #{post.title}, #{post.content}, #{post.writeTime},#{post.updateTime}, #{post.fileDir}, 0, 0)
+        (member_id, nick_name, title, content, create_date,update_date, view_cnt, like_cnt)
+        values (#{post.memberId}, #{post.author}, #{post.title}, #{post.content}, #{post.writeTime},#{post.updateTime}, 0, 0)
+    </insert>
+
+    <insert id="insertDir">
+        update
+        <choose>
+            <when test="category == 'qna_board'">
+                qna_board
+            </when>
+            <when test="category == 'vet_board'">
+                vet_board
+            </when>
+            <when test="category == 'community_board'">
+                community_board
+            </when>
+        </choose>
+        set file_dir = #{dir}
+        where id = #{id}
     </insert>
 
     <select id="findAuthorId" resultType="Long">
@@ -56,7 +73,7 @@
     </select>
 
     <select id="showAllPost" resultType="PostHeaderDTO">
-        select id, member_id, nick_name, title, view_cnt, create_date, ifnull(update_date, "--") as update_date
+        select id, member_id, nick_name, title, view_cnt, like_cnt, create_date, ifnull(update_date, "--") as update_date
         from
         <choose>
             <when test= "category == 'qna_board'">
@@ -93,7 +110,7 @@
         </choose>
         set title = #{dto.title},
             content = #{dto.content},
-            update_date = #{dtoe.modifyTime},
+            update_date = #{dto.modifyTime},
             file_dir = #{dir}
         where member_id = #{memberId} and id = #{postId}
     </update>

@@ -14,3 +14,4 @@ public class Comment {
     private Long likeCnt;
     private LocalDateTime writeTime = LocalDateTime.now(); // 댓글 작성 시간
 }
+

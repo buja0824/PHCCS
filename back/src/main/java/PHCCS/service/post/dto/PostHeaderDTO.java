@@ -11,6 +11,7 @@ public class PostHeaderDTO {
     private String nickName;
     private String title;
     private Long viewCnt;
+    private Long likeCnt;
     private String createDate;
     private String updateDate;
 }

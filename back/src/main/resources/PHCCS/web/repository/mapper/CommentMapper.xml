@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="PHCCS.service.comment.repository.mapper.CommentMapper">
 
-    <insert id="save" keyProperty="comment.id" useGeneratedKeys="true">
+    <insert id="save" useGeneratedKeys="true">
         insert into
         <choose>
             <when test="category == 'qna_board'">
@@ -18,7 +18,7 @@
             </when>
         </choose>
         (member_id, post_id, nick_name, comment, create_date, like_cnt)
-        values (#{comment.memberId}, #{comment.postId}, #{comment.nickName}, #{comment.comment}, #{comment.writeTime}, 0)
+        values (#{memberId}, #{postId}, #{comment.nickName}, #{comment.comment}, #{comment.writeTime}, 0)
     </insert>
 
     <select id="findAllComment" resultType="Comment">

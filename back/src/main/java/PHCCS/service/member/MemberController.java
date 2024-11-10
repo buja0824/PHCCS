@@ -1,6 +1,8 @@
 package PHCCS.service.member;
 
+import PHCCS.common.exception.InternalServerEx;
 import PHCCS.common.jwt.JwtUtil;
+import PHCCS.common.response.ApiResponse;
 import PHCCS.service.member.dto.DuplicateCheckDto;
 import PHCCS.service.member.dto.MemberDTO;
 import PHCCS.service.member.dto.MemberModifyDTO;

@@ -26,19 +26,22 @@ public class FileStore {
      * fileDir/게시판의타입/사용자의PK 가 fullPath로 생성 됩니다.
      * 그 폴더에 파일을 저장합니다. 파일 이름은 fileName
      */
-    public String getFullPath(String boardType, Long memberId, String postTitle, String fileName){
-        return fileDir + boardType + "/" + memberId + "/" + postTitle + "/" + fileName;
+    public String getFullPath(String boardType, Long /*memberId*/savedPostId,/* String postTitle,*/ String fileName){
+        return fileDir +
+                boardType + "/" +
+                /*memberId*/savedPostId + /*"/" + postTitle +*/ "/" +
+                fileName;
     }
 
     public List<UploadFile> storeFiles(
             List<MultipartFile> multipartFiles,
-            Long memberId, String title, String boardType) throws IOException {
+            Long /*memberId*/savedPostId, /*String title,*/ String boardType) throws IOException {
 
         List<UploadFile> storeFileResult = new ArrayList<>();
         for (MultipartFile multipartFile : multipartFiles) {
             if(!multipartFile.isEmpty()){
                 log.info("multipartFile = {}", multipartFile);
-                storeFileResult.add(storeFile(multipartFile, memberId, title, boardType));
+                storeFileResult.add(storeFile(multipartFile, /*memberId*/savedPostId, /*title,*/ boardType));
             }
         }
         log.info("storeFileResult = {}", storeFileResult);
@@ -51,7 +54,7 @@ public class FileStore {
      */
     private UploadFile storeFile(
             MultipartFile multipartFile,
-            Long memberId, String postTitle, String boardType) throws IOException {
+            Long /*memberId*/savedPostId, /*String postTitle,*/ String boardType) throws IOException {
 
         if(multipartFile.isEmpty()) return null;
         // 파일 이름.확장자
@@ -61,7 +64,7 @@ public class FileStore {
         log.info("storeFileName = {}", storeFileName);
 
         // 디렉터리에 저장하기
-        File file = new File(getFullPath(boardType, memberId, postTitle, storeFileName));
+        File file = new File(getFullPath(boardType, /*memberId*/savedPostId, /*postTitle,*/ storeFileName));
         File parentFile = file.getParentFile();
         if(!parentFile.exists()) {
             if(!parentFile.mkdirs()){
@@ -69,7 +72,7 @@ public class FileStore {
             }
         }
         multipartFile.transferTo(file); // 파일 저장
-        return new UploadFile(originalFileName, storeFileName, getFullPath(boardType, memberId, postTitle, storeFileName));
+        return new UploadFile(originalFileName, storeFileName, getFullPath(boardType, /*memberId*/savedPostId, /*postTitle,*/ storeFileName));
     }
 
     /**
