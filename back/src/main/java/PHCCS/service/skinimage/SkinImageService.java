@@ -32,7 +32,6 @@ public class SkinImageService {
     public Mono<String> imageSaveAndSend(MultipartFile image, Long memberId)  {
 
         UploadFile storeFile;
-//        SkinImage imgInfo = new SkinImage();
         String dir = "";
         try {
             storeFile = fileStore.storeFile(image, memberId);
@@ -42,31 +41,29 @@ public class SkinImageService {
         // 저장경로 반환
         dir = storeFile.getFileDir();
         log.info("dir : {}", dir);
-        String json = "{\"dir\": \"" + dir + "\"}";
-//            imgInfo.setMemberId(memberId);
-//            imgInfo.setDir(dir);
-        //            imageRepository.savePath(memberId, dir);
+        String dirJson = "{\"dir\": \"" + dir + "\"}";
+
         // 파이썬 서버에 전송
         Mono<String> testResult = webConfig.aiImageServer()
                 .post()
-                .body(BodyInserters.fromValue(json))
+                .body(BodyInserters.fromValue(dirJson))
                 .retrieve()
                 .bodyToMono(String.class);
         log.info("testResult = {}", testResult);
-        final String finalDir = dir; // 람다식 내부에서 사용되는 변수는 변경이 불가능한 상태로 들어와ㅑㅇ 하기때문에
+
+        final String finalDir = dir;
         testResult.subscribe(result ->{
-            String s;
+            String imgResult;
             try {
                 ImgResultDTO imgResultDTO = objectMapper.readValue(result, ImgResultDTO.class);
-//                    s = convertUnicode(imgResultDTO.getImgResult());
-                s = imgResultDTO.getImgResult();
+                imgResult = imgResultDTO.getImgResult();
             } catch (JsonProcessingException e) {
                 throw new InternalServerEx("검사결과를 처리하지 못하였습니다.");
             }
             SkinImage imgInfo = new SkinImage();
             imgInfo.setMemberId(memberId);
             imgInfo.setDir(finalDir);
-            imgInfo.setResult(s);
+            imgInfo.setResult(imgResult);
             imgInfo.setCreateAt(LocalDateTime.now());
             imageRepository.saveImgInfo(imgInfo);
         });

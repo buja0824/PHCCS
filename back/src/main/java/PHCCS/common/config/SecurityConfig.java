@@ -54,7 +54,8 @@ public class SecurityConfig {
                 new AntPathRequestMatcher("/css/**"),
                 new AntPathRequestMatcher("/v3/**"),
                 new AntPathRequestMatcher("/swagger-ui/**"),
-                new AntPathRequestMatcher("/favicon.ico")
+                new AntPathRequestMatcher("/favicon.ico"),
+                new AntPathRequestMatcher("/ws/chat/**")
         );
     }
 

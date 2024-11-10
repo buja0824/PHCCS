@@ -17,7 +17,8 @@ public class SSEService {
     private final PostRepository postRepository;
     private final Map<Long, SseEmitter> sseEmitterMap = new ConcurrentHashMap<>();
 
-    public void add(Long memberId, SseEmitter emitter){
+    public void
+    add(Long memberId, SseEmitter emitter){
         log.info("sse emitter 등록 멤버ID :{}", memberId);
         sseEmitterMap.put(memberId, emitter);
         emitter.onCompletion(()-> {
@@ -37,7 +38,6 @@ public class SSEService {
     public void inviteAlarm(Long participantId, String chatRoomId){
         try {
             SseEmitter emitter = sseEmitterMap.get(participantId);
-
             emitter
                     .send(SseEmitter.event()
                     .name("inviteMsg")
@@ -56,8 +56,8 @@ public class SSEService {
         Long authorId = postRepository.findAuthorId(category, postId);
         try {
             sseEmitterMap.get(authorId).send(SseEmitter.event()
-                            .name("새로운 댓들이 등록되었습니다.")
-                            .data(comment.getNickName() +": " +comment.getComment()));
+                        .name("새로운 댓들이 등록되었습니다.")
+                        .data(comment.getNickName() +": " +comment.getComment()));
         } catch (IOException e) {
             log.error(e.getMessage(), e);
             throw new RuntimeException(e);
