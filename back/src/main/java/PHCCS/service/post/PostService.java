@@ -144,14 +144,13 @@ public class PostService {
     @Transactional
     public void updatePost(Long memberId, String category, Long postId, PostUpdateDTO param, List<MultipartFile> imgs, List<MultipartFile> vids) throws IOException {
         log.info("|se|updatePost()");
-        String storedDir =
-                fileDir + param.getCategory() + "/" + memberId + "/" + param.getTitle() +"/"; // 새로운 저장 경로
+        String storedDir = ""; // 새로운 저장 경로
+//                fileDir + param.getCategory() + "/" + memberId + "/" + param.getTitle() +"/"; // 새로운 저장 경로
 
         String findFileDir =
                 repository.findPostDir(category, postId); // 기존 저장 경로
         Post beforePost = repository.showPost(category, postId);
         log.info("|se|findFileDir = {}", findFileDir);
-        log.info("|se|storedDir = {}", storedDir);
         if(!param.getCategory().equals(category)){ // 카테고리가 변경되는 수정일 때
             log.info("카테고리변경");
             log.info("|se|beforePost = {}",beforePost.toString());
@@ -162,11 +161,14 @@ public class PostService {
             afterPost.setContent(param.getContent());
             afterPost.setAuthor(beforePost.getAuthor());
             afterPost.setViewCnt(beforePost.getViewCnt());
-            afterPost.setFileDir(storedDir);
+//            afterPost.setFileDir(storedDir);
             afterPost.setWriteTime(beforePost.getWriteTime());
             afterPost.setUpdateTime(param.getModifyTime()+"");
 
-            Long savedPostId = repository.save(param.getCategory(), afterPost);
+            repository.save(param.getCategory(), afterPost);
+            Long savedPostId = afterPost.getId();
+            storedDir = fileDir + param.getCategory() + "/" + savedPostId + "/";
+            if(storedDir != null) repository.insertDir(param.getCategory(), savedPostId, storedDir);
             log.info("savedPostId = {}", savedPostId);
             if(savedPostId <=0){
 //                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("내부 오류 발생 게시글 등록 실패");
