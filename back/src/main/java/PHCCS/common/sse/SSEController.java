@@ -21,11 +21,15 @@ public class SSEController {
 
     @GetMapping(value = "/connect-sse", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public ResponseEntity<SseEmitter> connectSSE(@RequestHeader("Authorization") String token){
-        log.info("sse connect");
-        log.info("token = {}", token);
+        log.info("sse 연결시작");
+
         Long memberId = jwtUtil.extractSubject(token);
+        log.info("sse 연결을 위한 멤버 ID = {}", memberId);
+
         SseEmitter emitter = new SseEmitter(1000*3600L);
+
         sseService.add(memberId, emitter);
+
         try {
             emitter.send(SseEmitter.event()
                     .name("initConnect")

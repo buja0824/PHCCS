@@ -1,6 +1,5 @@
 package PHCCS.common.sse;
 
-import PHCCS.service.comment.Comment;
 import PHCCS.service.comment.dto.CommentAddDTO;
 import PHCCS.service.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,16 +18,17 @@ public class SSEService {
     private final Map<Long, SseEmitter> sseEmitterMap = new ConcurrentHashMap<>();
 
     public void add(Long memberId, SseEmitter emitter){
+        log.info("sse emitter 등록 멤버ID :{}", memberId);
         sseEmitterMap.put(memberId, emitter);
         emitter.onCompletion(()-> {
                 sseEmitterMap.remove(memberId);
-                log.info("연결이 끊어짐");
+                log.info("sse 연결이 끊어졌습니다. memberId = {}", memberId);
                 emitter.complete();
             });
 
         emitter.onTimeout(()->{
                 sseEmitterMap.remove(memberId);
-                log.info("타임아웃 {}", memberId);
+                log.info("sse 연결 타임아웃. memberId = {}", memberId);
                 emitter.complete();
 
             });
