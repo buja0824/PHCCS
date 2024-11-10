@@ -1,13 +1,25 @@
 package PHCCS.service.admin;
 
+import PHCCS.common.jwt.JwtUtil;
+import PHCCS.service.member.Member;
+import PHCCS.service.member.MemberService;
+import PHCCS.service.member.dto.MemberDTO;
+import PHCCS.service.member.exception.LoginFailedException;
 import PHCCS.service.member.repository.MemberRepository;
+import PHCCS.service.member.token.TokenService;
 import PHCCS.service.vet.dto.VetInfoDTO;
 import PHCCS.service.vet.dto.VetRequestDTO;
 import PHCCS.service.vet.repository.VetInfoRepository;
 import PHCCS.service.vet.repository.VetRequestRepository;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -16,6 +28,9 @@ public class AdminService {
     final private MemberRepository memberRepository;
     final private VetRequestRepository vetRequestRepository;
     final private VetInfoRepository vetInfoRepository;
+    final private MemberService memberService;
+    final private JwtUtil jwtUtil;
+    final private TokenService tokenService;
 
     public Boolean saveVetInfo(Long requestId){
 
@@ -56,4 +71,5 @@ public class AdminService {
     public Boolean rejectVet(Long requestId){
         return deleteVetRequestById(requestId);
     }
+
 }

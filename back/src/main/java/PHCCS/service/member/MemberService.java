@@ -64,19 +64,19 @@ public class MemberService {
         Optional<Member> optionalMember = findMemberByEmail(memberDto.getEmail());
 
         if(!optionalMember.isPresent()) {
-            throw new LoginFailedException("아이디 틀림.");
+            throw new LoginFailedException("아이디가 틀렸습니다.");
         }
 
         Member member = optionalMember.get();
 
         if(!member.getPwd().equals(memberDto.getPwd())){
-            throw new LoginFailedException("비번 틀림.");
+            throw new LoginFailedException("비번이 틀렸습니다.");
         }
 
         Map<String, String> tokens = new HashMap<>();
         String newAccessToken = jwtUtil.createAccessToken(member.getId(), member.getRole());
         tokens.put("accessToken", newAccessToken);
-        // log.info("accestokenId: {}", jwtUtil.extractId(newAccessToken));
+         log.info("accestokenId: {}", jwtUtil.extractId(newAccessToken));
         // log.info("accestokenrole: {}", jwtUtil.extractRole(newAccessToken));
         String refreshToken = jwtUtil.createRefreshToken(member.getId());
         tokenService.storeRefreshToken(jwtUtil.extractId(refreshToken), jwtUtil.actual(refreshToken));
