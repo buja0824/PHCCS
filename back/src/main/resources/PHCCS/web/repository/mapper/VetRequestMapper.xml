@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="PHCCS.service.vet.repository.mapper.VetRequestMapper">
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+        insert into vet_request (member_id, license_no, email, name, hospital_name, hospital_addr, request_date)
+        values (#{memberId}, #{licenseNo}, #{email}, #{name}, #{hospitalName}, #{hospitalAddr}, #{requestDate})
+    </insert>
+
+    <!-- 모든 VetRequestModel을 조회하는 select문 -->
+    <select id="findAll" resultType="PHCCS.service.admin.model.VetRequestModel">
+        select id, member_id AS memberId, license_no AS licenseNo, email, name, hospital_name AS hospitalName,
+        hospital_addr AS hospitalAddr, request_date AS requestDate
+        from vet_request
+    </select>
+
+    <!-- 특정 ID로 VetRequest을 조회하는 select문 -->
+    <select id="findById" parameterType="Long" resultType="PHCCS.service.vet.dto.VetRequestDTO">
+        select member_id As memberId, license_no AS licenseNo, email, name, hospital_name AS hospitalName,
+        hospital_addr AS hospitalAddr, request_date AS requestDate
+        from vet_request
+        where id = #{id}
+    </select>
+
+    <select id="findMemberIdById" parameterType="Long" resultType="Long">
+        select member_id
+        from vet_request
+        where id = #{id}
+    </select>
+
+    <delete id="deleteById" parameterType="Long">
+        DELETE FROM vet_request
+        WHERE id = #{id}
+    </delete>
+
+</mapper>

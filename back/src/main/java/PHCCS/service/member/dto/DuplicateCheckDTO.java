@@ -1,12 +1,12 @@
 package PHCCS.service.member.dto;
 
-public class DuplicateCheckDto {
+public class DuplicateCheckDTO {
     private boolean emailDuplicate;
     private boolean nickNameDuplicate;
     private boolean phoNoDuplicate;
 
     // 생성자
-    public DuplicateCheckDto(boolean emailDuplicate, boolean nickNameDuplicate, boolean phoNoDuplicate) {
+    public DuplicateCheckDTO(boolean emailDuplicate, boolean nickNameDuplicate, boolean phoNoDuplicate) {
         this.emailDuplicate = emailDuplicate;
         this.nickNameDuplicate = nickNameDuplicate;
         this.phoNoDuplicate = phoNoDuplicate;

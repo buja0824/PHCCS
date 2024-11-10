@@ -1,10 +1,11 @@
 package PHCCS.service.member;
 
 import PHCCS.common.jwt.JwtUtil;
-import PHCCS.service.member.dto.DuplicateCheckDto;
+import PHCCS.service.member.dto.DuplicateCheckDTO;
 import PHCCS.service.member.dto.MemberDTO;
 import PHCCS.service.member.dto.MemberModifyDTO;
 import PHCCS.service.member.dto.MemberProfileDTO;
+import PHCCS.service.member.exception.LoginFailedException;
 import PHCCS.service.member.repository.MemberRepository;
 import PHCCS.service.member.token.TokenService;
 import lombok.RequiredArgsConstructor;
@@ -28,12 +29,9 @@ public class MemberService {
         LocalDate currentDate = LocalDate.now();
         member.setCreated(currentDate);
 
-        int resultRow = repository.save(member);
+        Boolean isSaveSuccess  = repository.save(member) > 0;
 
-        if (resultRow == 1) {
-            return true;
-        }
-        return false;
+        return isSaveSuccess;
     }
 
     public Optional<Member> findMemberByEmail(String email){
@@ -66,19 +64,19 @@ public class MemberService {
         Optional<Member> optionalMember = findMemberByEmail(memberDto.getEmail());
 
         if(!optionalMember.isPresent()) {
-            throw new RuntimeException("회원을 찾을 수 없음.");
+            throw new LoginFailedException("아이디가 틀렸습니다.");
         }
 
         Member member = optionalMember.get();
 
         if(!member.getPwd().equals(memberDto.getPwd())){
-            throw new RuntimeException("검증 되지 않음.");
+            throw new LoginFailedException("비번이 틀렸습니다.");
         }
 
         Map<String, String> tokens = new HashMap<>();
         String newAccessToken = jwtUtil.createAccessToken(member.getId(), member.getRole());
         tokens.put("accessToken", newAccessToken);
-        // log.info("accestokenId: {}", jwtUtil.extractId(newAccessToken));
+         log.info("accestokenId: {}", jwtUtil.extractId(newAccessToken));
         // log.info("accestokenrole: {}", jwtUtil.extractRole(newAccessToken));
         String refreshToken = jwtUtil.createRefreshToken(member.getId());
         tokenService.storeRefreshToken(jwtUtil.extractId(refreshToken), jwtUtil.actual(refreshToken));
@@ -112,13 +110,13 @@ public class MemberService {
         return isSuccess;
     }
     // public Map<String, String> login(MemberDto memberDto) 에서 호출
-    public DuplicateCheckDto isDuplicateMember(String email, String nickname, String phoNo) {
+    public DuplicateCheckDTO isDuplicateMember(String email, String nickname, String phoNo) {
         // existsByEmail = 1 이면 true, 0(다른값) 이면 false
         boolean emailDuplicate = (repository.existsByEmail(email) == 1);
         boolean nicknameDuplicate = (repository.existsByNickname(nickname) == 1);
         boolean phoNoDuplicate = (repository.existsByPhoNo(phoNo) == 1);
 
-        return new DuplicateCheckDto(emailDuplicate, nicknameDuplicate, phoNoDuplicate);
+        return new DuplicateCheckDTO(emailDuplicate, nicknameDuplicate, phoNoDuplicate);
     }
 }
 

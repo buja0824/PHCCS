@@ -1,6 +1,7 @@
 package PHCCS.service.member;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
@@ -10,11 +11,12 @@ import java.time.LocalDate;
  * 진구가 멤버에 대한 코드를 완성하면 합쳐서 사용하면 될 듯 하오
   */
 @Data
+@NoArgsConstructor
 public class Member {
     private Long id;
 
-    private String pwd;
     private String email;
+    private String pwd;
     private String name;
     private String nickName;
     private String phoNo;

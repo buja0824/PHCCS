@@ -1,9 +1,7 @@
 package PHCCS.service.member;
 
-import PHCCS.common.exception.InternalServerEx;
 import PHCCS.common.jwt.JwtUtil;
-import PHCCS.common.response.ApiResponse;
-import PHCCS.service.member.dto.DuplicateCheckDto;
+import PHCCS.service.member.dto.DuplicateCheckDTO;
 import PHCCS.service.member.dto.MemberDTO;
 import PHCCS.service.member.dto.MemberModifyDTO;
 import PHCCS.service.member.dto.MemberProfileDTO;
@@ -11,6 +9,9 @@ import PHCCS.service.member.token.TokenService;
 import PHCCS.common.jwt.TokenStatus;
 import PHCCS.common.jwt.TokenValidationException;
 
+import PHCCS.service.vet.dto.VetDuplicateCheckDTO;
+import PHCCS.service.vet.dto.VetSignupDTO;
+import PHCCS.service.vet.VetService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -25,14 +26,15 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MemberController {
     private final MemberService service;
+    private final VetService vetService;
     private final TokenService tokenService;
     private final JwtUtil jwtUtil;
 
-    @PostMapping("/auth/signup")
+    @PostMapping("/auth/signup/member")
     public ResponseEntity<?> add(@RequestBody Member member) {
 
         // 서비스에서 중복 체크
-        DuplicateCheckDto duplicateCheckDto = service.isDuplicateMember(member.getEmail(), member.getNickName(), member.getPhoNo());
+        DuplicateCheckDTO duplicateCheckDto = service.isDuplicateMember(member.getEmail(), member.getNickName(), member.getPhoNo());
 
         // 중복 체크 후 처리
         if (duplicateCheckDto.isAnyDuplicate()) {
@@ -53,6 +55,40 @@ public class MemberController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원가입 저장 중 오류");
         }
     }
+
+    // 수의사 회원 가입
+    @PostMapping("/auth/signup/vet")
+    public ResponseEntity<?> addVet(@RequestBody VetSignupDTO vetSignupDTO) {
+        log.info("MemberController - addVet 시작");
+        log.info("addVet - VetSignupDTO: {}", vetSignupDTO);
+
+        VetDuplicateCheckDTO vetDuplicateCheckDto = vetService.isDuplicateVet(vetSignupDTO.getEmail(), vetSignupDTO.getNickName(), vetSignupDTO.getPhoNo(), vetSignupDTO.getLicenseNo());
+
+        // 중복 체크 후 처리
+        if (vetDuplicateCheckDto.isAnyDuplicate()) {
+            log.info("/auth/signup/vet - vetDuplicateCheckDto.isAnyDuplicate() 실행");
+            StringBuilder message = new StringBuilder("수의사 회원가입 실패: ");
+            if (vetDuplicateCheckDto.isEmailDuplicate()) message.append("이메일 중복. ");
+            if (vetDuplicateCheckDto.isNickNameDuplicate()) message.append("닉네임 중복. ");
+            if (vetDuplicateCheckDto.isPhoNoDuplicate()) message.append("전화번호 중복.");
+            if (vetDuplicateCheckDto.isLicenseNoDuplicate()) message.append("면허번호 중복.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(message.toString());
+        }
+
+
+        // 수의사 인증 요청 및 저장
+        Boolean isSuccess = vetService.processSaveAndRequest(vetSignupDTO);
+
+        if(isSuccess) {
+            log.info("MemberController - addVet 완료");
+            return ResponseEntity.ok("회원 가입이 완료되었습니다!\n" +
+                    "현재 계정은 수의사 인증이 필요한 상태입니다. 인증 요청이 성공적으로 접수되었으며, 관리자가 확인하여 승인 또는 거절 처리를 하게 됩니다.");
+        } else {
+            log.info("MemberController - addVet 오류");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원가입 저장 중 오류");
+        }
+    }
+
 
     @PostMapping("/auth/signin")
     public Map<String, String> login(@RequestBody MemberDTO memberDto) {
