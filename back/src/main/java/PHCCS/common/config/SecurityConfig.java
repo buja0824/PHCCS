@@ -32,6 +32,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable()) // CSRF 비활성화 (JWT 인증 시)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(whitelistRequestMatcher()).permitAll() // 화이트리스트
+                        .requestMatchers("/auth/logout").authenticated()
                         .requestMatchers("/admin/**").hasRole("ADMIN") // ADMIN 권한 필요
                         .anyRequest().hasAnyRole("MEMBER", "VET", "ADMIN") // 사용자와 관리자 모두 접근 가능
                 )

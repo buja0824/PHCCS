@@ -9,8 +9,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
 import java.io.IOException;
@@ -65,15 +65,15 @@ public class JwtAuthenticationFilter implements Filter {
 
                             log.info("Access Token 처리 완료: memberId={}, role={}", memberId, role);
                         } else {
-                            // Refresh Token 처리: ROLE_MEMBER 권한 인증 객체 생성
+                            // Refresh Token 처리: 권한 없는 인증 객체 생성
                             Long memberId = jwtUtil.extractSubject(token);
 
                             Authentication authentication = new UsernamePasswordAuthenticationToken(
-                                    memberId, null, Collections.singleton(new SimpleGrantedAuthority("ROLE_MEMBER"))
+                                    memberId, null, Collections.emptyList() // 권한 없이 인증 객체 생성
                             );
                             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-                            log.info("Refresh Token 처리 완료: 인증 객체 생성 (ROLE_MEMBER), memberId={}", memberId);
+                            log.info("Refresh Token 처리 완료: 인증 객체 생성 (권한 없음), memberId={}", memberId);
                         }
 
                         // 다음 필터로 이동
