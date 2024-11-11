@@ -13,18 +13,16 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
-
 import java.io.IOException;
 import java.util.Collections;
-
 
 @Slf4j
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter implements Filter {
 
     private final JwtUtil jwtUtil;
-    private final RoleMapper roleMapper; // RoleMapper 주입
-    private final RequestMatcher whitelistRequestMatcher; // 화이트리스트 매처
+    private final RoleMapper roleMapper;
+    private final RequestMatcher whitelistRequestMatcher;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
@@ -32,10 +30,6 @@ public class JwtAuthenticationFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         String requestURI = httpRequest.getRequestURI();
-
-        // 응답 인코딩 설정
-        httpResponse.setContentType("text/html; charset=UTF-8");
-        httpResponse.setCharacterEncoding("UTF-8");
 
         try {
             log.info("인증 체크 필터 시작 {}", requestURI);
@@ -48,61 +42,59 @@ public class JwtAuthenticationFilter implements Filter {
             }
 
             // 1. Authorization 헤더에서 Access Token 추출
-            String token = null;
-            String authorizationHeader = httpRequest.getHeader("Authorization");
-            if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-                token = authorizationHeader.substring(7);
-                log.info("Authorization 헤더에서 토큰 추출: {}", token);
-            }
+            String token = extractTokenFromRequest(httpRequest);
 
-            // 2. 쿠키에서 Access Token 추출 (Authorization 헤더가 없는 경우)
-            if (token == null) {
-                if (httpRequest.getCookies() != null) {
-                    for (Cookie cookie : httpRequest.getCookies()) {
-                        if ("accessToken".equals(cookie.getName())) {
-                            token = cookie.getValue();
-                            log.info("쿠키에서 토큰 추출: {}", token);
-                            break;
-                        }
-                    }
-                }
-            }
-
-            // 3. 토큰 검증 및 처리
+            // 2. 토큰 검증 및 처리
             if (token != null) {
                 TokenStatus status = jwtUtil.validateAccessToken(token);
 
                 switch (status) {
                     case VALID:
-                        Long memberId = jwtUtil.extractSubject(token);
-                        int roleNumber = jwtUtil.extractRole(token); // 숫자 권한 추출
+                        boolean isAccessToken = jwtUtil.hasRoleClaim(token); // role 클레임 여부 확인
 
-                        // 숫자 권한을 문자열 권한으로 매핑
-                        String role = roleMapper.mapRole(roleNumber);
+                        if (isAccessToken) {
+                            // Access Token 처리: 인증 객체 생성
+                            Long memberId = jwtUtil.extractSubject(token);
+                            int roleNumber = jwtUtil.extractRole(token); // 숫자 권한 추출
+                            String role = roleMapper.mapRole(roleNumber); // 권한 문자열 매핑
 
-                        // 인증 객체 생성 및 SecurityContextHolder에 설정
-                        Authentication authentication = new UsernamePasswordAuthenticationToken(
-                                memberId, null, Collections.singleton(new SimpleGrantedAuthority(role))
-                        );
-                        SecurityContextHolder.getContext().setAuthentication(authentication);
+                            Authentication authentication = new UsernamePasswordAuthenticationToken(
+                                    memberId, null, Collections.singleton(new SimpleGrantedAuthority(role))
+                            );
+                            SecurityContextHolder.getContext().setAuthentication(authentication);
 
-                        log.info("SecurityContextHolder에 인증 객체 설정 완료: memberId={}, role={}", memberId, role);
+                            log.info("Access Token 처리 완료: memberId={}, role={}", memberId, role);
+                        } else {
+                            // Refresh Token 처리: ROLE_MEMBER 권한 인증 객체 생성
+                            Long memberId = jwtUtil.extractSubject(token);
+
+                            Authentication authentication = new UsernamePasswordAuthenticationToken(
+                                    memberId, null, Collections.singleton(new SimpleGrantedAuthority("ROLE_MEMBER"))
+                            );
+                            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+                            log.info("Refresh Token 처리 완료: 인증 객체 생성 (ROLE_MEMBER), memberId={}", memberId);
+                        }
 
                         // 다음 필터로 이동
                         chain.doFilter(httpRequest, httpResponse);
                         return;
+
                     case EXPIRED:
                         httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                         httpResponse.getWriter().write("토큰이 만료되었습니다.");
                         return;
+
                     case INVALID_SIGNATURE:
                         httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                         httpResponse.getWriter().write("서명이 잘못된 토큰입니다.");
                         return;
+
                     case MALFORMED:
                         httpResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                         httpResponse.getWriter().write("형식이 잘못된 토큰입니다.");
                         return;
+
                     case UNKNOWN_ERROR:
                     default:
                         httpResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -117,11 +109,29 @@ public class JwtAuthenticationFilter implements Filter {
             }
 
         } catch (Exception e) {
-            // 예외 발생 시 스택 트레이스와 메시지를 로그에 기록
-            log.error("인증 필터 중 예외 발생 - URI: {}, 오류: {}", requestURI, e.getMessage(), e);
-            throw e; // 예외를 다시 던져 상위 레벨에서 처리하도록 함
+            log.error("인증 필터 중 예외 발생 - URI: {}, 오류 메시지: {}", requestURI, e.getMessage(), e);
+            throw e;
         } finally {
             log.info("인증 체크 필터 종료 {}", requestURI);
         }
+    }
+
+    private String extractTokenFromRequest(HttpServletRequest request) {
+        // 1. Authorization 헤더에서 추출
+        String authorizationHeader = request.getHeader("Authorization");
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            return authorizationHeader.substring(7);
+        }
+
+        // 2. 쿠키에서 추출
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if ("accessToken".equals(cookie.getName())) {
+                    return cookie.getValue();
+                }
+            }
+        }
+
+        return null;
     }
 }

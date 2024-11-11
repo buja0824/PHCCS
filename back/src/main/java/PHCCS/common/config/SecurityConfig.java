@@ -3,6 +3,7 @@ package PHCCS.common.config;
 import PHCCS.common.jwt.JwtAuthenticationFilter;
 import PHCCS.common.jwt.JwtUtil;
 import PHCCS.common.utility.RoleMapper;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,6 +35,22 @@ public class SecurityConfig {
                         .requestMatchers("/admin/**").hasRole("ADMIN") // ADMIN 권한 필요
                         .anyRequest().hasAnyRole("MEMBER", "VET", "ADMIN") // 사용자와 관리자 모두 접근 가능
                 )
+                .exceptionHandling(exception -> exception
+                        .accessDeniedHandler((request, response, accessDeniedException) -> {
+                            // 권한 없는 접근 처리
+                            response.setStatus(HttpServletResponse.SC_FORBIDDEN); // 403 Forbidden
+                            response.setContentType("application/json");
+                            response.setCharacterEncoding("UTF-8");
+                            response.getWriter().write("{\"error\": \"권한이 없습니다.\"}");
+                        })
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            // 인증되지 않은 사용자 처리
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401 Unauthorized
+                            response.setContentType("application/json");
+                            response.setCharacterEncoding("UTF-8");
+                            response.getWriter().write("{\"error\": \"인증이 필요합니다.\"}");
+                        })
+                )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // JWT 인증 필터 추가
                 .formLogin(form -> form.disable()) // 기본 로그인 폼 비활성화
                 .logout(logout -> logout.disable()); // 로그아웃 비활성화
@@ -49,7 +66,6 @@ public class SecurityConfig {
                 new AntPathRequestMatcher("/admin"),
                 new AntPathRequestMatcher("/admin/signin"),
                 new AntPathRequestMatcher("/auth/signup/**"),
-                new AntPathRequestMatcher("/auth/logout"),
                 new AntPathRequestMatcher("/auth/signin"),
                 new AntPathRequestMatcher("/auth/refresh"),
                 new AntPathRequestMatcher("/css/**"),
