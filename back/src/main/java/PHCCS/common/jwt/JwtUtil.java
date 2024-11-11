@@ -33,6 +33,23 @@ public class JwtUtil {
         return createToken(claims, id.toString(), jwtProperties.getRefreshTokenExpiration());
     }
 
+    public boolean hasRoleClaim(String token) {
+        try {
+            // JWT 디코딩 및 클레임 추출
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(jwtProperties.getSecretKey()) // 서명 검증에 사용할 키
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+
+            // role 클레임 존재 여부 반환
+            return claims.containsKey("role");
+        } catch (Exception e) {
+            log.error("JWT에서 role 클레임 확인 중 오류 발생: {}", e.getMessage());
+            return false;
+        }
+    }
+
     public TokenStatus validateAccessToken(String token){
         try {
             extractAllClaims(token); // JWT 파싱 및 유효성 검사
