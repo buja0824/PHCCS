@@ -89,6 +89,7 @@ public class MemberService {
     }
 
     public boolean logout(String token){
+        log.info("memberService - logout 토큰 id : {}", jwtUtil.extractId(token));
         return tokenService.removeRefreshToken(jwtUtil.extractId(token), jwtUtil.actual(token));
     }
 
