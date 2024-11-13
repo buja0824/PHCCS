@@ -97,5 +97,10 @@
         WHERE id = #{id}
     </update>
 
+    <select id="findPwdById" parameterType="Long" resultType="String">
+        SELECT pwd
+        FROM member
+        WHERE id = #{id}
+    </select>
 
 </mapper>

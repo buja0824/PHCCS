@@ -50,6 +50,11 @@ public class MybatisMemberRepository implements MemberRepository {
     }
 
     @Override
+    public String findPwdById(Long id) {
+        return mapper.findPwdById(id);
+    }
+
+    @Override
     public int deleteMember(Long id){
         int isSuccess = mapper.deleteMember(id);
 

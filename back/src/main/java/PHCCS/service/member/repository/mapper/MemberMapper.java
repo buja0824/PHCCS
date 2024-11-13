@@ -21,6 +21,8 @@ public interface MemberMapper {
 
     Optional<MemberProfileDTO> findMemberProfileById(@Param("id") Long id);
 
+    String findPwdById(@Param("id") Long id);
+
     int deleteMember(@Param("id") Long id);
 
     int findRoleById(@Param("id") Long id);
