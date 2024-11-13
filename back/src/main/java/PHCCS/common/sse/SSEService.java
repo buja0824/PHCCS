@@ -35,13 +35,13 @@ public class SSEService {
             });
     }
 
-    public void inviteAlarm(Long participantId, String chatRoomId){
+    public void inviteAlarm(Long participantId, String chatRoomId, String chatRoomName){
         try {
             SseEmitter emitter = sseEmitterMap.get(participantId);
             emitter
                     .send(SseEmitter.event()
-                    .name("inviteMsg")
-                    .data("새로운 채팅방에 초대 되었습니다." + chatRoomId));
+                    .name("inviteMsg : " + chatRoomId)
+                    .data("새로운 채팅방에 초대 되었습니다. : " + chatRoomName));
         } catch (IOException e) {
             log.error(e.getMessage(), e);
             throw new RuntimeException(e);

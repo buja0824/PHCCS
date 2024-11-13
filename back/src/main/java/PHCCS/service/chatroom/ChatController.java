@@ -29,8 +29,9 @@ public class ChatController {
         ChatRoom chatRoom = chatService.createRoom(chatConnectDTO);
 
         String roomId = chatRoom.getRoomId();
+        String roomName = chatConnectDTO.getRoomName();
         // 방에 초대받은 사용자에게 알림 보내기
-        sseService.inviteAlarm(chatConnectDTO.getParticipatingMemberId(), roomId);
+        sseService.inviteAlarm(chatConnectDTO.getParticipatingMemberId(), roomId, roomName);
         return chatRoom;
     }
 

@@ -71,6 +71,7 @@ public class ChatService {
         // roomId 생성
         ChatRoom chatRoom = ChatRoom.builder() //builder로 변수 세팅
                 .roomId(roomId)
+                .roomName(chatConnectDTO.getRoomName())
                 .createMemberId(createMember.getId())
                 .participatingMemberId(participatingMember.getId())
                 .build();
