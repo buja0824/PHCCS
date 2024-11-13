@@ -73,7 +73,12 @@
     </select>
 
     <select id="showAllPost" resultType="PostHeaderDTO">
-        select id, member_id, nick_name, title, view_cnt, like_cnt, create_date, ifnull(update_date, "--") as update_date
+        select id, member_id, nick_name, title, view_cnt, like_cnt, create_date, ifnull(update_date, "--") as update_date,
+            case
+                when length(content) > 15
+                    then substring(content, 1, 15)
+                    else content
+            end as partOfContent
         from
         <choose>
             <when test= "category == 'qna_board'">
@@ -200,6 +205,23 @@
         where id = #{postId}
     </update>
 
+    <update id="decrementLike">
+        update
+        <choose>
+            <when test="category eq 'qna_board'">
+                qna_board
+            </when>
+            <when test="category eq 'vet_board'">
+                vet_board
+            </when>
+            <when test="category eq 'community_board'">
+                community_board
+            </when>
+        </choose>
+        set like_cnt = like_cnt - 1
+        where id = #{postId}
+    </update>
+
     <insert id="likeMember">
         insert into
         <choose>
@@ -215,6 +237,22 @@
         </choose>
         values (#{postId}, #{memberId}, 1)
     </insert>
+
+    <delete id="unLikeMember">
+        delete from
+        <choose>
+            <when test="category eq 'qna_board'">
+                qna_like
+            </when>
+            <when test="category eq 'vet_board'">
+                vet_like
+            </when>
+            <when test="category eq 'community_board'">
+                community_like
+            </when>
+        </choose>
+        where post_id = #{postId} and member_id =  #{memberId}
+    </delete>
 
     <select id="findPostDir" resultType="String">
         select file_dir

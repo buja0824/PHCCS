@@ -225,18 +225,24 @@ public class PostService {
     }
 
     @Transactional
-    public boolean likePost(Long memberId, String category, Long postId){
+    public String likePost(Long memberId, String category, Long postId){
         log.info("|se|incrementLike()");
 
         Boolean likeMember = repository.isLikeMember(memberId, category, postId);
+        log.info("게시글에 좋아요 누른 멤버인가 = {}", likeMember);
         if (likeMember == null || !likeMember){
             repository.incrementLike(category, postId);
+            log.info("좋아요 올리기");
             repository.likeMember(memberId, category, postId);
-            return true;
+            log.info("좋아요한 사람으로 추가");
+            return "좋아요 올리기";
         }
         else{
-            log.info("이미 좋아요를 누름" );
-            return false;
+            repository.decrementLike(category, postId);
+            log.info("좋아요 내리기" );
+            repository.unLikeMember(memberId, category, postId);
+            log.info("좋아요한 사람에서 제거");
+            return "좋아요 내리기";
         }
     }
 

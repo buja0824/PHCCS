@@ -2,6 +2,7 @@ package PHCCS.service.comment;
 
 import PHCCS.service.comment.dto.CommentAddDTO;
 import PHCCS.service.comment.dto.CommentDTO;
+import PHCCS.service.comment.dto.MyCommentDTO;
 import PHCCS.service.comment.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,20 +42,35 @@ public class CommentService {
         repository.deleteComment(category, postId, commentId);
     }
 
+    public List<MyCommentDTO> showLikedComments(Long memberId){
+
+        List<MyCommentDTO> likedComments = repository.showLikedComments(memberId);
+        for (MyCommentDTO likedComment : likedComments) {
+            log.info("myComments = {}", likedComment);
+        }
+        return likedComments;
+    }
+
     @Transactional
-    public boolean incrementLike(Long memberId, String category, Long postId, Long commentId) {
+    public String incrementLike(Long memberId, String category, Long postId, Long commentId) {
         log.info("|se|incrementLike()");
 
         Boolean likeMember = repository.isLikeMember(memberId, category, postId, commentId);
-        log.info("|se|likeMember = {}", likeMember);
+        log.info("댓글에 좋아요 누른 멤버인가 = {}", likeMember);
+
         if (likeMember == null || !likeMember){
             repository.incrementLike(category, postId, commentId);
+            log.info("좋아요 올리기");
             repository.likeMember(memberId, category, postId, commentId);
-            return true;
+            log.info("좋아요한 사람으로 추가");
+            return "좋아요 올리기";
         }
         else{
-            log.info("이미 좋아요를 누름" );
-            return false;
+            repository.decrementLike(category, postId, commentId);
+            log.info("좋아요 내리기" );
+            repository.unLikeMember(memberId, category, postId, commentId);
+            log.info("좋아요한 사람에서 제거");
+            return "좋아요 내리기";
         }
     }
 

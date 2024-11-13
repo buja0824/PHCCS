@@ -31,6 +31,8 @@ public interface PostRepository {
     List<LikedPostDTO> showLikedPosts(Long memberId);
 
     void incrementLike(String category, Long postId);
+    void decrementLike(String category, Long postId);
     Boolean isLikeMember(Long memberId,String category, Long postId);
     void likeMember(Long memberId, String category, Long postId);
+    void unLikeMember(Long memberId, String category, Long postId);
 }

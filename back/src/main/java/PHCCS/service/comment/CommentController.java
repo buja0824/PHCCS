@@ -7,9 +7,9 @@ import PHCCS.common.response.ApiResponse;
 import PHCCS.common.sse.SSEService;
 import PHCCS.service.comment.dto.CommentAddDTO;
 import PHCCS.service.comment.dto.CommentDTO;
+import PHCCS.service.comment.dto.MyCommentDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -105,8 +105,18 @@ public class CommentController {
         return ApiResponse.successDelete();
     }
 
+    //내가 좋아요 누른글 목록
+    @GetMapping("/liked-comments")
+    public ResponseEntity<?> likedComments(@RequestHeader("Authorization") String token){
+        Long memberId = jwtUtil.extractSubject(token);
+        log.info("내 댓글 확인하는 memberId = {}", memberId);
+        List<MyCommentDTO> likedComments = service.showLikedComments(memberId);
+
+        return ResponseEntity.ok(likedComments);
+    }
+
     @PostMapping("/like/{category}/{postId}/{commentId}")
-    public ResponseEntity<?> incrementLike(
+    public ResponseEntity<?> commentLike(
 //            @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
             @RequestHeader("Authorization") String token,
             @PathVariable("category") String category,
@@ -114,16 +124,13 @@ public class CommentController {
             @PathVariable("commentId")Long commentId){
         log.info("incrementLike()");
         Long loginMember = jwtUtil.extractSubject(token);
+        log.info("게시글 좋아요 누르는 memberId = {}, 게시글 = {}, 댓글 = {}", loginMember, postId, commentId);
+
         if(loginMember == null){
             //            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인하지 않은 사용자는 접근할 수 없습니다.");
             throw new BadRequestEx("로그인하지 않은 사용자는 접근할 수 없습니다.");
         }
-        boolean like = service.incrementLike(loginMember, category, postId, commentId);
-        if(like){
-//            return ResponseEntity.ok(HttpStatus.OK);
-            return ApiResponse.successCreate();
-        }else{
-            return ResponseEntity.ok("이미 좋아요를 누른 댓글");
-        }
+        String string = service.incrementLike(loginMember, category, postId, commentId);
+        return ApiResponse.successCreate(string);
     }
 }

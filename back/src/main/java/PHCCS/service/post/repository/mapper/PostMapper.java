@@ -25,6 +25,8 @@ public interface PostMapper {
     List<MyPostDTO> showMyPost(Long memberId);
     List<LikedPostDTO> showLikedPosts(Long memberId);
     void incrementLike(@Param("category") String category, @Param("postId") Long postId);
+    void decrementLike(@Param("category") String category, @Param("postId") Long postId);
     Boolean isLikeMember(@Param("memberId") Long memberId, @Param("category") String category, @Param("postId") Long postId);
     void likeMember(@Param("memberId") Long memberId, @Param("category") String category, @Param("postId") Long postId);
+    void unLikeMember(@Param("memberId") Long memberId, @Param("category") String category, @Param("postId") Long postId);
 }
