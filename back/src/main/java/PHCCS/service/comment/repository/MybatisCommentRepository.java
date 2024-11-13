@@ -3,6 +3,7 @@ package PHCCS.service.comment.repository;
 import PHCCS.service.comment.Comment;
 import PHCCS.service.comment.dto.CommentAddDTO;
 import PHCCS.service.comment.dto.CommentDTO;
+import PHCCS.service.comment.dto.LikedCommentDTO;
 import PHCCS.service.comment.dto.MyCommentDTO;
 import PHCCS.service.comment.repository.mapper.CommentMapper;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +40,12 @@ public class MybatisCommentRepository implements CommentRepository {
     }
 
     @Override
-    public List<MyCommentDTO> showLikedComments(Long memberId) {
+    public List<MyCommentDTO> showMyComments(Long memberId) {
+        return mapper.showMyComments(memberId);
+    }
+
+    @Override
+    public List<LikedCommentDTO> showLikedComments(Long memberId) {
         return mapper.showLikedComments(memberId);
     }
 

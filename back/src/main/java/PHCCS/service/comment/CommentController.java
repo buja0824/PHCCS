@@ -7,6 +7,7 @@ import PHCCS.common.response.ApiResponse;
 import PHCCS.common.sse.SSEService;
 import PHCCS.service.comment.dto.CommentAddDTO;
 import PHCCS.service.comment.dto.CommentDTO;
+import PHCCS.service.comment.dto.LikedCommentDTO;
 import PHCCS.service.comment.dto.MyCommentDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -105,12 +106,22 @@ public class CommentController {
         return ApiResponse.successDelete();
     }
 
-    //내가 좋아요 누른글 목록
+    //내가 작성한 댓글 목록
+    @GetMapping("/my")
+    public ResponseEntity<?> myComments(@RequestHeader("Authorization") String token){
+        Long memberId = jwtUtil.extractSubject(token);
+        log.info("작성한 댓글 확인하는 memberId = {}", memberId);
+        List<MyCommentDTO> myComments = service.showMyComments(memberId);
+
+        return ResponseEntity.ok(myComments);
+    }
+
+    //좋아요 누른 댓글 보기
     @GetMapping("/liked-comments")
     public ResponseEntity<?> likedComments(@RequestHeader("Authorization") String token){
         Long memberId = jwtUtil.extractSubject(token);
-        log.info("내 댓글 확인하는 memberId = {}", memberId);
-        List<MyCommentDTO> likedComments = service.showLikedComments(memberId);
+        log.info("좋아요 누른 댓글 확인하는 memberId = {}", memberId);
+        List<LikedCommentDTO> likedComments = service.showLikedComments(memberId);
 
         return ResponseEntity.ok(likedComments);
     }
@@ -124,7 +135,7 @@ public class CommentController {
             @PathVariable("commentId")Long commentId){
         log.info("incrementLike()");
         Long loginMember = jwtUtil.extractSubject(token);
-        log.info("게시글 좋아요 누르는 memberId = {}, 게시글 = {}, 댓글 = {}", loginMember, postId, commentId);
+        log.info("댓글 좋아요 누르는 memberId = {}, 게시글 = {}, 댓글 = {}", loginMember, postId, commentId);
 
         if(loginMember == null){
             //            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인하지 않은 사용자는 접근할 수 없습니다.");

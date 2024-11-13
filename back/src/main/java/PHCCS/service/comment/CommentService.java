@@ -2,6 +2,7 @@ package PHCCS.service.comment;
 
 import PHCCS.service.comment.dto.CommentAddDTO;
 import PHCCS.service.comment.dto.CommentDTO;
+import PHCCS.service.comment.dto.LikedCommentDTO;
 import PHCCS.service.comment.dto.MyCommentDTO;
 import PHCCS.service.comment.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
@@ -42,11 +43,19 @@ public class CommentService {
         repository.deleteComment(category, postId, commentId);
     }
 
-    public List<MyCommentDTO> showLikedComments(Long memberId){
+    public List<MyCommentDTO> showMyComments(Long memberId){
 
-        List<MyCommentDTO> likedComments = repository.showLikedComments(memberId);
+        List<MyCommentDTO> likedComments = repository.showMyComments(memberId);
         for (MyCommentDTO likedComment : likedComments) {
             log.info("myComments = {}", likedComment);
+        }
+        return likedComments;
+    }
+    public List<LikedCommentDTO> showLikedComments(Long memberId){
+
+        List<LikedCommentDTO> likedComments = repository.showLikedComments(memberId);
+        for (LikedCommentDTO likedComment : likedComments) {
+            log.info("좋아요 누른 댓글 = {}", likedComment);
         }
         return likedComments;
     }

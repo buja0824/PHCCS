@@ -71,22 +71,42 @@
         where post_id = #{postId} and id = #{commentId}
     </delete>
 
-    <select id="showLikedComments" resultType="MyCommentDTO">
-        select id, comment, post_id, like_cnt, create_date, 'qna_board' as category
-        from qna_comment qc
-        where qc.member_id = #{memberId}
+    <select id="showMyComments" resultType="MyCommentDTO">
+        select id, comment, post_id, like_cnt, create_date as writeTime, 'qna_board' as category
+        from qna_comment
+        where member_id = #{memberId}
 
         union all
 
-        select id, comment, post_id, like_cnt, create_date, 'community_board' as category
-        from community_comment as cc
-        where cc.member_id = #{memberId}
+        select id, comment, post_id, like_cnt, create_date as writeTime, 'community_board' as category
+        from community_comment
+        where member_id = #{memberId}
 
         union all
 
-        select id, comment, post_id, like_cnt, create_date, 'vet_board' as category
-        from vet_comment as vc
-        where vc.member_id = #{memberId}
+        select id, comment, post_id, like_cnt, create_date as writeTime, 'vet_board' as category
+        from vet_comment
+        where member_id = #{memberId}
+    </select>
+    <select id="showLikedComments" resultType="LikedCommentDTO">
+        select qc.id, qc.member_id as writerId, qc.comment, qc.post_id, qc.like_cnt, qc.create_date as writeTime, 'qna_board' as category
+        from qna_comment as qc join qna_comment_like as qcl
+        on qcl.post_id = qc.post_id and qcl.comment_id = qc.id
+        where qcl.member_id = #{memberId}
+
+        union all
+
+        select cc.id, cc.member_id as writerId, cc.comment, cc.post_id, cc.like_cnt, cc.create_date as writeTime, 'community_board' as category
+        from community_comment as cc join community_comment_like as ccl
+        on ccl.post_id = cc.post_id and ccl.comment_id = cc.id
+        where ccl.member_id = #{memberId}
+
+        union all
+
+        select vc.id, vc.member_id as writerId, vc.comment, vc.post_id, vc.like_cnt, vc.create_date as writeTime, 'vet_board' as category
+        from vet_comment as vc join vet_comment_like as vcl
+        on vcl.post_id = vc.post_id and vcl.comment_id = vc.id
+        where vcl.member_id = #{memberId}
     </select>
 
     <update id="incrementLike">
