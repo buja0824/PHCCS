@@ -5,6 +5,7 @@ import PHCCS.common.sse.SSEService;
 import PHCCS.service.chatroom.dto.ChatConnectDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Delete;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,6 +25,7 @@ public class ChatController {
             @RequestHeader("Authorization") String token) {
 
         Long loginMember = jwtUtil.extractSubject(token);
+
         chatConnectDTO.setCreateMemberId(loginMember);
         log.info("1. 채팅방을 생성합니다.");
         ChatRoom chatRoom = chatService.createRoom(chatConnectDTO);
@@ -41,5 +43,6 @@ public class ChatController {
         // 특정 사용자가 참여중인 방 보여주기
         return chatService.findAllRoom(loginMember);
     }
+
 }
 

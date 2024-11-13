@@ -66,12 +66,14 @@ public class ChatService {
     public ChatRoom createRoom(ChatConnectDTO chatConnectDTO) {
         Member createMember = memberRepository.findMemberById(chatConnectDTO.getCreateMemberId()).get();
         Member participatingMember = memberRepository.findMemberById(chatConnectDTO.getParticipatingMemberId()).get();
+        String roomName = chatConnectDTO.getRoomName();
         String roomId = createRoomId(createMember, participatingMember);
-        log.info("2. 생성된 방의 ID = {}", roomId);
+
+        log.info("2. 생성된 방의 ID = {}, 이름 = {}", roomId, roomName);
         // roomId 생성
         ChatRoom chatRoom = ChatRoom.builder() //builder로 변수 세팅
                 .roomId(roomId)
-                .roomName(chatConnectDTO.getRoomName())
+                .roomName(roomName)
                 .createMemberId(createMember.getId())
                 .participatingMemberId(participatingMember.getId())
                 .build();
