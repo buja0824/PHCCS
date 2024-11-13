@@ -80,4 +80,16 @@ public class MybatisMemberRepository implements MemberRepository {
     public int promoteToVet(Long id) {
         return mapper.promoteToVet(id);
     }
+
+    @Override
+    public int updateNickname(Long id, String nickname) {
+        return mapper.updateNickname(id, nickname);
+    }
+
+    @Override
+    public int updatePwd(Long id, String pwd) {
+        return mapper.updatePwd(id, pwd);
+    }
+
+
 }

@@ -1,5 +1,7 @@
 package PHCCS.service.member;
 
+import PHCCS.common.exception.BadRequestEx;
+import PHCCS.common.exception.InternalServerEx;
 import PHCCS.common.jwt.JwtUtil;
 import PHCCS.service.member.dto.DuplicateCheckDTO;
 import PHCCS.service.member.dto.MemberDTO;
@@ -93,10 +95,33 @@ public class MemberService {
         return tokenService.removeRefreshToken(jwtUtil.extractId(token), jwtUtil.actual(token));
     }
 
-    public int modifyMember (Long id, MemberModifyDTO memberModifyDto){
-        int isSuccess = repository.modifyMember(id, memberModifyDto);
+    public void modifyMember(Long id, MemberModifyDTO memberModifyDto) {
+        if (id == null || id <= 0) {
+            throw new BadRequestEx("회원 ID가 유효하지 않습니다.");
+        }
 
-        return isSuccess;
+        if (memberModifyDto == null) {
+            throw new BadRequestEx("수정할 정보가 제공되지 않았습니다.");
+        }
+
+        // 닉네임만 수정
+        if (memberModifyDto.getNickname() != null && memberModifyDto.getPwd() == null) {
+            int isSuccess = repository.updateNickname(id, memberModifyDto.getNickname());
+            if (isSuccess == 0) {
+                throw new InternalServerEx("닉네임 수정에 실패했습니다.");
+            }
+        }
+        // 비밀번호만 수정
+        else if (memberModifyDto.getPwd() != null && memberModifyDto.getNickname() == null) {
+            int isSuccess = repository.updatePwd(id, memberModifyDto.getPwd());
+            if (isSuccess == 0) {
+                throw new InternalServerEx("비밀번호 변경에 실패했습니다.");
+            }
+        }
+        // 잘못된 요청
+        else {
+            throw new BadRequestEx("변경 작업 중 오류가 발생했습니다.");
+        }
     }
 
     public Optional<MemberProfileDTO> findMyProfileById(Long id) {

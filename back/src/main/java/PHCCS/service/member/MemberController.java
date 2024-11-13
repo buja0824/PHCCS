@@ -1,6 +1,7 @@
 package PHCCS.service.member;
 
 import PHCCS.common.jwt.JwtUtil;
+import PHCCS.common.response.ApiResponse;
 import PHCCS.service.member.dto.DuplicateCheckDTO;
 import PHCCS.service.member.dto.MemberDTO;
 import PHCCS.service.member.dto.MemberModifyDTO;
@@ -106,14 +107,10 @@ public class MemberController {
     }
 
     @PatchMapping("/member/update")
-    public ResponseEntity<?> update(@RequestHeader("Authorization") String token
-            , @RequestBody MemberModifyDTO ModifyDto){
-
-        int isSuccess = service.modifyMember(jwtUtil.extractSubject(token), ModifyDto);
-
-        if(isSuccess == 1){
-            return ResponseEntity.ok("수정 되었습니다.");
-        }else{return ResponseEntity.badRequest().body("수정 중 오류가 발생했습니다.");}
+    public ResponseEntity<?> update(@RequestHeader("Authorization") String token,
+                                    @RequestBody MemberModifyDTO modifyDto) {
+        service.modifyMember(jwtUtil.extractSubject(token), modifyDto); // 서비스 호출
+        return ApiResponse.successUpdate(); // 성공 응답
     }
 
     @GetMapping("/auth/me")

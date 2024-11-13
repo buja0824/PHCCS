@@ -6,6 +6,6 @@ import lombok.Data;
 public class MemberModifyDTO {
     private String pwd;
     private String name;
-    private String nickName;
+    private String nickname;
     private String phoNo;
 }

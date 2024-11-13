@@ -32,4 +32,9 @@ public interface MemberMapper {
     int existsByPhoNo(@Param("phoNo") String phoNo);
 
     int promoteToVet(@Param("id") Long id);
+
+    int updateNickname(@Param("id") Long id, @Param("nickname") String nickname);
+
+    int updatePwd(@Param("id") Long id, @Param("pwd") String pwd);
+
 }
