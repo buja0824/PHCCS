@@ -1,6 +1,8 @@
 package PHCCS.service.skinimage;
 
 import PHCCS.common.jwt.JwtUtil;
+import PHCCS.service.skinimage.dto.Chart;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -28,17 +30,23 @@ public class SkinImageController {
 
     private final SkinImageService imageService;
     private final JwtUtil jwtUtil;
+    private final ObjectMapper objectMapper;
 
     @PostMapping(value = "/camera", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Mono<String>> imageReceiver(
             @RequestHeader("Authorization") String token,
-            @RequestPart(value = "imageFile")MultipartFile image
+            @RequestPart(value = "imageFile")MultipartFile image,
+            @RequestPart("chart") String chart
     ) throws IOException {
 
         Long memberId = jwtUtil.extractSubject(token);
         log.info("memberId = {}", memberId);
 
-        Mono<String> stringMono = imageService.imageSaveAndSend(image, memberId);
+        log.info("종류 및 차트 문자열 자체 = {}", chart);
+        log.info("====");
+        Chart chartObj = objectMapper.readValue(chart, Chart.class);
+        log.info("Chart : {}", chartObj);
+        Mono<String> stringMono = imageService.imageSaveAndSend(image, memberId, chartObj);
         log.info("stringMono : {}", stringMono);
         return ResponseEntity.ok()
                 .body(stringMono);

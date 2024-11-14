@@ -54,6 +54,7 @@ public class SSEService {
      */
     public void addCommentAlarm(String category, Long postId, CommentAddDTO comment) {
         Long authorId = postRepository.findAuthorId(category, postId);
+        log.info("게시글 주인의 id = {}", authorId);
         try {
             sseEmitterMap.get(authorId).send(SseEmitter.event()
                     .name("새로운 댓들이 등록되었습니다.")

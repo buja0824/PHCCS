@@ -35,6 +35,7 @@ public class CommentController {
             @RequestBody CommentAddDTO comment){
 
         log.info("postComment()");
+        log.info("댓글본문 = {}", comment.getComment());
         Long loginMember = jwtUtil.extractSubject(token);
         if(loginMember == null){
 //            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인하지 않은 사용자는 접근할 수 없습니다.");
