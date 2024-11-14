@@ -19,6 +19,8 @@ public interface MemberRepository {
 
     String findPwdById(Long id);
 
+    String findEmailById(Long id);
+
     int deleteMember(Long id);
 
     int findRoleById(Long id);

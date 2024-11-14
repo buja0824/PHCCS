@@ -23,6 +23,8 @@ public interface MemberMapper {
 
     String findPwdById(@Param("id") Long id);
 
+    String findEmailById(@Param("id") Long id);
+
     int deleteMember(@Param("id") Long id);
 
     int findRoleById(@Param("id") Long id);
