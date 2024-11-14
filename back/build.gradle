@@ -58,6 +58,9 @@ dependencies {
 	// Spring Security Test
 	testImplementation 'org.springframework.security:spring-security-test'
 
+	// Spring Mail
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+
 	// Lombok
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
