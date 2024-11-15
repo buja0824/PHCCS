@@ -1,10 +1,14 @@
 package PHCCS.service.skinimage;
 
+import PHCCS.common.file.FileDTO;
+import PHCCS.common.file.FileStore;
 import PHCCS.common.jwt.JwtUtil;
 import PHCCS.service.skinimage.dto.Chart;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +17,9 @@ import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,14 +32,16 @@ import java.util.List;
  */
 @Slf4j
 @RestController
+@RequestMapping("/camera")
 @RequiredArgsConstructor
 public class SkinImageController {
 
     private final SkinImageService imageService;
     private final JwtUtil jwtUtil;
     private final ObjectMapper objectMapper;
+    private final FileStore fileStore;
 
-    @PostMapping(value = "/camera", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Mono<String>> imageReceiver(
             @RequestHeader("Authorization") String token,
             @RequestPart(value = "imageFile")MultipartFile image,
@@ -50,5 +59,28 @@ public class SkinImageController {
         log.info("stringMono : {}", stringMono);
         return ResponseEntity.ok()
                 .body(stringMono);
+    }
+    @GetMapping("/file/{uuid}")
+    public ResponseEntity<Resource> getFile(
+            @RequestHeader("Authorization") String token,
+            @PathVariable("uuid") String filename) throws IOException {
+
+        Long memberId = jwtUtil.extractSubject(token);
+        Path path = getPath(filename, memberId);
+        log.info("path: {} ", path);
+//        MediaType mediaType = determineImgMediaType(filename);
+        MediaType mediaType = MediaType.parseMediaType(Files.probeContentType(path));
+        log.info("mediaType: {}", mediaType);
+        log.info("path.toUri(): {} ", path.toUri());
+        Resource resource = new UrlResource(path.toUri());
+        log.info("resource: {}", resource);
+        return ResponseEntity.ok()
+                .contentType(mediaType)
+                .body(resource);
+    }
+    private Path getPath(String filename, Long memberId){
+        String fullPath = fileStore.getFullPath(filename, memberId);
+        Path filePath = Paths.get(fullPath).normalize();
+        return filePath;
     }
 }

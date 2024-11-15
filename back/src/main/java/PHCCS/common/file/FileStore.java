@@ -23,13 +23,23 @@ public class FileStore {
      * 기본 경로는 fileDir입니다.
      * 사용자의 id(PK)를 폴더 경로로 생성
      * + 사용자가 업로드하는데 사용한 게시판(예를 들어, community_board)을 하위 폴더로 생성
-     * fileDir/게시판의타입/사용자의PK 가 fullPath로 생성 됩니다.
+     * fileDir/게시판의타입/게시글의 PK 가 fullPath로 생성 됩니다.
      * 그 폴더에 파일을 저장합니다. 파일 이름은 fileName
      */
     public String getFullPath(String boardType, Long /*memberId*/savedPostId,/* String postTitle,*/ String fileName){
         return fileDir +
                 boardType + "/" +
                 /*memberId*/savedPostId + /*"/" + postTitle +*/ "/" +
+                fileName;
+    }
+
+    /**
+     * AI이미지 검사 후 저장된 사진의 경로를 찾는 오버로딩 메소드
+     */
+    public String getFullPath(String fileName, Long memberId){
+        return fileDir +
+                "skinImg/" +
+                memberId + "/" +
                 fileName;
     }
 
