@@ -58,6 +58,7 @@ public class SSEService {
      */
     public void addCommentAlarm(String category, Long postId, CommentAddDTO comment) {
         Long authorId = postRepository.findAuthorId(category, postId);
+        log.info("게시글 주인의 id = {}", authorId);
         try {
             SseEmitter sseEmitter = sseEmitterMap.get(authorId);
             if(sseEmitter == null){

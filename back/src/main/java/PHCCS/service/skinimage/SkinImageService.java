@@ -4,6 +4,7 @@ import PHCCS.common.config.WebConfig;
 import PHCCS.common.exception.InternalServerEx;
 import PHCCS.common.file.FileStore;
 import PHCCS.common.file.UploadFile;
+import PHCCS.service.skinimage.dto.Chart;
 import PHCCS.service.skinimage.dto.ImgResultDTO;
 import PHCCS.service.skinimage.repository.SkinImageRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -29,10 +30,14 @@ public class SkinImageService {
     private final WebConfig webConfig;
     private final ObjectMapper objectMapper;
 
-    public Mono<String> imageSaveAndSend(MultipartFile image, Long memberId)  {
+    public Mono<String> imageSaveAndSend(MultipartFile image, Long memberId, Chart chart) throws JsonProcessingException {
 
         UploadFile storeFile;
         String dir = "";
+
+        // 캐리지리턴, 라인피드 제거
+        log.info("chart = {}", chart);
+
         try {
             storeFile = fileStore.storeFile(image, memberId);
         } catch (IOException e) {
@@ -41,12 +46,12 @@ public class SkinImageService {
         // 저장경로 반환
         dir = storeFile.getFileDir();
         log.info("dir : {}", dir);
-        String dirJson = "{\"dir\": \"" + dir + "\"}";
-
+        String json = "{\"dir\": \"" + dir + "\" , \"breed\": \"" + chart.getBreed() + "\", \"symptom\": \"" + chart.getSymptom() + "\"}";
+        log.info("json = {}", json);
         // 파이썬 서버에 전송
         Mono<String> testResult = webConfig.aiImageServer()
                 .post()
-                .body(BodyInserters.fromValue(dirJson))
+                .body(BodyInserters.fromValue(json))
                 .retrieve()
                 .bodyToMono(String.class);
         log.info("testResult = {}", testResult);

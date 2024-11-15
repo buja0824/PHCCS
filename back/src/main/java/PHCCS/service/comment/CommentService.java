@@ -20,9 +20,11 @@ public class CommentService {
     private final CommentRepository repository;
 
     // 댓글 작성 완료 후 데이터베이스 저장 도중에 해당 게시글이 삭제가 되면?
+
     public boolean save(Long loginMember, String category, Long postId, CommentAddDTO comment){
 //        comment.setPostId(postId);
 //        comment.setLikeCnt(0L);
+
         int save = repository.save(loginMember, category, postId, comment);
         return save > 0;
     }
