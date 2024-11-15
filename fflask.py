@@ -20,7 +20,7 @@ def check_directory():
     
     # AI 이미지 판별 로직 .. 결과 반환
     imgResult = "피부병이 심하네용" # 결과
-    return jsonify({'imgResult': imgResult})
+    return jsonify({'imgResult': imgResult, 'dir' : dir})
 
 if __name__ == '__main__':
     app.run(debug=True)
