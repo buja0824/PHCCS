@@ -1,5 +1,6 @@
 package PHCCS.service.chatroom;
 
+import PHCCS.common.exception.BadRequestEx;
 import PHCCS.common.jwt.JwtUtil;
 import PHCCS.common.sse.SSEService;
 import PHCCS.service.chatroom.dto.ChatConnectDTO;
@@ -113,6 +114,31 @@ public class ChatService {
                     .roomId(roomId)
                     .build();
 
+        int memberCnt = 0;
+        for (BindSenderAndRoom senderAndRoom : sessions.keySet()) {
+            String findRoomId = senderAndRoom.roomId;
+            if(findRoomId.equals(roomId))
+                memberCnt++; // 멤버 발견하면 인원수 증가
+        }
+//        Message message = new Message();
+//        Member entryMember;
+        switch (memberCnt){
+            case 0:
+                enterRoomAndSendAlarm(session, bindSenderAndRoom, entryId, findRoom, roomId);
+//                Member entryMember;
+                break;
+
+            case 1:
+                enterRoomAndSendAlarm(session, bindSenderAndRoom, entryId, findRoom, roomId);
+                break;
+            default:
+                throw new BadRequestEx("ID : " + roomId+ " 채팅방 최대 인원수 초과");
+
+        }
+
+    }
+
+    private void enterRoomAndSendAlarm(WebSocketSession session, BindSenderAndRoom bindSenderAndRoom, Long entryId, ChatRoom findRoom, String roomId) {
         sessions.put(bindSenderAndRoom, session);
         Message message = new Message();
         Member entryMember = memberRepository.findMemberById(entryId).get();
@@ -194,14 +220,14 @@ public class ChatService {
         String roomId = queryMap.get("roomId");
         Long entryId = getEntryId(session);
         Member entryMember = memberRepository.findMemberById(entryId).get();
-        int cnt = 0;
-        for (BindSenderAndRoom bindSenderAndRoom : sessions.keySet()) {
+        int memberCnt = 0;
+        for (BindSenderAndRoom bindSenderAndRoom : sessions.keySet()) { // 한개 채팅방에 멤버가 몇명 있는지 찾기 위함
             String findRoomId = bindSenderAndRoom.getRoomId();
             if(findRoomId.equals(roomId))
-                cnt++;
+                memberCnt++; // 멤버 발견하면 인원수 증가
         }
-        switch (cnt){
-            case 2:
+        switch (memberCnt){
+            case 2: // 인원이 2명이면
                 for (BindSenderAndRoom bindSenderAndRoom : sessions.keySet()) {
                     if(bindSenderAndRoom.getRoomId().equals(roomId) && bindSenderAndRoom.getEntryId().equals(entryId)){
                         sessions.remove(bindSenderAndRoom);
@@ -257,7 +283,7 @@ public class ChatService {
         Long entryId = jwtUtil.extractSubject(auth.get(0));
 
 //        String token = auth.get(0).substring(7);
-        log.info("entryId = {}" ,entryId);
+        log.info("entryMemberId = {}" ,entryId);
         return entryId;
     }
 }

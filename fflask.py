@@ -9,6 +9,11 @@ def check_directory():
     dir = data.get('dir')  
     type = data.get('breed')
     symptom = data.get('symptom')
+    if(type) : type = "고양이"
+    else : type = "강아지"
+    if(symptom) : symptom = "유증상"
+    else : symptom = "무증상"
+    
     print("사진이 저장된 경로는 : " + dir + ", 반려동물 타입은 : " + type + ", 증상은 : " + symptom)
     if dir is None:
         return jsonify({"error": "dir is required"}), 400
