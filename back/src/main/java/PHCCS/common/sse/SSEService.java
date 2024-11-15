@@ -44,8 +44,15 @@ public class SSEService {
             }
             sseEmitter
                     .send(SseEmitter.event()
-                    .name("inviteMsg : " + chatRoomId)
-                    .data("새로운 채팅방에 초대 되었습니다. : " + chatRoomName));
+                    .name("새로운 채팅방에 초대 되었습니다.")
+                    .data("채팅방 이름: " + chatRoomName + ", 채팅방 ID: " + chatRoomId));
+            log.info("event:{}","새로운 채팅방에 초대 되었습니다.");
+            log.info("data:{}","채팅방 이름: " + chatRoomName + ", 채팅방 ID: " + chatRoomId);
+
+            log.info("sse 알림이름 = {}", "새로운 채팅방에 초대 되었습니다.");
+            log.info("채팅방 이름 = {}", chatRoomName);
+            log.info("채팅방 ID = {}", chatRoomId);
+
         } catch (IOException e) {
             log.error(e.getMessage(), e);
             throw new RuntimeException(e);
@@ -56,8 +63,12 @@ public class SSEService {
      * 알림 보낼 사용자 찾고, 알림 보낼 내용은 댓글이 등록되었습니다. 작성자 : 댓글내용
      * 알림 보낼 사용자 찾는건 게시글 작성자 찾는것과 동일
      */
-    public void addCommentAlarm(String category, Long postId, CommentAddDTO comment) {
+    public void addCommentAlarm(String category, Long postId, CommentAddDTO comment, Long memberId) {
         Long authorId = postRepository.findAuthorId(category, postId);
+        if(memberId == authorId) {
+            log.info("게시글 작성자와 댓글 작성자가 같음");
+            return;
+        }
         log.info("게시글 주인의 id = {}", authorId);
         try {
             SseEmitter sseEmitter = sseEmitterMap.get(authorId);
@@ -68,11 +79,18 @@ public class SSEService {
             sseEmitter.send(SseEmitter.event()
                     .name("새로운 댓들이 등록되었습니다.")
                     .data(comment.getNickName() +": "   + comment.getComment()));
+
+            log.info("event:{}","새로운 댓들이 등록되었습니다.");
+            log.info("data:{}",comment.getNickName() +": "   + comment.getComment());
+
+            log.info("sse 알림이름 = {}", "새로운 댓들이 등록되었습니다.");
+            log.info("댓글 작성자 = {}",comment.getNickName());
+            log.info("댓글 내용 = {}", comment.getComment());
+
         } catch (IOException e) {
             log.error(e.getMessage(), e);
             throw new RuntimeException(e);
         }
 
     }
-
 }

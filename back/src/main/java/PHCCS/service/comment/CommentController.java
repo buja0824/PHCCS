@@ -43,7 +43,8 @@ public class CommentController {
         }
         boolean isSave = service.save(loginMember, category, postId, comment);
         if(isSave){
-            sseService.addCommentAlarm(category, postId, comment);
+
+            sseService.addCommentAlarm(category, postId, comment, loginMember);
 //            return ResponseEntity.ok("댓글 저장이 완료되었습니다.");
             return ApiResponse.successCreate();
         }else {

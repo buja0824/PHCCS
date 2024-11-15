@@ -34,9 +34,9 @@
     <delete id="deletePet">
         delete
         from member_pet
-        where member_id = #{memberId} and reg_no in
-        <foreach item="regNo" collection="regNos" open="(" separator="," close=")">
-            #{regNo}
+        where member_id = #{memberId} and name in
+        <foreach item="name" collection="names" open="(" separator="," close=")">
+            #{name}
         </foreach>
     </delete>
 

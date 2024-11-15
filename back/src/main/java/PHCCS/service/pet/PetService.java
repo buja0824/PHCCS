@@ -46,15 +46,15 @@ public class PetService {
         repository.updatePet(memberId, petName, updateParam);
     }
 
-    public void deletePet(Long memberId, List<String> regNo){
-        if(regNo.isEmpty()){
+    public void deletePet(Long memberId, List<String> name){
+        if(name.isEmpty()){
             throw new BadRequestEx("반려동물을 선택해주세요.");
         }
-        regNo.forEach(it -> {
-            Pet pet = repository.findByRegNo(it);
-            if(pet==null) throw new BadRequestEx("반려동물이 존재하지 않습니다.");
-        });
-        repository.deletePet(memberId, regNo);
+//        name.forEach(it -> {
+//            Pet pet = repository.findByRegNo(it);
+//            if(pet==null) throw new BadRequestEx("반려동물이 존재하지 않습니다.");
+//        });
+        repository.deletePet(memberId, name);
     }
 
     public void testDelete(){
