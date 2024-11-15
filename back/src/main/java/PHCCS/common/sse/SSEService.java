@@ -37,8 +37,12 @@ public class SSEService {
 
     public void inviteAlarm(Long participantId, String chatRoomId, String chatRoomName){
         try {
-            SseEmitter emitter = sseEmitterMap.get(participantId);
-            emitter
+            SseEmitter sseEmitter = sseEmitterMap.get(participantId);
+            if(sseEmitter == null){
+                log.info("sse 에 연결이 안된 회원 id = {}", participantId);
+                return;
+            }
+            sseEmitter
                     .send(SseEmitter.event()
                     .name("inviteMsg : " + chatRoomId)
                     .data("새로운 채팅방에 초대 되었습니다. : " + chatRoomName));
@@ -55,7 +59,12 @@ public class SSEService {
     public void addCommentAlarm(String category, Long postId, CommentAddDTO comment) {
         Long authorId = postRepository.findAuthorId(category, postId);
         try {
-            sseEmitterMap.get(authorId).send(SseEmitter.event()
+            SseEmitter sseEmitter = sseEmitterMap.get(authorId);
+            if(sseEmitter == null){
+                log.info("sse 에 연결이 안된 회원 id = {}", authorId);
+                return;
+            }
+            sseEmitter.send(SseEmitter.event()
                     .name("새로운 댓들이 등록되었습니다.")
                     .data(comment.getNickName() +": "   + comment.getComment()));
         } catch (IOException e) {

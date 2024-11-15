@@ -118,7 +118,7 @@ public class ChatService {
         Member entryMember = memberRepository.findMemberById(entryId).get();
         message.setMessage(entryMember.getNickName()+" 님이 입장하였습니다.");
         try {
-            session.sendMessage(new TextMessage(roomId + " 채팅방 입장 성공"));
+            session.sendMessage(new TextMessage(findRoom.getRoomName() + " 채팅방 입장 성공"));
             sendToMessage(message, roomId);
         } catch (IOException e) {
             log.error(e.getMessage(), e);
