@@ -163,12 +163,14 @@ public class ChatService {
         // 생성된 방 찾기
         Map<String, String> queryMap = getQueryVal(session);
         String roomId = queryMap.get("roomId");
+
 //        String type = queryMap.get("type");
         ChatRoom findRoom = findRoomById(roomId);
         if(findRoom == null){
             log.error("생성된 방이 존재하지 않음");
             // TODO 방이 없으면 에러 발생
         }
+
         /**
         * 음 채팅방을 나갔다가 (소켓 닫기가 아닌 그냥 뒤로가기) 다시 들어가면 그 채팅방의 메시지 내역을 다시 로드 해줘야 하는데
         * 그걸 어떻게 구현?
@@ -184,6 +186,8 @@ public class ChatService {
 //            Message chatLogs = chatLog.get(findRoom);
 //            sendToMessage(chatLogs, roomId);
 //        }
+        Long loggerId = getEntryId(session);
+        chatRepository.saveChatLog(roomId, chatMessage,loggerId);
         //메세지 전송
         sendToMessage(chatMessage, roomId);
         //메시지 내역 저장

@@ -43,6 +43,5 @@ public class ChatController {
         // 특정 사용자가 참여중인 방 보여주기
         return chatService.findAllRoom(loginMember);
     }
-
 }
 

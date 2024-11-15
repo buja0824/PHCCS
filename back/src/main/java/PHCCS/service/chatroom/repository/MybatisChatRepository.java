@@ -1,5 +1,6 @@
 package PHCCS.service.chatroom.repository;
 
+import PHCCS.service.Message.Message;
 import PHCCS.service.chatroom.ChatRoom;
 import PHCCS.service.chatroom.repository.mapper.ChatMapper;
 import lombok.RequiredArgsConstructor;
@@ -20,5 +21,10 @@ public class MybatisChatRepository implements ChatRepository {
     @Override
     public void deleteRoom(String roomId) {
         mapper.deleteRoom(roomId);
+    }
+
+    @Override
+    public void saveChatLog(String roomId, Message message, Long loggerId) {
+        mapper.saveChatLog(roomId, message, loggerId);
     }
 }
