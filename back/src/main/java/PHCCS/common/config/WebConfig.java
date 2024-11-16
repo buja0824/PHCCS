@@ -59,7 +59,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Bean
     public WebClient aiImageServer(){
         return WebClient.builder()
-                .baseUrl("http://localhost:5000/ai-server")
+                .baseUrl("http://localhost:3002/")
                 .defaultHeader("Content-type", MediaType.APPLICATION_JSON_VALUE)
                 .build();
     }
