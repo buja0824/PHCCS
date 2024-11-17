@@ -15,4 +15,6 @@ public interface VetRequestRepository {
     Long findMemberIdById(Long id);
 
     int deleteById(Long Id);
+
+    int existsByMemberIdAndEmailAndLicenseNo(Long Id, String email, String licenseNo);
 }

@@ -11,14 +11,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class ExceptionControllerAdvice {
 
-    // 로그인 실패 처리 (401 Unauthorized)
-    @ExceptionHandler(LoginFailedException.class)
-    public ResponseEntity<String> handlerEx(LoginFailedException e) {
-        log.error(e.getMessage(), e);
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body("아이디 또는 비밀번호가 잘못되었습니다.");
-    }
-
     // 잘못된 요청 처리 (BadRequestEx)
     @ExceptionHandler
     public ResponseEntity<String> handlerEx(BadRequestEx e) {
@@ -30,6 +22,22 @@ public class ExceptionControllerAdvice {
     // 내부 서버 오류 처리 (InternalServerEx)
     @ExceptionHandler
     public ResponseEntity<String> handlerEx(InternalServerEx e) {
+        log.error(e.getMessage(), e);
+        return ResponseEntity.status(e.getHttpStatus())
+                .body(e.getMessage());
+    }
+
+    // 중복 요청 처리 (DuplicateException)
+    @ExceptionHandler(DuplicateException.class)
+    public ResponseEntity<String> handlerEx(DuplicateException e) {
+        log.error(e.getMessage(), e);
+        return ResponseEntity.status(e.getHttpStatus()) // 기본적으로 400 Bad Request 반환
+                .body(e.getMessage());
+    }
+
+    // 내부 서버 오류 처리 (InternalServerEx)
+    @ExceptionHandler
+    public ResponseEntity<String> handlerEx(ForbiddenException e) {
         log.error(e.getMessage(), e);
         return ResponseEntity.status(e.getHttpStatus())
                 .body(e.getMessage());

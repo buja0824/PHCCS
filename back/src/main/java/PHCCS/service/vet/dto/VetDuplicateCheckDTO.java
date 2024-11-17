@@ -30,7 +30,7 @@ public class VetDuplicateCheckDTO {
     }
 
     // 라이센스 번호 중복 여부
-    public boolean isLicenseNoDuplicate() { return isLicenseNoDuplicate(); }
+    public boolean isLicenseNoDuplicate() { return licenseNoDuplicate; }
 
     // 어떤 항목이라도 중복되는지 확인
     public boolean isAnyDuplicate() {
