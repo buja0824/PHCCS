@@ -122,18 +122,25 @@ public class ChatService {
         }
 //        Message message = new Message();
 //        Member entryMember;
+        List<Message> log = chatRepository.getChatLog(entryId, roomId);
         switch (memberCnt){
             case 0:
                 enterRoomAndSendAlarm(session, bindSenderAndRoom, entryId, findRoom, roomId);
+                for (Message message : log) {
+                    sendToMessage(message, roomId);
+                }
 //                Member entryMember;
                 break;
 
             case 1:
                 enterRoomAndSendAlarm(session, bindSenderAndRoom, entryId, findRoom, roomId);
+
+                for (Message message : log) {
+                    sendToMessage(message, roomId);
+                }
                 break;
             default:
                 throw new BadRequestEx("ID : " + roomId+ " 채팅방 최대 인원수 초과");
-
         }
 
     }

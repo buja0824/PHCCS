@@ -15,6 +15,6 @@ public interface PetRepository {
     List<PetDTO> findPetsByMember(Long id);
 
     void updatePet(Long memberId, String name, PetUpdateDTO updateDto);
-    int deletePet(Long memberId, List<String> name);
+    int deletePet(Long memberId, String name);
     void testDelete();
 }

@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Slf4j
 @Repository
 @RequiredArgsConstructor
@@ -26,5 +28,10 @@ public class MybatisChatRepository implements ChatRepository {
     @Override
     public void saveChatLog(String roomId, Message message, Long loggerId) {
         mapper.saveChatLog(roomId, message, loggerId);
+    }
+
+    @Override
+    public List<Message> getChatLog(Long memberId, String roomId) {
+        return mapper.getChatLog(memberId, roomId);
     }
 }
