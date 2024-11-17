@@ -20,7 +20,7 @@
         values(#{roomId}, #{message.message}, #{loggerId}, #{message.timestamp})
     </insert>
 
-    <select id="getChatLog" resultType="">
+    <select id="getChatLog" resultType="Message">
         select log, logger_idm write_time as timestamp
         from chat_log
         where room_id = #{roomId} and logger_id = #{memberId}
