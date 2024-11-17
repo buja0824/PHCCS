@@ -48,7 +48,7 @@ public class PetController {
     @DeleteMapping("/pet/delete")
     public ResponseEntity<?> petDelete(
             @RequestHeader("Authorization") String token,
-            @RequestBody List<String> regNo){
+            @RequestBody List<String> name){
 
         log.info("petDelete()");
         Long memberId = jwtUtil.extractSubject(token);
@@ -57,7 +57,7 @@ public class PetController {
             throw new BadRequestEx("로그인이 필요 합니다.");
         }
         try{
-            service.deletePet(memberId, regNo);
+            service.deletePet(memberId, name);
             return ApiResponse.successDelete();
         }catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("반려동물을 선택해주세요");

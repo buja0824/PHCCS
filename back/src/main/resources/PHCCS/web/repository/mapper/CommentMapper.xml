@@ -22,7 +22,8 @@
     </insert>
 
     <select id="findAllComment" resultType="Comment">
-        select * from
+        select id, post_id, member_id, comment, like_cnt, nick_name, create_date as writeTime
+        from
         <choose>
             <when test="category == 'qna_board'">
                 qna_comment
@@ -70,6 +71,44 @@
         where post_id = #{postId} and id = #{commentId}
     </delete>
 
+    <select id="showMyComments" resultType="MyCommentDTO">
+        select id, comment, post_id, like_cnt, create_date as writeTime, 'qna_board' as category
+        from qna_comment
+        where member_id = #{memberId}
+
+        union all
+
+        select id, comment, post_id, like_cnt, create_date as writeTime, 'community_board' as category
+        from community_comment
+        where member_id = #{memberId}
+
+        union all
+
+        select id, comment, post_id, like_cnt, create_date as writeTime, 'vet_board' as category
+        from vet_comment
+        where member_id = #{memberId}
+    </select>
+    <select id="showLikedComments" resultType="LikedCommentDTO">
+        select qc.id, qc.member_id as writerId, qc.comment, qc.post_id, qc.like_cnt, qc.create_date as writeTime, 'qna_board' as category
+        from qna_comment as qc join qna_comment_like as qcl
+        on qcl.post_id = qc.post_id and qcl.comment_id = qc.id
+        where qcl.member_id = #{memberId}
+
+        union all
+
+        select cc.id, cc.member_id as writerId, cc.comment, cc.post_id, cc.like_cnt, cc.create_date as writeTime, 'community_board' as category
+        from community_comment as cc join community_comment_like as ccl
+        on ccl.post_id = cc.post_id and ccl.comment_id = cc.id
+        where ccl.member_id = #{memberId}
+
+        union all
+
+        select vc.id, vc.member_id as writerId, vc.comment, vc.post_id, vc.like_cnt, vc.create_date as writeTime, 'vet_board' as category
+        from vet_comment as vc join vet_comment_like as vcl
+        on vcl.post_id = vc.post_id and vcl.comment_id = vc.id
+        where vcl.member_id = #{memberId}
+    </select>
+
     <update id="incrementLike">
         update
         <choose>
@@ -84,6 +123,23 @@
             </when>
         </choose>
         set like_cnt = like_cnt + 1
+        where post_id = #{postId} and id = #{commentId}
+    </update>
+
+    <update id="decrementLike">
+        update
+        <choose>
+            <when test="category eq 'qna_board'">
+                qna_comment
+            </when>
+            <when test="category eq 'vet_board'">
+                vet_comment
+            </when>
+            <when test="category eq 'community_board'">
+                community_comment
+            </when>
+        </choose>
+        set like_cnt = like_cnt - 1
         where post_id = #{postId} and id = #{commentId}
     </update>
 
@@ -119,4 +175,20 @@
         </choose>
         values (#{commentId}, #{memberId}, #{postId}, 1)
     </insert>
+
+    <delete id="unLikeMember">
+        delete from
+        <choose>
+            <when test="category eq 'qna_board'">
+                qna_comment_like
+            </when>
+            <when test="category eq 'vet_board'">
+                vet_comment_like
+            </when>
+            <when test="category eq 'community_board'">
+                community_comment_like
+            </when>
+        </choose>
+        where comment_id = #{commentId} and member_id = #{memberId} and post_id = #{postId}
+    </delete>
 </mapper>

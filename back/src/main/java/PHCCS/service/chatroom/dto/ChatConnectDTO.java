@@ -6,4 +6,5 @@ import lombok.Data;
 public class ChatConnectDTO {
     private Long createMemberId;
     private Long participatingMemberId;
+    private String roomName;
 }

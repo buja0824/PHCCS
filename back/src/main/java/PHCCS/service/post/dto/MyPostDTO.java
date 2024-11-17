@@ -7,6 +7,7 @@ public class MyPostDTO {
 
     private Long id;
     private String title;
+    private String partOfContent;
     private Long viewCnt;
     private Long likeCnt;
     private String createDate;

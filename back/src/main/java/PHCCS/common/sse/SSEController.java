@@ -32,6 +32,7 @@ public class SSEController {
 
         try {
             emitter.send(SseEmitter.event()
+                    .id(memberId+"")
                     .name("initConnect")
                     .data("connect!!"));
         } catch (IOException e) {

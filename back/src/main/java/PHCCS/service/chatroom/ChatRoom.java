@@ -6,13 +6,15 @@ import lombok.Data;
 @Data
 public class ChatRoom {
     private String roomId;
+    private String roomName;
     private Long createMemberId;
     private Long invitedMemberId;
 //    private Set<WebSocketSession> sessions = new HashSet<>();
 
     @Builder
-    public ChatRoom(String roomId, Long createMemberId, Long participatingMemberId) {
+    public ChatRoom(String roomId, String roomName, Long createMemberId, Long participatingMemberId) {
         this.roomId = roomId;
+        this.roomName = roomName;
         this.createMemberId = createMemberId;
         this.invitedMemberId = participatingMemberId;
     }

@@ -162,12 +162,10 @@ public class BoardController {
         @PathVariable("id") Long id){
 
         Long memberId = jwtUtil.extractSubject(token);
-        boolean like = service.likePost(memberId, category, id);
-        if(like){
-            return ResponseEntity.ok(HttpStatus.OK);
-        }else{
-            return ResponseEntity.ok("이미 좋아요를 누른글");
-        }
+        log.info("게시글 좋아요 누르는 memberId = {}, 게시글 = {}", memberId, id);
+
+        String string = service.likePost(memberId, category, id);
+        return ApiResponse.successCreate(string);
     }
 
     private static boolean isLogin(Member loginMember){

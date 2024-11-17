@@ -7,9 +7,10 @@ import PHCCS.common.response.ApiResponse;
 import PHCCS.common.sse.SSEService;
 import PHCCS.service.comment.dto.CommentAddDTO;
 import PHCCS.service.comment.dto.CommentDTO;
+import PHCCS.service.comment.dto.LikedCommentDTO;
+import PHCCS.service.comment.dto.MyCommentDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,6 +35,7 @@ public class CommentController {
             @RequestBody CommentAddDTO comment){
 
         log.info("postComment()");
+        log.info("댓글본문 = {}", comment.getComment());
         Long loginMember = jwtUtil.extractSubject(token);
         if(loginMember == null){
 //            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인하지 않은 사용자는 접근할 수 없습니다.");
@@ -41,7 +43,8 @@ public class CommentController {
         }
         boolean isSave = service.save(loginMember, category, postId, comment);
         if(isSave){
-            sseService.addCommentAlarm(category, postId, comment);
+
+            sseService.addCommentAlarm(category, postId, comment, loginMember);
 //            return ResponseEntity.ok("댓글 저장이 완료되었습니다.");
             return ApiResponse.successCreate();
         }else {
@@ -105,8 +108,28 @@ public class CommentController {
         return ApiResponse.successDelete();
     }
 
+    //내가 작성한 댓글 목록
+    @GetMapping("/my")
+    public ResponseEntity<?> myComments(@RequestHeader("Authorization") String token){
+        Long memberId = jwtUtil.extractSubject(token);
+        log.info("작성한 댓글 확인하는 memberId = {}", memberId);
+        List<MyCommentDTO> myComments = service.showMyComments(memberId);
+
+        return ResponseEntity.ok(myComments);
+    }
+
+    //좋아요 누른 댓글 보기
+    @GetMapping("/liked-comments")
+    public ResponseEntity<?> likedComments(@RequestHeader("Authorization") String token){
+        Long memberId = jwtUtil.extractSubject(token);
+        log.info("좋아요 누른 댓글 확인하는 memberId = {}", memberId);
+        List<LikedCommentDTO> likedComments = service.showLikedComments(memberId);
+
+        return ResponseEntity.ok(likedComments);
+    }
+
     @PostMapping("/like/{category}/{postId}/{commentId}")
-    public ResponseEntity<?> incrementLike(
+    public ResponseEntity<?> commentLike(
 //            @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
             @RequestHeader("Authorization") String token,
             @PathVariable("category") String category,
@@ -114,16 +137,13 @@ public class CommentController {
             @PathVariable("commentId")Long commentId){
         log.info("incrementLike()");
         Long loginMember = jwtUtil.extractSubject(token);
+        log.info("댓글 좋아요 누르는 memberId = {}, 게시글 = {}, 댓글 = {}", loginMember, postId, commentId);
+
         if(loginMember == null){
             //            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인하지 않은 사용자는 접근할 수 없습니다.");
             throw new BadRequestEx("로그인하지 않은 사용자는 접근할 수 없습니다.");
         }
-        boolean like = service.incrementLike(loginMember, category, postId, commentId);
-        if(like){
-//            return ResponseEntity.ok(HttpStatus.OK);
-            return ApiResponse.successCreate();
-        }else{
-            return ResponseEntity.ok("이미 좋아요를 누른 댓글");
-        }
+        String string = service.incrementLike(loginMember, category, postId, commentId);
+        return ApiResponse.successCreate(string);
     }
 }

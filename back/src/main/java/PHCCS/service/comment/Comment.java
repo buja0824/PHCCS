@@ -12,6 +12,6 @@ public class Comment {
     private String comment; // 댓글의 내용
     private String nickName; // 댓글작성자
     private Long likeCnt;
-    private LocalDateTime writeTime = LocalDateTime.now(); // 댓글 작성 시간
+    private LocalDateTime writeTime; // 댓글 작성 시간
 }
 

@@ -14,4 +14,9 @@
         where room_id = #{roomId}
     </delete>
 
+    <insert id = "saveChatLog">
+        insert into chat_log
+        (room_id, log, logger_id, write_time)
+        values(#{roomId}, #{message.message}, #{loggerId}, #{message.timestamp})
+    </insert>
 </mapper>

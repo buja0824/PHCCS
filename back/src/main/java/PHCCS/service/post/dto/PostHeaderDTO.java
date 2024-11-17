@@ -10,6 +10,7 @@ public class PostHeaderDTO {
     private Long memberId;
     private String nickName;
     private String title;
+    private String partOfContent;
     private Long viewCnt;
     private Long likeCnt;
     private String createDate;

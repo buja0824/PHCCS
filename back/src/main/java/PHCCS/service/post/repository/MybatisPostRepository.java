@@ -94,8 +94,18 @@ public class MybatisPostRepository implements PostRepository {
     }
 
     @Override
+    public void decrementLike(String category, Long postId) {
+        mapper.decrementLike(category, postId);
+    }
+
+    @Override
     public void likeMember(Long memberId, String category, Long postId) {
         mapper.likeMember(memberId, category, postId);
+    }
+
+    @Override
+    public void unLikeMember(Long memberId, String category, Long postId) {
+        mapper.unLikeMember(memberId, category, postId);
     }
 
 }
