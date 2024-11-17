@@ -6,7 +6,7 @@ import lombok.Data;
 public class PetUpdateDTO {
 
     private String petName;
-    private String petAge;
+    private Long petAge;
     private String petBreed;
     private String petGender;
 

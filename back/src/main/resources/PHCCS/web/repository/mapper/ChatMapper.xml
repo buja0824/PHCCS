@@ -21,8 +21,8 @@
     </insert>
 
     <select id="getChatLog" resultType="Message">
-        select log, logger_idm write_time as timestamp
+        select log as message, write_time as timestamp
         from chat_log
-        where room_id = #{roomId} and logger_id = #{memberId}
+        where room_id = #{roomId}
     </select>
 </mapper>
