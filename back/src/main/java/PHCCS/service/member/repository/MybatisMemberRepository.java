@@ -50,6 +50,16 @@ public class MybatisMemberRepository implements MemberRepository {
     }
 
     @Override
+    public String findPwdById(Long id) {
+        return mapper.findPwdById(id);
+    }
+
+    @Override
+    public String findEmailById(Long id) {
+        return mapper.findEmailById(id);
+    }
+
+    @Override
     public int deleteMember(Long id){
         int isSuccess = mapper.deleteMember(id);
 
@@ -80,4 +90,16 @@ public class MybatisMemberRepository implements MemberRepository {
     public int promoteToVet(Long id) {
         return mapper.promoteToVet(id);
     }
+
+    @Override
+    public int updateNickname(Long id, String nickname) {
+        return mapper.updateNickname(id, nickname);
+    }
+
+    @Override
+    public int updatePwd(Long id, String pwd) {
+        return mapper.updatePwd(id, pwd);
+    }
+
+
 }

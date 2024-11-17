@@ -1,21 +1,27 @@
 package PHCCS.service.member;
 
 import PHCCS.common.jwt.JwtUtil;
+import PHCCS.common.response.ApiResponse;
 import PHCCS.service.member.dto.DuplicateCheckDTO;
 import PHCCS.service.member.dto.MemberDTO;
 import PHCCS.service.member.dto.MemberModifyDTO;
 import PHCCS.service.member.dto.MemberProfileDTO;
+import PHCCS.service.member.exception.LoginFailedException;
 import PHCCS.service.member.token.TokenService;
 import PHCCS.common.jwt.TokenStatus;
 import PHCCS.common.jwt.TokenValidationException;
 
 import PHCCS.service.vet.dto.VetDuplicateCheckDTO;
+import PHCCS.service.vet.dto.VetRequestDTO;
 import PHCCS.service.vet.dto.VetSignupDTO;
 import PHCCS.service.vet.VetService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -89,6 +95,17 @@ public class MemberController {
         }
     }
 
+// 해당 메소드는 이전에 JWT 에서 memberId를 가져오던 방식이랑 다르게
+// JwtAuthenticaionFilter에서 생성한 인증객체에서 memberId를 가져오는 방식으로 만듬
+// @AuthenticationPrincipal 어노테이션으로 인증객체에서 MemberId를 가져옴
+    @PostMapping("/auth/reRequest")
+    public  ResponseEntity<?> reRequestVetApproval(@RequestBody VetRequestDTO vetRequestDTO, @AuthenticationPrincipal Long memberId) {
+        log.info("MemberController - reRequestVetApproval 실행");
+        vetService.processVetRequestData(vetRequestDTO, memberId);
+        // 성공 예외처리
+        return ResponseEntity.ok("인증 요청이 성공적으로 접수되었으며, 관리자가 확인하여 승인 또는 거절 처리를 하게 됩니다.");
+    }
+
 
     @PostMapping("/auth/signin")
     public Map<String, String> login(@RequestBody MemberDTO memberDto) {
@@ -106,14 +123,10 @@ public class MemberController {
     }
 
     @PatchMapping("/member/update")
-    public ResponseEntity<?> update(@RequestHeader("Authorization") String token
-            , @RequestBody MemberModifyDTO ModifyDto){
-
-        int isSuccess = service.modifyMember(jwtUtil.extractSubject(token), ModifyDto);
-
-        if(isSuccess == 1){
-            return ResponseEntity.ok("수정 되었습니다.");
-        }else{return ResponseEntity.badRequest().body("수정 중 오류가 발생했습니다.");}
+    public ResponseEntity<?> update(@RequestHeader("Authorization") String token,
+                                    @RequestBody MemberModifyDTO modifyDto) {
+        service.modifyMember(jwtUtil.extractSubject(token), modifyDto); // 서비스 호출
+        return ApiResponse.successUpdate(); // 성공 응답
     }
 
     @GetMapping("/auth/me")
@@ -165,5 +178,11 @@ public class MemberController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "서버 오류가 발생했습니다."));
         }
+    }
+
+    //로그인 실패 처리 (401 Unauthorized)
+    @ExceptionHandler(LoginFailedException.class)
+    public ResponseEntity<String> handleLoginFailedException(LoginFailedException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("아이디 또는 비밀번호가 잘못되었습니다.");
     }
 }

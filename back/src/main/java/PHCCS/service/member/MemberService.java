@@ -1,5 +1,7 @@
 package PHCCS.service.member;
 
+import PHCCS.common.exception.BadRequestEx;
+import PHCCS.common.exception.InternalServerEx;
 import PHCCS.common.jwt.JwtUtil;
 import PHCCS.service.member.dto.DuplicateCheckDTO;
 import PHCCS.service.member.dto.MemberDTO;
@@ -93,10 +95,50 @@ public class MemberService {
         return tokenService.removeRefreshToken(jwtUtil.extractId(token), jwtUtil.actual(token));
     }
 
-    public int modifyMember (Long id, MemberModifyDTO memberModifyDto){
-        int isSuccess = repository.modifyMember(id, memberModifyDto);
+    public void modifyMember(Long id, MemberModifyDTO memberModifyDto) {
+        if (id == null || id <= 0) {
+            throw new BadRequestEx("회원 ID가 유효하지 않습니다.");
+        }
 
-        return isSuccess;
+        if (memberModifyDto == null) {
+            throw new BadRequestEx("수정할 정보가 제공되지 않았습니다.");
+        }
+
+        // 닉네임 변경 로직
+        if (memberModifyDto.getNickname() != null && memberModifyDto.getPwd() == null) {
+            boolean isNickNameDuplicate = isNicknameDuplicate(memberModifyDto.getNickname());
+            if (isNickNameDuplicate) {
+                throw new BadRequestEx("이미 사용 중인 닉네임입니다.");
+            }
+
+            int isSuccess = repository.updateNickname(id, memberModifyDto.getNickname());
+            if (isSuccess == 0) {
+                throw new InternalServerEx("닉네임 수정에 실패했습니다.");
+            }
+        }
+        // 비밀번호 변경 로직
+        else if (memberModifyDto.getPwd() != null && memberModifyDto.getCurrentPwd() != null) {
+            // 1. 데이터베이스에서 현재 비밀번호 조회
+            String currentPwd = repository.findPwdById(id);
+            if (currentPwd == null) {
+                throw new InternalServerEx("사용자의 비밀번호를 확인할 수 없습니다.");
+            }
+
+            // 2. 현재 비밀번호 검증
+            if (!memberModifyDto.getCurrentPwd().equals(currentPwd)) {
+                throw new BadRequestEx("현재 비밀번호가 일치하지 않습니다.");
+            }
+
+            // 3. 비밀번호 업데이트
+            int isSuccess = repository.updatePwd(id, memberModifyDto.getPwd());
+            if (isSuccess == 0) {
+                throw new InternalServerEx("비밀번호 변경에 실패했습니다.");
+            }
+        }
+        // 잘못된 요청
+        else {
+            throw new BadRequestEx("변경 작업 중 오류가 발생했습니다.");
+        }
     }
 
     public Optional<MemberProfileDTO> findMyProfileById(Long id) {
@@ -118,6 +160,11 @@ public class MemberService {
         boolean phoNoDuplicate = (repository.existsByPhoNo(phoNo) == 1);
 
         return new DuplicateCheckDTO(emailDuplicate, nicknameDuplicate, phoNoDuplicate);
+    }
+
+    public boolean isNicknameDuplicate(String nickname) {
+        // existsByNickname이 1이면 중복(true), 0이면 중복 아님(false)
+        return repository.existsByNickname(nickname) == 1;
     }
 }
 

@@ -36,4 +36,14 @@
         WHERE id = #{id}
     </delete>
 
+    <!-- 중복 확인 쿼리 -->
+    <select id="existsByMemberIdAndEmailAndLicenseNo" resultType="int">
+        SELECT COUNT(*)
+        FROM vet_request
+        WHERE member_id = #{id}
+        OR email = #{email}
+        OR license_no = #{licenseNo}
+    </select>
+
+
 </mapper>

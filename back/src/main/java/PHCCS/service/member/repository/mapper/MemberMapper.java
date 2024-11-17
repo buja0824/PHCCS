@@ -21,6 +21,10 @@ public interface MemberMapper {
 
     Optional<MemberProfileDTO> findMemberProfileById(@Param("id") Long id);
 
+    String findPwdById(@Param("id") Long id);
+
+    String findEmailById(@Param("id") Long id);
+
     int deleteMember(@Param("id") Long id);
 
     int findRoleById(@Param("id") Long id);
@@ -32,4 +36,9 @@ public interface MemberMapper {
     int existsByPhoNo(@Param("phoNo") String phoNo);
 
     int promoteToVet(@Param("id") Long id);
+
+    int updateNickname(@Param("id") Long id, @Param("nickname") String nickname);
+
+    int updatePwd(@Param("id") Long id, @Param("pwd") String pwd);
+
 }

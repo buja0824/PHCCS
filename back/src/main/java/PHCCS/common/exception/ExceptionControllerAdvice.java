@@ -1,6 +1,8 @@
 package PHCCS.common.exception;
 
+import PHCCS.service.member.exception.LoginFailedException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -9,21 +11,43 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class ExceptionControllerAdvice {
 
+    // 잘못된 요청 처리 (BadRequestEx)
     @ExceptionHandler
-    public ResponseEntity<String> handlerEx(Exception e){
+    public ResponseEntity<String> handlerEx(BadRequestEx e) {
         log.error(e.getMessage(), e);
-        return ResponseEntity.internalServerError().body("시스템 오류가 발생했습니다.");
+        return ResponseEntity.status(e.getHttpStatus())
+                .body(e.getMessage());
     }
 
+    // 내부 서버 오류 처리 (InternalServerEx)
     @ExceptionHandler
-    public ResponseEntity<String> handlerEx(BadRequestEx e){
+    public ResponseEntity<String> handlerEx(InternalServerEx e) {
         log.error(e.getMessage(), e);
-        return ResponseEntity.status(e.getHttpStatus()).body(e.getMessage());
+        return ResponseEntity.status(e.getHttpStatus())
+                .body(e.getMessage());
     }
 
-    @ExceptionHandler
-    public ResponseEntity<String> handlerEx(InternalServerEx e){
+    // 중복 요청 처리 (DuplicateException)
+    @ExceptionHandler(DuplicateException.class)
+    public ResponseEntity<String> handlerEx(DuplicateException e) {
         log.error(e.getMessage(), e);
-        return ResponseEntity.status(e.getHttpStatus()).body(e.getMessage());
+        return ResponseEntity.status(e.getHttpStatus()) // 기본적으로 400 Bad Request 반환
+                .body(e.getMessage());
+    }
+
+    // 내부 서버 오류 처리 (InternalServerEx)
+    @ExceptionHandler
+    public ResponseEntity<String> handlerEx(ForbiddenException e) {
+        log.error(e.getMessage(), e);
+        return ResponseEntity.status(e.getHttpStatus())
+                .body(e.getMessage());
+    }
+
+    // 기타 예외 처리 (500 Internal Server Error)
+    @ExceptionHandler
+    public ResponseEntity<String> handlerEx(Exception ex) {
+        log.error(ex.getMessage(), ex);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("시스템 오류가 발생했습니다.");
     }
 }

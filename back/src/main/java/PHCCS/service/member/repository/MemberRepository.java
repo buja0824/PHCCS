@@ -3,7 +3,6 @@ package PHCCS.service.member.repository;
 import PHCCS.service.member.Member;
 import PHCCS.service.member.dto.MemberModifyDTO;
 import PHCCS.service.member.dto.MemberProfileDTO;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.Optional;
 
@@ -18,6 +17,10 @@ public interface MemberRepository {
 
     Optional<Member> findMemberById(Long id);
 
+    String findPwdById(Long id);
+
+    String findEmailById(Long id);
+
     int deleteMember(Long id);
 
     int findRoleById(Long id);
@@ -29,4 +32,8 @@ public interface MemberRepository {
     int existsByPhoNo(String phoNo);
 
     int promoteToVet(Long id);
+
+    int updateNickname(Long id, String nickname);
+
+    int updatePwd(Long id, String pwd);
 }

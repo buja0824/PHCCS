@@ -45,4 +45,9 @@ public class MybatisVetRequestRepository implements VetRequestRepository {
         return mapper.deleteById(id);
     }
 
+    @Override
+    public int existsByMemberIdAndEmailAndLicenseNo(Long Id, String email, String licenseNo) {
+        return mapper.existsByMemberIdAndEmailAndLicenseNo(Id, email, licenseNo);
+    }
+
 }

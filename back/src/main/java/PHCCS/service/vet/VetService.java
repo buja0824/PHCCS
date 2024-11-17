@@ -1,5 +1,9 @@
 package PHCCS.service.vet;
 
+import PHCCS.common.exception.BadRequestEx;
+import PHCCS.common.exception.DuplicateException;
+import PHCCS.common.exception.ForbiddenException;
+import PHCCS.common.exception.InternalServerEx;
 import PHCCS.service.member.Member;
 import PHCCS.service.member.repository.MemberRepository;
 import PHCCS.service.vet.dto.VetDuplicateCheckDTO;
@@ -7,8 +11,11 @@ import PHCCS.service.vet.dto.VetRequestDTO;
 import PHCCS.service.vet.dto.VetSignupDTO;
 import PHCCS.service.vet.repository.VetInfoRepository;
 import PHCCS.service.vet.repository.VetRequestRepository;
+import com.sun.jdi.request.DuplicateRequestException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -60,14 +67,44 @@ public class VetService {
         log.info("processSaveAndRequest 완료");
        return isSaveSuccess;
     }
-    public boolean saveRequest(VetRequestDTO vetRequestDTO){
 
+    public void processVetRequestData(VetRequestDTO vetRequestDTO, Long memberId){
+        log.info("VetService - processVetRequestData 실행");
+        log.info("processVetRequestData - VetRequestDTO: {}", vetRequestDTO);
+        vetRequestDTO.setMemberId(memberId);
+        vetRequestDTO.setRequestDate(LocalDate.now());
+        saveRequest(vetRequestDTO);
+        log.info("VetService - processVetRequestData 완료");
+    }
+    public void saveRequest(VetRequestDTO vetRequestDTO) {
         log.info("VetService - saveRequest 실행");
         log.info("saveRequest - VetRequestDTO: {}", vetRequestDTO);
-        Boolean isSaveRequestSuccess = repository.save(vetRequestDTO) > 0;
 
+        // 수의사 인지 확인 - 수의사는 권한 요청 x
+        if (isVetRole()) {
+            throw new ForbiddenException("이미 수의사 권한을 가진 사용자는 인증 요청을 할 수 없습니다.");
+        }
+
+        // 중복 확인
+        boolean isDuplicate = repository.existsByMemberIdAndEmailAndLicenseNo(
+                vetRequestDTO.getMemberId(),
+                vetRequestDTO.getEmail(),
+                vetRequestDTO.getLicenseNo()
+        ) > 0 ;
+
+        log.info("isDuplicate result: {}", isDuplicate);
+
+        if (isDuplicate) {
+            log.error("Duplicate detected, throwing DuplicateException");
+            throw new DuplicateException("이미 요청하셨습니다. 관리자가 승인을 할 때까지 기다려주세요.");
+        }
+
+        // 요청 저장
+        Boolean isSaveRequestSuccess = repository.save(vetRequestDTO) > 0;
+        if (!isSaveRequestSuccess) {
+            throw new InternalServerEx("데이터베이스에 요청을 저장하지 못했습니다.");
+        }
         log.info("VetService - saveRequest 완료");
-       return isSaveRequestSuccess;
     }
 
     public VetDuplicateCheckDTO isDuplicateVet(String email, String nickname, String phoNo, String licenseNo) {
@@ -81,5 +118,15 @@ public class VetService {
         log.info("VetService - isDuplicateVet 완료");
         return new VetDuplicateCheckDTO(emailDuplicate, nicknameDuplicate, phoNoDuplicate, licenseNoDuplicate);
 
+    }
+
+    private boolean isVetRole() {
+        // DB 조회 또는 SecurityContextHolder를 통해 권한 확인
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || authentication.getAuthorities() == null) {
+            return false; // 인증되지 않은 사용자는 ROLE_VET 권한이 없음
+        }
+        return authentication.getAuthorities().stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_VET"));
     }
 }

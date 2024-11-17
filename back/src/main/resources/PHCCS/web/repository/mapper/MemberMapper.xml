@@ -49,6 +49,12 @@
         where id = #{id}
     </select>
 
+    <select id="findEmailById">
+        select email
+        from member
+        where id = #{id}
+    </select>
+
     <select id="existsByEmail">
         SELECT
             CASE
@@ -81,5 +87,26 @@
         SET role = 1
         WHERE id = #{id}
     </update>
+
+
+    <!-- 닉네임 업데이트 -->
+    <update id="updateNickname">
+        UPDATE member
+        SET nick_name = #{nickname}
+        WHERE id = #{id}
+    </update>
+
+    <!-- 비밀번호 업데이트 -->
+    <update id="updatePwd">
+        UPDATE member
+        SET pwd = #{pwd}
+        WHERE id = #{id}
+    </update>
+
+    <select id="findPwdById" parameterType="Long" resultType="String">
+        SELECT pwd
+        FROM member
+        WHERE id = #{id}
+    </select>
 
 </mapper>
