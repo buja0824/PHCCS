@@ -1,7 +1,7 @@
 package PHCCS.service.chatroom.repository;
 
 
-import PHCCS.service.Message.Message;
+import PHCCS.service.chatroom.dto.Message;
 import PHCCS.service.chatroom.ChatRoom;
 
 import java.util.List;

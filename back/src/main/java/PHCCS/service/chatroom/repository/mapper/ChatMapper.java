@@ -1,6 +1,6 @@
 package PHCCS.service.chatroom.repository.mapper;
 
-import PHCCS.service.Message.Message;
+import PHCCS.service.chatroom.dto.Message;
 import PHCCS.service.chatroom.ChatRoom;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;

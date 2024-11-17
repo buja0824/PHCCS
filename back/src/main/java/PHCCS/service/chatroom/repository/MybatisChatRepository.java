@@ -1,6 +1,6 @@
 package PHCCS.service.chatroom.repository;
 
-import PHCCS.service.Message.Message;
+import PHCCS.service.chatroom.dto.Message;
 import PHCCS.service.chatroom.ChatRoom;
 import PHCCS.service.chatroom.repository.mapper.ChatMapper;
 import lombok.RequiredArgsConstructor;

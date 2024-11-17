@@ -35,6 +35,11 @@ public class SSEController {
                     .id(memberId+"")
                     .name("initConnect")
                     .data("connect!!"));
+            log.info("event:{}","initConnect");
+            log.info("data:{}","connect");
+
+            log.info("sse  연결을 위한 더미 데이터 전송 완료");
+
         } catch (IOException e) {
             log.error(e.getMessage(), e);
             throw new RuntimeException(e);
