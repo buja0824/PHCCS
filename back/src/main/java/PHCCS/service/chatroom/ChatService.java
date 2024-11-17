@@ -113,7 +113,7 @@ public class ChatService {
                     .sender(entryId)
                     .roomId(roomId)
                     .build();
-
+        chatRepository.getChatLog(entryId, roomId);
         int memberCnt = 0;
         for (BindSenderAndRoom senderAndRoom : sessions.keySet()) {
             String findRoomId = senderAndRoom.roomId;
@@ -133,7 +133,6 @@ public class ChatService {
                 break;
             default:
                 throw new BadRequestEx("ID : " + roomId+ " 채팅방 최대 인원수 초과");
-
         }
 
     }

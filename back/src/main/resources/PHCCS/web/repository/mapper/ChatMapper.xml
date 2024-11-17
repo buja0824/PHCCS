@@ -19,4 +19,10 @@
         (room_id, log, logger_id, write_time)
         values(#{roomId}, #{message.message}, #{loggerId}, #{message.timestamp})
     </insert>
+
+    <select id="getChatLog" resultType="">
+        select log, logger_idm write_time as timestamp
+        from chat_log
+        where room_id = #{roomId} and logger_id = #{memberId}
+    </select>
 </mapper>

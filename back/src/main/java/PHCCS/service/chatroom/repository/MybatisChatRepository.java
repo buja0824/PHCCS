@@ -27,4 +27,9 @@ public class MybatisChatRepository implements ChatRepository {
     public void saveChatLog(String roomId, Message message, Long loggerId) {
         mapper.saveChatLog(roomId, message, loggerId);
     }
+
+    @Override
+    public Message getChatLog(Long memberId, String roomId) {
+        return mapper.getChatLog(memberId, roomId);
+    }
 }

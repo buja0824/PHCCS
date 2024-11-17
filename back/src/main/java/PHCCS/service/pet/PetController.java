@@ -48,7 +48,7 @@ public class PetController {
     @DeleteMapping("/pet/delete")
     public ResponseEntity<?> petDelete(
             @RequestHeader("Authorization") String token,
-            @RequestBody List<String> name){
+            @RequestParam("petName") String name){
 
         log.info("petDelete()");
         Long memberId = jwtUtil.extractSubject(token);

@@ -46,7 +46,7 @@ public class PetService {
         repository.updatePet(memberId, petName, updateParam);
     }
 
-    public void deletePet(Long memberId, List<String> name){
+    public void deletePet(Long memberId, String name){
         if(name.isEmpty()){
             throw new BadRequestEx("반려동물을 선택해주세요.");
         }
