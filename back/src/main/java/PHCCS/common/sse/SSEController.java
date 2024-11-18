@@ -4,6 +4,7 @@ import PHCCS.common.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,8 +20,9 @@ public class SSEController {
     private final JwtUtil jwtUtil;
     private final SSEService sseService;
 
+    @CrossOrigin(origins = "http://localhost:3030", allowCredentials = "true")
     @GetMapping(value = "/connect-sse", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public ResponseEntity<SseEmitter> connectSSE(@RequestHeader("Authorization") String token){
+    public SseEmitter connectSSE(@RequestHeader("Authorization") String token){
         log.info("sse 연결시작");
 
         Long memberId = jwtUtil.extractSubject(token);
@@ -35,6 +37,8 @@ public class SSEController {
                     .id(memberId+"")
                     .name("initConnect")
                     .data("connect!!"));
+
+            log.info("memberId:{}",memberId);
             log.info("event:{}","initConnect");
             log.info("data:{}","connect");
 
@@ -44,7 +48,7 @@ public class SSEController {
             log.error(e.getMessage(), e);
             throw new RuntimeException(e);
         }
-        return ResponseEntity.ok().body(emitter);
+        return emitter;
     }
 
 }

@@ -1,15 +1,14 @@
 package PHCCS.service.skinimage;
 
-import PHCCS.common.file.FileDTO;
 import PHCCS.common.file.FileStore;
 import PHCCS.common.jwt.JwtUtil;
 import PHCCS.service.skinimage.dto.Chart;
+import PHCCS.service.skinimage.repository.SkinImageRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,8 +19,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 24 10 12
@@ -36,7 +33,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SkinImageController {
 
-    private final SkinImageService imageService;
+    private final SkinImageService service;
+    private final SkinImageRepository repository;
     private final JwtUtil jwtUtil;
     private final ObjectMapper objectMapper;
     private final FileStore fileStore;
@@ -55,11 +53,23 @@ public class SkinImageController {
         log.info("====");
         Chart chartObj = objectMapper.readValue(chart, Chart.class);
         log.info("Chart : {}", chartObj);
-        Mono<String> stringMono = imageService.imageSaveAndSend(image, memberId, chartObj);
+        Mono<String> stringMono = service.imageSaveAndSend(image, memberId, chartObj);
         log.info("stringMono : {}", stringMono);
         return ResponseEntity.ok()
                 .body(stringMono);
     }
+
+    @DeleteMapping("/{uuid}")
+    public void deleteTestLog(
+            @RequestHeader("Authorization") String token,
+            @RequestParam("uuid") String fileName){
+
+        Long memberId = jwtUtil.extractSubject(token);
+        service.deleteImgInfo(memberId, fileName);
+
+    }
+
+
     @GetMapping("/file/{uuid}")
     public ResponseEntity<Resource> getFile(
             @RequestHeader("Authorization") String token,

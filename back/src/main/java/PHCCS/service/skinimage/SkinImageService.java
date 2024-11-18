@@ -17,7 +17,6 @@ import org.springframework.web.reactive.function.BodyInserters;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Slf4j
@@ -25,7 +24,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class SkinImageService {
 
-    private final SkinImageRepository imageRepository;
+    private final SkinImageRepository repository;
     private final FileStore fileStore;
     private final WebConfig webConfig;
     private final ObjectMapper objectMapper;
@@ -70,9 +69,25 @@ public class SkinImageService {
             imgInfo.setDir(finalDir);
             imgInfo.setResult(imgResult);
             imgInfo.setCreateAt(LocalDateTime.now());
-            imageRepository.saveImgInfo(imgInfo);
+            repository.saveImgInfo(imgInfo);
         });
         return testResult;
     }
 
+    public void deleteImgInfo(Long memberId, String fileName){
+        String fullPath = fileStore.getFullPath(fileName, memberId);
+        fileStore.deleteFiles(fullPath);
+        repository.deleteImgInfo(memberId, fullPath);
+    }
+
+
 }
+
+
+
+
+
+
+
+
+
