@@ -17,4 +17,5 @@ PetCare앱을 실행하기 위해선 먼저, 스프링부트로 만들어진 백
 을(를) 입력하십시오. 
 
  -만약 애뮬레이터가 자동으로 켜지지 않는다면 수동으로 켜야 합니다
+ 
  -ex : C:\Users\yourName\AppData\Local\Android\Sdk\emulator\emulator.exe -avd Pixel_3a_API_34
