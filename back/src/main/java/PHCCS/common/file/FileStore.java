@@ -26,11 +26,11 @@ public class FileStore {
      * fileDir/게시판의타입/게시글의 PK 가 fullPath로 생성 됩니다.
      * 그 폴더에 파일을 저장합니다. 파일 이름은 fileName
      */
-    public String getFullPath(String boardType, Long /*memberId*/savedPostId,/* String postTitle,*/ String fileDir){
+    public String getFullPath(String boardType, Long /*memberId*/savedPostId,/* String postTitle,*/ String fileName){
         return fileDir +
                 boardType + "/" +
                 /*memberId*/savedPostId + /*"/" + postTitle +*/ "/" +
-                fileDir;
+                fileName;
     }
 
     /**

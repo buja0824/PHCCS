@@ -75,7 +75,7 @@ public class PostService {
 //                        dto.getTitle(),
                         dto.getCategory());
 
-                storedDir = "C:/spring/" + dto.getCategory() + "/" + /*memberId*/savedPostId + "/" /*+ dto.getTitle() + "/"*/;
+                storedDir = fileDir + dto.getCategory() + "/" + /*memberId*/savedPostId + "/" /*+ dto.getTitle() + "/"*/;
                 log.info("storeVids: {}", storeVids);
             }
             log.info("storedDir = {}", storedDir);

@@ -40,7 +40,6 @@ public class BoardController {
         log.info("|co|createPost()");
         Long memberId = jwtUtil.extractSubject(token);
         PostDTO dto = mapper.readValue(dtoJson, PostDTO.class);
-
         service.save(memberId, dto, imageFiles, videoFiles);
         return ApiResponse.successCreate();
     }
