@@ -6,8 +6,8 @@
 <mapper namespace="PHCCS.service.skinimage.repository.mapper.SkinImageMapper">
 
     <insert id="saveImgInfo" useGeneratedKeys="true">
-        insert into picture (member_id, result, dir, create_at)
-        values (#{memberId}, #{result}, #{dir}, #{createAt})
+        insert into picture (member_id, result, dir, create_at, breed, symptom)
+        values (#{memberId}, #{result}, #{dir}, #{createAt}, #{breed}, #{symptom})
     </insert>
 
     <delete id="deleteImgInfo">

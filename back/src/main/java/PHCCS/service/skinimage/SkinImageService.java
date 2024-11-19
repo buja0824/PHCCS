@@ -53,7 +53,6 @@ public class SkinImageService {
                     "\"symptom\": \"" + chart.getSymptom() + "\"" +
                 "}";
         log.info("json = {}", json);
-
         // 파이썬 서버에 전송
         Mono<String> testResult = webConfig.aiImageServer()
                 .post()
@@ -63,6 +62,11 @@ public class SkinImageService {
         log.info("testResult = {}", testResult);
 
         final String finalDir = dir;
+        final String finalBreed;
+        if(chart.getBreed()) finalBreed = "고양이"; else finalBreed = "강아지";
+
+        final String finalSymptom;
+        if(chart.getSymptom()) finalSymptom = "유증상"; else finalSymptom = "무증상";
         return testResult.flatMap(result ->{
             String imgResult;
             try {
@@ -73,6 +77,8 @@ public class SkinImageService {
             }
             SkinImage imgInfo = new SkinImage();
             imgInfo.setMemberId(memberId);
+            imgInfo.setBreed(finalBreed);
+            imgInfo.setSymptom(finalSymptom);
             imgInfo.setDir(finalDir);
             imgInfo.setResult(imgResult);
             imgInfo.setCreateAt(LocalDateTime.now());

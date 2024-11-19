@@ -1,6 +1,8 @@
 package PHCCS.common.sse;
 
 import PHCCS.service.comment.dto.CommentAddDTO;
+import PHCCS.service.member.Member;
+import PHCCS.service.member.repository.MemberRepository;
 import PHCCS.service.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequiredArgsConstructor
 public class SSEService {
     private final PostRepository postRepository;
+    private final MemberRepository memberRepository;
     private final Map<Long, SseEmitter> sseEmitterMap = new ConcurrentHashMap<>();
 
     public void
@@ -35,7 +38,9 @@ public class SSEService {
             });
     }
 
-    public void inviteAlarm(Long participantId, String chatRoomId, String chatRoomName){
+    public void inviteAlarm(Long participantId, String chatRoomId, String chatRoomName, Long inviterId){
+        Member inviter = memberRepository.findMemberById(inviterId).orElseThrow();
+        String inviterNickName = inviter.getNickName();
         try {
             SseEmitter sseEmitter = sseEmitterMap.get(participantId);
             if(sseEmitter == null){
@@ -45,9 +50,9 @@ public class SSEService {
             sseEmitter
                     .send(SseEmitter.event()
                     .name("새로운 채팅방에 초대 되었습니다.")
-                    .data("채팅방 이름: " + chatRoomName + ", 채팅방 ID: " + chatRoomId));
+                    .data("개설자: "+inviterNickName+", 채팅방 이름: " + chatRoomName + ", 채팅방 ID: " + chatRoomId));
             log.info("event:{}","새로운 채팅방에 초대 되었습니다.");
-            log.info("data:{}","채팅방 이름: " + chatRoomName + ", 채팅방 ID: " + chatRoomId);
+            log.info("data:{}","개설자: "+inviterNickName+", 채팅방 이름: " + chatRoomName + ", 채팅방 ID: " + chatRoomId);
 
             log.info("sse 알림이름 = {}", "새로운 채팅방에 초대 되었습니다.");
             log.info("채팅방 이름 = {}", chatRoomName);

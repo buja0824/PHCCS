@@ -33,7 +33,7 @@ public class ChatController {
         String roomId = chatRoom.getRoomId();
         String roomName = chatConnectDTO.getRoomName();
         // 방에 초대받은 사용자에게 알림 보내기
-        sseService.inviteAlarm(chatConnectDTO.getParticipatingMemberId(), roomId, roomName);
+        sseService.inviteAlarm(chatConnectDTO.getParticipatingMemberId(), roomId, roomName, loginMember);
         return chatRoom;
     }
 

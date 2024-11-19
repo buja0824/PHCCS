@@ -54,6 +54,8 @@ public class PetService {
 //            Pet pet = repository.findByRegNo(it);
 //            if(pet==null) throw new BadRequestEx("반려동물이 존재하지 않습니다.");
 //        });
+        log.info("펫 삭제 멤버 = {}",memberId);
+        log.info("펫 삭제 펫 = {}",name);
         repository.deletePet(memberId, name);
     }
 
