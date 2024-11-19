@@ -4,6 +4,7 @@ import PHCCS.common.exception.BadRequestEx;
 import PHCCS.common.exception.DuplicateException;
 import PHCCS.common.exception.ForbiddenException;
 import PHCCS.common.exception.InternalServerEx;
+import PHCCS.common.utility.SecurityUtil;
 import PHCCS.service.member.Member;
 import PHCCS.service.member.repository.MemberRepository;
 import PHCCS.service.vet.dto.VetDuplicateCheckDTO;
@@ -80,7 +81,7 @@ public class VetService {
         log.info("VetService - saveRequest 실행");
         log.info("saveRequest - VetRequestDTO: {}", vetRequestDTO);
 
-        // 수의사 인지 확인 - 수의사는 권한 요청 x
+        // 수의사 인지 확인 - 수의사는 권한 요청 x, security 레벨에서 이미 접근 권한을 차단하기 때문에 아래 조건문은 실제로는 작동 x
         if (isVetRole()) {
             throw new ForbiddenException("이미 수의사 권한을 가진 사용자는 인증 요청을 할 수 없습니다.");
         }
@@ -119,7 +120,7 @@ public class VetService {
         return new VetDuplicateCheckDTO(emailDuplicate, nicknameDuplicate, phoNoDuplicate, licenseNoDuplicate);
 
     }
-
+// 만들어 놓기는 했으나 실제로 사용은 안함, security에서 권한 확인후 url에 대한 접근을 막기 때문
     private boolean isVetRole() {
         // DB 조회 또는 SecurityContextHolder를 통해 권한 확인
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
