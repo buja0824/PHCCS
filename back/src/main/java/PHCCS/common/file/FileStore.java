@@ -82,6 +82,7 @@ public class FileStore {
             }
         }
         multipartFile.transferTo(file); // 파일 저장
+        log.info("fileStore : 파일 저장 완료");
         return new UploadFile(originalFileName, storeFileName, getFullPath(boardType, /*memberId*/savedPostId, /*postTitle,*/ storeFileName));
     }
 

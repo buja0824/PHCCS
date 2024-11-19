@@ -46,9 +46,14 @@ public class SkinImageService {
         // 저장경로 반환
         dir = storeFile.getFileDir();
         log.info("dir : {}", dir);
-        String json = "{\"dir\": \"" + dir + "\" , \"breed\": \"" + chart.getBreed() + "\", \"symptom\": \"" + chart.getSymptom() + "\"}";
-
+        String json =
+                "{" +
+                    "\"dir\": \"" + dir + "\" ," +
+                    " \"breed\": \"" + chart.getBreed() + "\", " +
+                    "\"symptom\": \"" + chart.getSymptom() + "\"" +
+                "}";
         log.info("json = {}", json);
+
         // 파이썬 서버에 전송
         Mono<String> testResult = webConfig.aiImageServer()
                 .post()
@@ -75,7 +80,6 @@ public class SkinImageService {
 
             return Mono.just(result);
         });
-//        return testResult;
     }
     // 사용 안함
 //    @Transactional

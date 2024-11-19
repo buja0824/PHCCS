@@ -7,6 +7,7 @@ import PHCCS.common.file.FileStore;
 import PHCCS.common.file.FileDTO;
 
 
+import PHCCS.common.utility.SecurityUtil;
 import PHCCS.service.member.repository.MemberRepository;
 import PHCCS.service.post.dto.*;
 import PHCCS.service.post.repository.PostRepository;
@@ -21,6 +22,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.Security;
 import java.util.List;
 
 @Slf4j
@@ -43,6 +45,9 @@ public class PostService {
         log.info("dto: {}", dto);
         log.info("imageFiles: {}", imageFiles);
         log.info("videoFiles: {}", videoFiles);
+
+        if(dto.getCategory().equals("vet_board") && SecurityUtil.hasRole("ROLE_VET")) throw new BadRequestEx("수의사만 작성 가능한 게시판 입니다.");
+
         try {
             String nickName = memberRepository.findMemberProfileById(memberId).orElseThrow().getNickName();
             Post post = new Post();
@@ -144,11 +149,12 @@ public class PostService {
     @Transactional
     public void updatePost(Long memberId, String category, Long postId, PostUpdateDTO param, List<MultipartFile> imgs, List<MultipartFile> vids) throws IOException {
         log.info("|se|updatePost()");
-        String storedDir = ""; // 새로운 저장 경로
+        String newDir = ""; // 새로운 저장 경로
 //                fileDir + param.getCategory() + "/" + memberId + "/" + param.getTitle() +"/"; // 새로운 저장 경로
 
         String findFileDir =
                 repository.findPostDir(category, postId); // 기존 저장 경로
+
         Post beforePost = repository.showPost(category, postId);
         log.info("|se|findFileDir = {}", findFileDir);
         if(!param.getCategory().equals(category)){ // 카테고리가 변경되는 수정일 때
@@ -167,32 +173,46 @@ public class PostService {
 
             repository.save(param.getCategory(), afterPost);
             Long savedPostId = afterPost.getId();
-            storedDir = fileDir + param.getCategory() + "/" + savedPostId + "/";
-            if(storedDir != null) repository.insertDir(param.getCategory(), savedPostId, storedDir);
+            newDir = fileDir + param.getCategory() + "/" + savedPostId + "/";
+            repository.insertDir(param.getCategory(), savedPostId, newDir);
             log.info("savedPostId = {}", savedPostId);
             if(savedPostId <=0){
 //                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("내부 오류 발생 게시글 등록 실패");
                 throw new InternalServerEx("내부 오류 발생 게시글 등록 실패");
             }else {
+                // 이전 카테고리의 게시글 데이터 삭제
                 repository.deletePost(category, memberId, postId);
-                log.info("삭제 끝");
+                if(findFileDir != null){
+                    // 해당 게시글을 통해서 저장된 파일존재 확인
+                    // 해당 경로 찾아가서 파일들 삭제하기
+                    fileStore.deleteFiles(findFileDir);
+                }
+                // 사진, 동영상 있으면 저장
+                if(imgs != null && !imgs.isEmpty()){
+                    fileStore.storeFiles(imgs, savedPostId, param.getCategory());
+                }
+                if(vids != null && !vids.isEmpty()){
+                    fileStore.storeFiles(vids, savedPostId, param.getCategory());
+                }
+                log.info("이전 카테고리의 게시글데이터 삭제 끝");
             }
         }else { // 카테고리가 동일한 수정일 때
             log.info("카테고리동일");
-            repository.updatePost(memberId, postId, param, storedDir);
+            repository.updatePost(memberId, postId, param, findFileDir);
+            if(findFileDir != null){
+                // 해당 게시글을 통해서 저장된 파일존재 확인
+                // 해당 경로 찾아가서 파일들 삭제하기
+                fileStore.deleteFiles(findFileDir);
+            }
+            if(imgs != null && !imgs.isEmpty()){
+                fileStore.storeFiles(imgs, /*memberId*/beforePost.getId(), /*param.getTitle(),*/ param.getCategory());
+                log.info("수정 게시판의 사진 저장 완료");
+            }
+            if(vids != null && !vids.isEmpty()){
+                fileStore.storeFiles(vids, /*memberId*/beforePost.getId(), /*param.getTitle(),*/ param.getCategory());
+                log.info("수정 게시판의 동영상 저장 완료");
+            }
         }
-        if(findFileDir != null){
-            // 해당 게시글을 통해서 저장된 파일존재 확인
-            // 해당 경로 찾아가서 파일들 삭제하기
-            fileStore.deleteFiles(findFileDir);
-        }
-        if(imgs != null && !imgs.isEmpty()){
-            fileStore.storeFiles(imgs, /*memberId*/beforePost.getId(), /*param.getTitle(),*/ param.getCategory());
-        }
-        if(vids != null && !vids.isEmpty()){
-            fileStore.storeFiles(vids, /*memberId*/beforePost.getId(), /*param.getTitle(),*/ param.getCategory());
-        }
-//        return ResponseEntity.ok().body("수정완료");
     }
 
     @Transactional

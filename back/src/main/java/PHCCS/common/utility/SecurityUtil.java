@@ -7,7 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 public class SecurityUtil {
 
     // 현재 인증 객체 가져오기
-    public static Authentication getAuthentication() {
+    private static Authentication getAuthentication() {
         return SecurityContextHolder.getContext().getAuthentication();
     }
 
