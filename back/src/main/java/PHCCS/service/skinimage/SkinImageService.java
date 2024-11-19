@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.BodyInserters;
 import reactor.core.publisher.Mono;
@@ -46,6 +47,7 @@ public class SkinImageService {
         dir = storeFile.getFileDir();
         log.info("dir : {}", dir);
         String json = "{\"dir\": \"" + dir + "\" , \"breed\": \"" + chart.getBreed() + "\", \"symptom\": \"" + chart.getSymptom() + "\"}";
+
         log.info("json = {}", json);
         // 파이썬 서버에 전송
         Mono<String> testResult = webConfig.aiImageServer()
@@ -56,7 +58,7 @@ public class SkinImageService {
         log.info("testResult = {}", testResult);
 
         final String finalDir = dir;
-        testResult.subscribe(result ->{
+        return testResult.flatMap(result ->{
             String imgResult;
             try {
                 ImgResultDTO imgResultDTO = objectMapper.readValue(result, ImgResultDTO.class);
@@ -70,17 +72,23 @@ public class SkinImageService {
             imgInfo.setResult(imgResult);
             imgInfo.setCreateAt(LocalDateTime.now());
             repository.saveImgInfo(imgInfo);
+
+            return Mono.just(result);
         });
-        return testResult;
+//        return testResult;
     }
-
-    public void deleteImgInfo(Long memberId, String fileName){
-        String fullPath = fileStore.getFullPath(fileName, memberId);
-        fileStore.deleteFiles(fullPath);
-        repository.deleteImgInfo(memberId, fullPath);
-    }
-
-
+    // 사용 안함
+//    @Transactional
+//    public void deleteImgInfo(Long memberId, String fileName){
+//        String fullPath = fileStore.getFullPath(fileName, memberId);
+//        log.info("삭제할 사진이 있는 fullPath = {}", fullPath);
+//        repository.deleteImgInfo(memberId, fullPath);
+//        try{
+//            fileStore.deleteFiles(fullPath);
+//        }catch(Exception e){
+//            throw new InternalServerEx("데이터베이스 사진 삭제중 오류 발생");
+//        }
+//    }
 }
 
 

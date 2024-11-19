@@ -10,7 +10,7 @@
         values (#{memberId}, #{result}, #{dir}, #{createAt})
     </insert>
 
-    <delete id="getImgInfo">
+    <delete id="deleteImgInfo">
         delete from picture
         where member_id = #{memberId} and dir = #{dir}
     </delete>

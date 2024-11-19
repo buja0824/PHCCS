@@ -59,16 +59,15 @@ public class SkinImageController {
                 .body(stringMono);
     }
 
-    @DeleteMapping("/{uuid}")
-    public void deleteTestLog(
-            @RequestHeader("Authorization") String token,
-            @RequestParam("uuid") String fileName){
-
-        Long memberId = jwtUtil.extractSubject(token);
-        service.deleteImgInfo(memberId, fileName);
-
-    }
-
+    // 필요 없어짐
+//    @DeleteMapping("/{uuid}")
+//    public void deleteTestLog(
+//            @RequestHeader("Authorization") String token,
+//            @RequestParam("uuid") String fileName){
+//
+//        Long memberId = jwtUtil.extractSubject(token);
+//        service.deleteImgInfo(memberId, fileName);
+//    }
 
     @GetMapping("/file/{uuid}")
     public ResponseEntity<Resource> getFile(

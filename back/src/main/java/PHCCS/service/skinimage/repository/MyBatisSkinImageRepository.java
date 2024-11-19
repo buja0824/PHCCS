@@ -17,8 +17,8 @@ public class MyBatisSkinImageRepository implements SkinImageRepository{
         mapper.saveImgInfo(imgInfo);
     }
 
-    @Override
-    public void deleteImgInfo(Long memberId, String dir) {
-        mapper.deleteImgInfo(memberId, dir);
-    }
+//    @Override
+//    public void deleteImgInfo(Long memberId, String dir) {
+//        mapper.deleteImgInfo(memberId, dir);
+//    }
 }
