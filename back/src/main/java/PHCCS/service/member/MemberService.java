@@ -3,6 +3,7 @@ package PHCCS.service.member;
 import PHCCS.common.exception.BadRequestEx;
 import PHCCS.common.exception.InternalServerEx;
 import PHCCS.common.jwt.JwtUtil;
+import PHCCS.common.utility.SecurityUtil;
 import PHCCS.service.member.dto.DuplicateCheckDTO;
 import PHCCS.service.member.dto.MemberDTO;
 import PHCCS.service.member.dto.MemberModifyDTO;
@@ -96,6 +97,13 @@ public class MemberService {
     }
 
     public void modifyMember(Long id, MemberModifyDTO memberModifyDto) {
+
+        // securityUtil 테스트
+        log.info("현재 사용자 ID: {}", SecurityUtil.getUserId());
+        log.info("현재 사용자 권한: {}", SecurityUtil.getUserRole());
+        log.info("ROLE_ADMIN 여부: {}", SecurityUtil.hasRole("ROLE_ADMIN"));
+        log.info("ROLE_VET 여부: {}", SecurityUtil.hasRole("ROLE_VET"));
+
         if (id == null || id <= 0) {
             throw new BadRequestEx("회원 ID가 유효하지 않습니다.");
         }

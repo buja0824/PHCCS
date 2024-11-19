@@ -4,6 +4,7 @@ import PHCCS.common.exception.BadRequestEx;
 import PHCCS.common.exception.DuplicateException;
 import PHCCS.common.exception.ForbiddenException;
 import PHCCS.common.exception.InternalServerEx;
+import PHCCS.common.utility.SecurityUtil;
 import PHCCS.service.member.Member;
 import PHCCS.service.member.repository.MemberRepository;
 import PHCCS.service.vet.dto.VetDuplicateCheckDTO;

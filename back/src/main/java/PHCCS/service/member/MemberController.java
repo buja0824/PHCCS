@@ -125,6 +125,7 @@ public class MemberController {
     @PatchMapping("/member/update")
     public ResponseEntity<?> update(@RequestHeader("Authorization") String token,
                                     @RequestBody MemberModifyDTO modifyDto) {
+
         service.modifyMember(jwtUtil.extractSubject(token), modifyDto); // 서비스 호출
         return ApiResponse.successUpdate(); // 성공 응답
     }
