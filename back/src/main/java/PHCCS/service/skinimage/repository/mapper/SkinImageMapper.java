@@ -7,4 +7,5 @@ import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface SkinImageMapper {
     void saveImgInfo(SkinImage imgInfo);
+//    void deleteImgInfo(@Param("memberId") Long memberId, @Param("dir") String dir);
 }

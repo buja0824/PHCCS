@@ -1,4 +1,4 @@
-package PHCCS.service.Message;
+package PHCCS.service.chatroom.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,7 +19,7 @@ public class Message {
     // 멤버 아이디 필요 없는거 같은데 왜 다시 넣었는지 기억이 안나
 //    private Long memberId;
     private String message;
-
+    private Long senderId;
     private LocalDateTime timestamp;
 
 }

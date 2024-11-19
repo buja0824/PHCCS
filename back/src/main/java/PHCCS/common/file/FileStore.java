@@ -26,11 +26,11 @@ public class FileStore {
      * fileDir/게시판의타입/게시글의 PK 가 fullPath로 생성 됩니다.
      * 그 폴더에 파일을 저장합니다. 파일 이름은 fileName
      */
-    public String getFullPath(String boardType, Long /*memberId*/savedPostId,/* String postTitle,*/ String fileName){
+    public String getFullPath(String boardType, Long /*memberId*/savedPostId,/* String postTitle,*/ String fileDir){
         return fileDir +
                 boardType + "/" +
                 /*memberId*/savedPostId + /*"/" + postTitle +*/ "/" +
-                fileName;
+                fileDir;
     }
 
     /**
@@ -121,16 +121,34 @@ public class FileStore {
         return fileList;
     }
 
+    /**
+        @param fileDir
+     게시판에서 호출 시 파일, 폴더 모두 삭제, ai 검사 부분에서 호출 시 해당 파일만 삭제
+     게시판에서는 C:/spring/qna_board/1/더미_질문/ 이라는 경로만 넘어오고
+     ai에서는 C:\spring\skinImg\1\81834a3c-b0ff-4aa1-b776-3474657f5a12 처럼 파일 까지 넘어옴
+
+     */
     public void deleteFiles(String fileDir){
         File endPoint = new File(fileDir);
-        if(!endPoint.exists()) return;
-
-        File[] files = endPoint.listFiles();
-        if(files == null) return;
-        for (File file : files) {
-            file.delete();
+        if(!endPoint.exists()) {
+            log.info("deleteFiles(), 삭제하려는 경로가 존재하지 않음");
+            return;
         }
-        endPoint.delete();
+        log.info("endPoint = {}", endPoint);
+        if(endPoint.isFile()){
+            log.info("AI 검사 에서 호출 ::{}", endPoint);
+            endPoint.delete();
+        }
+        else {
+            log.info("게시판 서비스에서 호출 ::");
+            File[] files = endPoint.listFiles();
+            if (files == null) return;
+            for (File file : files) {
+                log.info("file = {}", file);
+                file.delete();
+            }
+            endPoint.delete();
+        }
     }
 
     private static String createStoreFileName(String originalFileName) {

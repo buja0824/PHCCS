@@ -2,15 +2,13 @@ package PHCCS.service.chatroom;
 
 import PHCCS.common.exception.BadRequestEx;
 import PHCCS.common.jwt.JwtUtil;
-import PHCCS.common.sse.SSEService;
 import PHCCS.service.chatroom.dto.ChatConnectDTO;
 import PHCCS.service.member.Member;
-import PHCCS.service.Message.Message;
+import PHCCS.service.chatroom.dto.Message;
 import PHCCS.service.chatroom.repository.ChatRepository;
 import PHCCS.service.member.repository.MemberRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.annotation.PostConstruct;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -46,7 +44,7 @@ public class ChatService {
     // key : bindSenderAndRoom - value webSocketSession
     private Map<BindSenderAndRoom, WebSocketSession> sessions= new ConcurrentHashMap<>(); // 연결된 세션들의 목
 
-    private Map<ChatRoom, Message> chatLog= new ConcurrentHashMap<>();
+//    private Map<ChatRoom, Message> chatLog= new ConcurrentHashMap<>();
     private final ChatRepository chatRepository;
     private final JwtUtil jwtUtil;
 
@@ -127,16 +125,15 @@ public class ChatService {
             case 0:
                 enterRoomAndSendAlarm(session, bindSenderAndRoom, entryId, findRoom, roomId);
                 for (Message message : log) {
-                    sendToMessage(message, roomId);
+                    sendToMessage(message, roomId, entryId);
                 }
 //                Member entryMember;
                 break;
 
             case 1:
                 enterRoomAndSendAlarm(session, bindSenderAndRoom, entryId, findRoom, roomId);
-
                 for (Message message : log) {
-                    sendToMessage(message, roomId);
+                    sendToMessage(message, roomId, entryId);
                 }
                 break;
             default:
@@ -147,12 +144,12 @@ public class ChatService {
 
     private void enterRoomAndSendAlarm(WebSocketSession session, BindSenderAndRoom bindSenderAndRoom, Long entryId, ChatRoom findRoom, String roomId) {
         sessions.put(bindSenderAndRoom, session);
-        Message message = new Message();
         Member entryMember = memberRepository.findMemberById(entryId).get();
-        message.setMessage(entryMember.getNickName()+" 님이 입장하였습니다.");
+        Message alarmMessage = new Message();
+        alarmMessage.setMessage(entryMember.getNickName() + " 님이 입장하였습니다.");
         try {
             session.sendMessage(new TextMessage(findRoom.getRoomName() + " 채팅방 입장 성공"));
-            sendToMessage(message, roomId);
+            sendToMessage(alarmMessage, roomId);
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }
@@ -161,12 +158,13 @@ public class ChatService {
     public void handlerActions(WebSocketSession session, TextMessage message) throws JsonProcessingException {
         String payload = message.getPayload(); // 메시지 가져오기
 
-        log.info("3. 받은 메시지: {}", payload);
+        log.info("3. 소켓통해 받은 메시지: {}", payload);
 
         // payload를 객체로 변환
         Message chatMessage = objectMapper.readValue(payload, Message.class);
+        chatMessage.setSenderId(getEntryId(session));
         chatMessage.setTimestamp(LocalDateTime.now());
-
+        log.info("3. 객체로 변환한 메시지: {}", chatMessage);
         // 생성된 방 찾기
         Map<String, String> queryMap = getQueryVal(session);
         String roomId = queryMap.get("roomId");
@@ -194,12 +192,12 @@ public class ChatService {
 //            sendToMessage(chatLogs, roomId);
 //        }
         Long loggerId = getEntryId(session);
+        //메시지 내역 저장
         chatRepository.saveChatLog(roomId, chatMessage,loggerId);
         //메세지 전송
         sendToMessage(chatMessage, roomId);
-        //메시지 내역 저장
-        chatLog.put(findRoom, chatMessage);
-        log.info(chatLog.toString());
+//        chatLog.put(findRoom, chatMessage);
+//        log.info(chatLog.toString());
     }
     private void sendToMessage(Message message, String roomId) {
 //        ChatRoom chatRoom = findRoomById(roomId);
@@ -208,6 +206,24 @@ public class ChatService {
             String findRoomId = bindSenderAndRoom.getRoomId(); /// 반복문을 돌았으니 2개의 세션이 나올것
             if(findRoomId.equals(roomId)){
                 WebSocketSession session = sessions.get(bindSenderAndRoom);
+                try {
+                    session.sendMessage(new TextMessage(objectMapper.writeValueAsString(message)));
+//                    chatLog.put(chatRoom, message);
+                } catch (IOException e) {
+                    log.error(e.getMessage(), e);
+                }
+            }
+        }
+    }
+    private void sendToMessage(Message message, String roomId, Long entryId) {
+//        ChatRoom chatRoom = findRoomById(roomId);
+        // 연결된 세션들에서 해당 채팅방의 세션이 존재 하는지 확인하고 그 세션 전부에게 메시지 전송
+        for (BindSenderAndRoom bindSenderAndRoom : sessions.keySet()) {
+            String findRoomId = bindSenderAndRoom.getRoomId(); /// 반복문을 돌았으니 2개의 세션이 나올것
+            Long findEntryId = bindSenderAndRoom.getEntryId();
+            if(findRoomId.equals(roomId) && findEntryId.equals(entryId)){
+                WebSocketSession session = sessions.get(bindSenderAndRoom);
+
                 try {
                     session.sendMessage(new TextMessage(objectMapper.writeValueAsString(message)));
 //                    chatLog.put(chatRoom, message);
