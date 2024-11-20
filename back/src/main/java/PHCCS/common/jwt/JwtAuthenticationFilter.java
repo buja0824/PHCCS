@@ -34,6 +34,10 @@ public class JwtAuthenticationFilter implements Filter {
         try {
             log.info("인증 체크 필터 시작 {}", requestURI);
 
+            // 응답 인코딩 설정
+            httpResponse.setCharacterEncoding("UTF-8");
+            httpResponse.setContentType("text/plain;charset=UTF-8");
+
             // 화이트리스트 요청은 JWT 검증 생략
             if (whitelistRequestMatcher.matches(httpRequest)) {
                 log.info("화이트리스트 요청: {}", requestURI);
