@@ -13,4 +13,6 @@ public class SkinImage {
     private LocalDateTime createAt;
     private String dir;
     private String result;
+    private String breed;
+    private String symptom;
 }

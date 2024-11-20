@@ -20,6 +20,7 @@ public class Message {
 //    private Long memberId;
     private String message;
     private Long senderId;
+    private String senderNickName;
     private LocalDateTime timestamp;
 
 }

@@ -162,7 +162,10 @@ public class ChatService {
 
         // payload를 객체로 변환
         Message chatMessage = objectMapper.readValue(payload, Message.class);
-        chatMessage.setSenderId(getEntryId(session));
+        Long entryId = getEntryId(session);
+        String nickName = memberRepository.findMemberById(entryId).orElseThrow().getNickName();
+        chatMessage.setSenderId(entryId);
+        chatMessage.setSenderNickName(nickName);
         chatMessage.setTimestamp(LocalDateTime.now());
         log.info("3. 객체로 변환한 메시지: {}", chatMessage);
         // 생성된 방 찾기

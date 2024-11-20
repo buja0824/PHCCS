@@ -2,6 +2,7 @@ package PHCCS.service.post;
 
 import PHCCS.common.exception.BadRequestEx;
 import PHCCS.common.response.ApiResponse;
+import PHCCS.common.utility.SecurityUtil;
 import PHCCS.service.member.Member;
 import PHCCS.common.jwt.JwtUtil;
 import PHCCS.common.file.FileDTO;
@@ -13,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.*;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -38,9 +40,9 @@ public class BoardController {
             @RequestPart(value = "videoFiles", required = false) List<MultipartFile> videoFiles) throws IOException {
 
         log.info("|co|createPost()");
+
         Long memberId = jwtUtil.extractSubject(token);
         PostDTO dto = mapper.readValue(dtoJson, PostDTO.class);
-
         service.save(memberId, dto, imageFiles, videoFiles);
         return ApiResponse.successCreate();
     }
