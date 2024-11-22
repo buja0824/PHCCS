@@ -29,6 +29,8 @@ import useModal from '@/hooks/useModal';
 import { CompoundOption } from '@/components/common/CompoundOption';
 import { updatePost, deletePost } from '@/api/post';
 import { LikeToggle } from '@/components/common/LikeToggle';
+import { createChatRoom } from '@/api/chat';
+import { boardNavigations } from '@/constants/navigations';
 type Props = StackScreenProps<BoardStackParamList, 'PostDetail'>;
 
 function PostDetailScreen({ route, navigation }: Props) {
@@ -167,6 +169,24 @@ function PostDetailScreen({ route, navigation }: Props) {
     return myPosts.some(myPost => myPost.id === post.id);
   }, [myPosts, post]);
 
+  const handleChatRequest = async () => {
+    if (!post) return;
+
+    try {
+      const chatRoom = await createChatRoom(
+        post.memberId,
+        `${post.nickName}님과의 대화`
+      );
+      
+      navigation.navigate(boardNavigations.CHAT_ROOM, {
+        roomId: chatRoom.roomId,
+        otherUserName: post.nickName
+      });
+    } catch (error) {
+      Alert.alert('오류', '채팅방 생성에 실패했습니다.');
+    }
+  };
+
   if (isLoading) {
     return <ActivityIndicator style={styles.loader} color="#c62917" />;
   }
@@ -235,6 +255,14 @@ function PostDetailScreen({ route, navigation }: Props) {
                   />
                 </TouchableOpacity>
               )}
+              {!isMyPost && (
+                <TouchableOpacity 
+                  style={styles.chatButton}
+                  onPress={handleChatRequest}
+                >
+                  <Icon name="chatbubble-outline" size={24} color={colors.light.PINK_500} />
+                </TouchableOpacity>
+              )}
             </View>
             <Text style={styles.content}>{post?.content}</Text>
           </View>
@@ -291,6 +319,7 @@ function PostDetailScreen({ route, navigation }: Props) {
             <CommentList
               category={route.params.category}
               postId={Number(route.params.id)}
+              navigation={navigation}
             />
           </View>
         </ScrollView>
@@ -556,6 +585,10 @@ const styles = StyleSheet.create({
     color: colors.light.WHITE,
     fontSize: 13,
     fontWeight: '500',
+  },
+  chatButton: {
+    padding: 8,
+    marginLeft: 8,
   },
 });
 

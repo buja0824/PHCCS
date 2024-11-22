@@ -8,6 +8,7 @@ import AiHomeScreen from '@/screens/ai/AiScanHomeScreen';
 import AiPetTypeScreen from '@/screens/ai/AiPetTypeScreen';
 import AiSymptomTypeScreen from '@/screens/ai/AiSymptomTypeScreen';
 import AiCameraScreen from '@/screens/ai/AiCameraScreen';
+import AiResultScreen from '@/screens/ai/AiResultScreen';
 
 export type AiStackParamList = {
   [aiNavigations.AI_HOME]: undefined;
@@ -16,6 +17,14 @@ export type AiStackParamList = {
     petType: 'dog' | 'cat';
   };
   [aiNavigations.AI_CAMERA]: {
+    petType: 'dog' | 'cat';
+    hasSymptom: boolean;
+  };
+  [aiNavigations.AI_RESULT]: {
+    result: {
+      imgResult: string;
+      fileName: string;
+    };
     petType: 'dog' | 'cat';
     hasSymptom: boolean;
   };
@@ -74,6 +83,13 @@ function AiStackNavigator() {
         name={aiNavigations.AI_CAMERA}
         component={AiCameraScreen}
         options={{title: '사진 촬영'}}
+      />
+      <Stack.Screen 
+        name={aiNavigations.AI_RESULT}
+        component={AiResultScreen}
+        options={{
+          title: 'AI 진단 결과'
+        }}
       />
     </Stack.Navigator>
   );

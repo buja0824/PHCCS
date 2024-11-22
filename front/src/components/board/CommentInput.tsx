@@ -34,8 +34,19 @@ function CommentInput({ category, postId }: CommentInputProps) {
     }
 
     try {
-      await createComment(category, postId, content, nickName);
+      const newComment = await createComment(category, postId, content, nickName);
       setContent('');
+      
+      const commentWithIsMine = {
+        ...newComment,
+        isMine: true
+      };
+
+      queryClient.setQueryData(['comments', category, postId], (oldData: any) => {
+        if (!oldData) return [commentWithIsMine];
+        return [...oldData, commentWithIsMine];
+      });
+
       queryClient.invalidateQueries({ 
         queryKey: ['comments', category, postId] 
       });

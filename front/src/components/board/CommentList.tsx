@@ -5,13 +5,16 @@ import { getComments, getMyComments, getLikedComments } from '@/api/comment';
 import CommentItem from './CommentItem';
 import useAuth from '@/hooks/queries/useAuth';
 import { colors } from '@/constants';
+import { NavigationProp } from '@react-navigation/native';
+import { BoardStackParamList } from '@/navigations/stack/BoardStackNavigator';
 
 interface CommentListProps {
   category: string;
   postId: number;
+  navigation: NavigationProp<BoardStackParamList>;
 }
 
-function CommentList({ category, postId }: CommentListProps) {
+function CommentList({ category, postId, navigation }: CommentListProps) {
   const { getProfileQuery } = useAuth();
   const { data: userProfile } = getProfileQuery;
   
@@ -55,6 +58,7 @@ function CommentList({ category, postId }: CommentListProps) {
               comment={comment}
               category={category}
               postId={postId}
+              navigation={navigation}
             />
           ))
         ) : (

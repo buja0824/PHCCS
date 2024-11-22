@@ -73,7 +73,7 @@ function HealthCheckupScreen({ navigation, route }: Props) {
       } else {
         newCheckups = [...existingCheckups, healthCheckup];
       }
-
+      
       await setEncryptStorage(`health_checkups_${petName}`, newCheckups);
       
       // 새 일정 추가
@@ -90,7 +90,7 @@ function HealthCheckupScreen({ navigation, route }: Props) {
           content: `${petName} 건강검진`,
           date: nextCheckupDate,
           type: 'health_checkup',
-          color: '#1565C0'  // 파란색으로 표시
+          color: '#1565C0'
         });
 
         await setEncryptStorage('schedules', schedules);

@@ -11,6 +11,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Image } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { ChatRoom } from '@/components/chat/ChatRoom';
 
 export type BoardStackParamList = {
   [boardNavigations.BOARD_MENU]: undefined;
@@ -19,6 +20,7 @@ export type BoardStackParamList = {
   [boardNavigations.POST_CREATE]: { category: string };
   [boardNavigations.MY_POSTS]: undefined;
   [boardNavigations.LIKED_POSTS]: undefined;
+  [boardNavigations.CHAT_ROOM]: { roomId: string; otherUserName: string };
 };
 
 const Stack = createStackNavigator<BoardStackParamList>();
@@ -94,6 +96,14 @@ function BoardStackNavigator() {
         name={boardNavigations.LIKED_POSTS}
         component={LikedPostsScreen}
         options={{ title: '공감한 글' }}
+      />
+      <Stack.Screen
+        name={boardNavigations.CHAT_ROOM}
+        component={ChatRoom}
+        options={({ route }) => ({
+          title: route.params.otherUserName,
+          headerBackTitleVisible: false,
+        })}
       />
     </Stack.Navigator>
   );

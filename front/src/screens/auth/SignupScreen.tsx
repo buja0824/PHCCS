@@ -9,6 +9,9 @@ import { StackScreenProps } from '@react-navigation/stack';
 import { AuthStackParamList } from '@/navigations/stack/AuthStackNavigator';
 import { authNavigations } from '@/constants';
 import Postcode from '@actbase/react-daum-postcode';
+import { CompoundOption } from '@/components/common/CompoundOption';
+import { colors } from '@/constants';
+import { useTheme } from '@react-navigation/native';
 
 function SignupScreen({ route }: StackScreenProps<AuthStackParamList, typeof authNavigations.SIGNUP>) {
   const { role } = route.params;
@@ -20,6 +23,7 @@ function SignupScreen({ route }: StackScreenProps<AuthStackParamList, typeof aut
   const hospitalNameRef = useRef<TextInput | null>(null);
   const licenseNoRef = useRef<TextInput | null>(null);
   const {signupMutation, vetSignupMutation, loginMutation} = useAuth();
+  const [showApprovalModal, setShowApprovalModal] = useState(false);
 
   const signup = useForm({
     initialValue: {
@@ -62,6 +66,9 @@ function SignupScreen({ route }: StackScreenProps<AuthStackParamList, typeof aut
         else if (vetErrors.licenseNo) licenseNoRef.current?.focus();
         return;
       }
+      // 수의사인 경우 승인 안내 모달 표시
+      setShowApprovalModal(true);
+      return;
     }
 
     try {
@@ -100,6 +107,44 @@ function SignupScreen({ route }: StackScreenProps<AuthStackParamList, typeof aut
       
       await loginMutation.mutateAsync({email, pwd, role});
       
+    } catch (error: any) {
+      console.error('회원가입 중 오류가 발생했습니다:', error);
+      if (error.response) {
+        console.log('서버 응답:', error.response.data);
+        signup.setErrors({
+          email: error.response.data.includes('이메일 중복') ? '이미 사용 중인 이메일입니다.' : '',
+          nickName: error.response.data.includes('닉네임 중복') ? '이미 사용 중인 닉네임입니다.' : '',
+        });
+        if (error.response.data.includes('이메일 중복')) {
+          emailRef.current?.focus();
+        } else if (error.response.data.includes('닉네임 중복')) {
+          nicknameRef.current?.focus();
+        }
+      } else {
+        signup.setErrors({
+          email: '회원가입 중 오류가 발생했습니다.',
+        });
+        emailRef.current?.focus();
+      }
+    }
+  };
+
+  const handleApprovalConfirm = async () => {
+    setShowApprovalModal(false);
+    try {
+      const {email, pwd, nickName, hospitalName, hospitalAddr, licenseNo} = signup.values;
+      
+      await vetSignupMutation.mutateAsync({
+        email,
+        pwd,
+        nickName,
+        role,
+        hospitalName,
+        hospitalAddr,
+        licenseNo
+      });
+      
+      await loginMutation.mutateAsync({email, pwd, role});
     } catch (error: any) {
       console.error('회원가입 중 오류가 발생했습니다:', error);
       if (error.response) {
@@ -234,6 +279,31 @@ function SignupScreen({ route }: StackScreenProps<AuthStackParamList, typeof aut
           />
         </View>
       )}
+
+      <CompoundOption isVisible={showApprovalModal} hideOption={() => setShowApprovalModal(false)}>
+        <CompoundOption.Background>
+          <CompoundOption.Container>
+            <View style={styles.modalContainer}>
+              <Text style={styles.modalTitle}>수의사 회원 승인 안내</Text>
+              <Text style={styles.modalText}>
+                수의사 회원은 관리자 승인 후{'\n'}
+                서비스 이용이 가능합니다.{'\n\n'}
+                <Text style={styles.highlightText}>* 승인 완료 시 이메일로 알려드립니다.</Text>
+              </Text>
+            </View>
+          </CompoundOption.Container>
+          <CompoundOption.Container>
+            <CompoundOption.Button onPress={handleApprovalConfirm}>
+              확인
+            </CompoundOption.Button>
+          </CompoundOption.Container>
+          <CompoundOption.Container>
+            <CompoundOption.Button onPress={() => setShowApprovalModal(false)} isDanger>
+              취소
+            </CompoundOption.Button>
+          </CompoundOption.Container>
+        </CompoundOption.Background>
+      </CompoundOption>
     </SafeAreaView>
   );
 }
@@ -273,6 +343,32 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
+  modalContainer: {
+    padding: 24,
+    alignItems: 'center',
+    gap: 16,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: colors.light.BLACK,
+    textAlign: 'center',
+  },
+  modalText: {
+    fontSize: 16,
+    color: colors.light.GRAY_600,
+    textAlign: 'center',
+    lineHeight: 24,
+  },
+  highlightText: {
+    fontSize: 14,
+    color: colors.light.GRAY_600,
+  },
 });
 
 export default SignupScreen;
+
+// validate: (values) => role === 1 ? validateVetSignup(values) : validateSignup(values),
+
+
+// signup.setValue('hospitalAddr', data.address, false);

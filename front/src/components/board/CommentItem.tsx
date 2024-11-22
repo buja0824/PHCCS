@@ -8,7 +8,7 @@ import {
   Alert 
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { colors } from '@/constants';
+import { boardNavigations, colors } from '@/constants';
 import { Comment } from '@/types/comment';
 import { updateComment, deleteComment, likeComment, getLikedComments } from '@/api/comment';
 import { useQueryClient, useQuery } from '@tanstack/react-query';
@@ -16,15 +16,20 @@ import { formatDate } from '@/utils/dateFormat';
 import useModal from '@/hooks/useModal';
 import { CompoundOption } from '../common/CompoundOption';
 import { LikeToggle } from '../common/LikeToggle';
+import { useNavigation } from '@react-navigation/native';
+import { NavigationProp } from '@react-navigation/native';
+import { BoardStackParamList } from '@/navigations/stack/BoardStackNavigator';
+import { createChatRoom } from '@/api/chat';
 
 interface CommentItemProps {
   comment: Comment;
   category: string;
   postId: number;
+  navigation: NavigationProp<BoardStackParamList>;
   onPress?: () => void;
 }
 
-function CommentItem({ comment, category, postId, onPress }: CommentItemProps) {
+function CommentItem({ comment, category, postId, navigation, onPress }: CommentItemProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState(comment.comment);
   const [isLiked, setIsLiked] = useState(false);
@@ -109,6 +114,22 @@ function CommentItem({ comment, category, postId, onPress }: CommentItemProps) {
     }
   };
 
+  const handleChatRequest = async () => {
+    try {
+      const chatRoom = await createChatRoom(
+        comment.memberId,
+        `${comment.nickName}님과의 대화`
+      );
+      
+      navigation.navigate(boardNavigations.CHAT_ROOM, {
+        roomId: chatRoom.roomId,
+        otherUserName: comment.nickName
+      });
+    } catch (error) {
+      Alert.alert('오류', '채팅방 생성에 실패했습니다.');
+    }
+  };
+
   return (
     <TouchableOpacity 
       style={styles.container} 
@@ -123,6 +144,18 @@ function CommentItem({ comment, category, postId, onPress }: CommentItemProps) {
           <Text style={styles.date}>{formatDate(comment.writeTime)}</Text>
         </View>
         <View style={styles.actions}>
+          {!comment.isMine && (
+            <TouchableOpacity 
+              style={styles.chatButton}
+              onPress={handleChatRequest}
+            >
+              <Icon 
+                name="chatbubble-outline" 
+                size={16} 
+                color={colors.light.PINK_500} 
+              />
+            </TouchableOpacity>
+          )}
           <LikeToggle
             itemId={comment.id}
             postId={postId}
@@ -134,12 +167,12 @@ function CommentItem({ comment, category, postId, onPress }: CommentItemProps) {
           />
           {comment.isMine && (
             <TouchableOpacity 
-              onPress={optionModal.show}
               style={styles.moreButton}
+              onPress={optionModal.show}
             >
               <Icon 
                 name="ellipsis-vertical" 
-                size={16} 
+                size={20} 
                 color={colors.light.GRAY_600} 
               />
             </TouchableOpacity>
@@ -343,6 +376,15 @@ const styles = StyleSheet.create({
     color: colors.light.BLACK,
     textAlign: 'center',
   },
+  chatButton: {
+    padding: 6,
+    marginRight: 8,
+  },
+  actionButtons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 8,
+  }
 });
 
 export default CommentItem; 

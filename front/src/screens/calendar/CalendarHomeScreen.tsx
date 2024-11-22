@@ -70,8 +70,8 @@ function CalendarHomeScreen({ navigation, route }: CalendarScreenProps) {
   const saveSchedule = async (scheduleData: Omit<CalendarPost, 'date'>) => {
     try {
       const year = selectedDate.getFullYear();
-      const month = selectedDate.getMonth() + 1;
-      const date = selectedDate.getDate();
+      const month = String(selectedDate.getMonth() + 1).padStart(2, '0');
+      const date = String(selectedDate.getDate()).padStart(2, '0');
       const dateKey = `${year}-${month}-${date}`;
       
       const newSchedules = {...schedules};
@@ -136,8 +136,8 @@ function CalendarHomeScreen({ navigation, route }: CalendarScreenProps) {
 
   const getSchedulesForDate = (date: Date) => {
     const year = date.getFullYear();
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
     const dateKey = `${year}-${month}-${day}`;
     return schedules[dateKey] || [];
   };
@@ -174,7 +174,7 @@ function CalendarHomeScreen({ navigation, route }: CalendarScreenProps) {
         <CompoundOption.Background>
           <CompoundOption.Container>
             <View style={styles.deleteConfirmContainer}>
-              <Text style={styles.deleteConfirmTitle}>전체 일정 삭제</Text>
+              <Text style={styles.deleteConfirmTitle}>전��� 일정 삭제</Text>
               <Text style={styles.deleteConfirmMessage}>
                 모든 일정이 삭제됩니다. 계속하시겠습니까?
               </Text>

@@ -19,7 +19,8 @@ export const saveHealthCheckup = async (checkup: HealthCheckup) => {
       id: Date.now(),
       content: `${checkup.petName} 건강검진`,
       date: new Date(checkup.nextCheckupDate),
-      type: 'health_checkup'
+      type: 'health_checkup',
+      color: '#1565C0'
     });
 
     await setEncryptStorage(calendarKey, schedules);
@@ -49,7 +50,8 @@ export const saveVaccination = async (vaccination: Vaccination) => {
       id: Date.now(),
       content: `${vaccination.petName} ${vaccination.type} 예방접종`,
       date: new Date(vaccination.nextVaccinationDate),
-      type: 'vaccination'
+      type: 'vaccination',
+      color: '#2E7D32'
     });
 
     await setEncryptStorage(calendarKey, schedules);
@@ -74,7 +76,8 @@ export const saveMedicalHistory = async (history: MedicalHistory) => {
       id: Date.now(),
       content: `${history.petName} 병원 재방문`,
       date: new Date(history.nextVisitDate),
-      type: 'medical_history'
+      type: 'medical_history',
+      color: '#C62828'
     });
 
     await setEncryptStorage(calendarKey, schedules);

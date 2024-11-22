@@ -43,6 +43,17 @@ const aiNavigations = {
   AI_PET_TYPE: 'AiPetType',
   AI_SYMPTOM_TYPE: 'AiSymptomType',
   AI_CAMERA: 'AiCamera',
+  AI_RESULT: 'AiResult',
 } as const;
 
-export {authNavigations, mapNavigations, mainNavigations, settingNavigations, petNavigations, aiNavigations};
+const boardNavigations = {
+  BOARD_MENU: 'BoardMenu',
+  POST_LIST: 'PostList',
+  POST_DETAIL: 'PostDetail',
+  POST_CREATE: 'PostCreate',
+  MY_POSTS: 'MyPosts',
+  LIKED_POSTS: 'LikedPosts',
+  CHAT_ROOM: 'ChatRoom'
+} as const;
+
+export {authNavigations, mapNavigations, mainNavigations, settingNavigations, petNavigations, aiNavigations, boardNavigations};
