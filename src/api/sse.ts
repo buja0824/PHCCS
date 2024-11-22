@@ -93,6 +93,28 @@ export const connectSSE = async () => {
       });
     });
 
+    // 채팅 초대 알림 이벤트
+    (eventSource as any).addEventListener('새로운 채팅방에 초대 되었습니다.', (event: MessageEvent) => {
+      console.log('=== Chat Invitation Notification ===');
+      console.log('Data:', event.data);
+      
+      Toast.show({
+        type: 'info',
+        text1: '새로운 채팅 초대',
+        text2: event.data,
+        position: 'top',
+        visibilityTime: 3000,
+        autoHide: true,
+        topOffset: 50,
+        props: {
+          style: {
+            borderLeftColor: colors.light.PINK_500,
+            borderLeftWidth: 4,
+          }
+        }
+      });
+    });
+
   } catch (error: unknown) {
     console.error('SSE Connection Error:', error);
     reconnectTimer = setTimeout(connectSSE, 5000);

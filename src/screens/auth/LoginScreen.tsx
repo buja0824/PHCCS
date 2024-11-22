@@ -33,7 +33,7 @@ function LoginScreen() {
       console.error('Error during login:', error);
       if (error.response) {
         console.log('Server response:', error.response.data);
-        const errorMessage = error.response.data.includes('아이디 또는 비밀번호가 다릅니다') 
+        const errorMessage = error.response.data.includes('아이디 또는 비밀번호가') 
           ? '아이디 또는 비밀번호가 다릅니다.'
           : '로그인 중 오류가 발생했습니다.';
         

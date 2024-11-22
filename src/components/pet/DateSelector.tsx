@@ -20,7 +20,7 @@ function DateSelector({
   currentDate,
   onChangeDate,
   hide,
-  maximumDate = new Date(),
+  maximumDate = undefined,
   minimumDate,
   title = '날짜 선택',
 }: DateSelectorProps) {

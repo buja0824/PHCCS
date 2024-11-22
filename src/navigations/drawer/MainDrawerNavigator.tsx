@@ -6,7 +6,7 @@ import CustomDrawerContent from './CustomDrawerContent';
 import CalendarHomeScreen from '@/screens/calendar/CalendarHomeScreen';
 import MapStackNavigator, { MapStackParamList } from '../stack/MapStackNavigator';
 import BoardStackNavigator, { BoardStackParamList } from '../stack/BoardStackNavigator';
-import { boardNavigations, colors, mainNavigations } from '@/constants';
+import { aiNavigations, boardNavigations, colors, mainNavigations, petNavigations } from '@/constants';
 import SettingStackNavigator, { SettingStackParamList } from '../stack/SettingStackNavigator';
 import useThemeStore from '@/store/useThemeStore';
 import CalendarStackNavigator from '../stack/CalendarStackNavigator';
@@ -64,6 +64,18 @@ function DrawerIcons(route: RouteProp<MainDrawerParamList>, focused: boolean) {
   );
 }
 
+if (global.__fbBatchedBridge) {
+  const origMessageQueue = global.__fbBatchedBridge;
+  const modules = origMessageQueue._remoteModuleTable;
+  const methods = origMessageQueue._remoteMethodTable;
+  global.findModuleByModuleAndMethodIds = (moduleId, methodId) => {
+    console.log(`The problematic line code is in: ${modules[moduleId]}.${methods[moduleId][methodId]}`)
+  }
+}
+
+global.findModuleByModuleAndMethodIds(4, 4);
+global.findModuleByModuleAndMethodIds(38, 0);
+
 function MainDrawerNavigator() {
   const { theme } = useThemeStore();
   
@@ -109,6 +121,25 @@ function MainDrawerNavigator() {
         options={{
           title: '반려동물 관리',
         }}
+        listeners={({ navigation }) => ({
+          drawerItemPress: (e) => {
+            e.preventDefault();
+            navigation.dispatch(
+              CommonActions.reset({
+                index: 0,
+                routes: [
+                  { 
+                    name: mainNavigations.PET,
+                    state: {
+                      routes: [{ name: petNavigations.PET_HOME }],
+                      index: 0,
+                    }
+                  },
+                ],
+              })
+            );
+          },
+        })}
       />
       <Drawer.Screen 
         name={mainNavigations.BOARD} 
@@ -143,6 +174,25 @@ function MainDrawerNavigator() {
         options={{
           title: 'AI 검사',
         }}
+        listeners={({ navigation }) => ({
+          drawerItemPress: (e) => {
+            e.preventDefault();
+            navigation.dispatch(
+              CommonActions.reset({
+                index: 0,
+                routes: [
+                  { 
+                    name: mainNavigations.AI,
+                    state: {
+                      routes: [{ name: aiNavigations.AI_HOME }],
+                      index: 0,
+                    }
+                  },
+                ],
+              })
+            );
+          },
+        })}
       />
       <Drawer.Screen
         name={mainNavigations.CALENDAR}

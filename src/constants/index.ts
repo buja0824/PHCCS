@@ -11,6 +11,7 @@ export const boardNavigations = {
     POST_CREATE: 'PostCreate',
     MY_POSTS: 'MyPosts',
     LIKED_POSTS: 'LikedPosts',
+    CHAT_ROOM: 'ChatRoom'
 }as const;
 
 export const settingNavigations = {

@@ -8,13 +8,13 @@ import {
   Alert,
   Image,
   ScrollView,
+  ActivityIndicator,
 } from 'react-native';
-import {colors} from '@/constants';
+import {aiNavigations, colors} from '@/constants';
 import useThemeStore from '@/store/useThemeStore';
 import {ThemeMode} from '@/types';
 import {StackScreenProps} from '@react-navigation/stack';
 import {AiStackParamList} from '@/navigations/stack/AiStackNavigator';
-import {aiNavigations} from '@/constants/navigations';
 import {CompoundOption} from '@/components/common/CompoundOption';
 import * as ImagePicker from 'react-native-image-picker';
 import {request, PERMISSIONS, RESULTS} from 'react-native-permissions';
@@ -31,6 +31,7 @@ function AiCameraScreen({route, navigation}: Props) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const {petType, hasSymptom} = route.params;
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   const guidelineItems = hasSymptom ? [
     '피부 병변이 잘 보이도록 가까이서 촬영해주세요',
@@ -52,19 +53,17 @@ function AiCameraScreen({route, navigation}: Props) {
     if (!selectedImage) return;
 
     try {
-      const result = await sendAiScan(selectedImage, petType === 'dog', hasSymptom);
-      Alert.alert(
-        'AI 분석 결과',
-        `결과: ${result.result}\n\n신뢰도: ${result.confidence}%\n\n권장사항: ${result.recommendation}`,
-        [
-          {
-            text: '확인',
-            onPress: () => navigation.navigate(aiNavigations.AI_HOME),
-          },
-        ],
-      );
+      setIsAnalyzing(true);
+      const result = await sendAiScan(selectedImage, petType, hasSymptom);
+      navigation.navigate(aiNavigations.AI_RESULT, {
+        result,
+        petType,
+        hasSymptom
+      });
     } catch (error) {
       Alert.alert('오류', '이미지 분석 중 오류가 발생했습니다.');
+    } finally {
+      setIsAnalyzing(false);
     }
   };
 
@@ -194,13 +193,20 @@ function AiCameraScreen({route, navigation}: Props) {
         )}
       </TouchableOpacity>
 
-      {selectedImage && (
-        <TouchableOpacity
-          style={styles.analyzeButton}
-          onPress={handleAnalyze}>
-          <Text style={styles.analyzeButtonText}>AI 진단하기</Text>
-        </TouchableOpacity>
-      )}
+      <TouchableOpacity 
+        style={[
+          styling(theme).analyzeButton,
+          !selectedImage && styling(theme).disabledButton
+        ]}
+        onPress={handleAnalyze}
+        disabled={!selectedImage || isAnalyzing}
+      >
+        {isAnalyzing ? (
+          <ActivityIndicator color={colors[theme].WHITE} />
+        ) : (
+          <Text style={styling(theme).analyzeButtonText}>AI 진단하기</Text>
+        )}
+      </TouchableOpacity>
 
       <CompoundOption isVisible={isModalVisible} hideOption={() => setIsModalVisible(false)}>
         <CompoundOption.Background>
@@ -305,6 +311,12 @@ const styling = (theme: ThemeMode) =>
       position: 'absolute',
       bottom: 16,
       right: 16,
+      backgroundColor: 'rgba(255, 255, 255, 0.9)',
+      paddingHorizontal: 16,
+      paddingVertical: 8,
+      borderRadius: 20,
+      borderWidth: 1,
+      borderColor: colors[theme].PINK_700,
     },
     retakeText: {
       fontSize: 16,
@@ -341,10 +353,9 @@ const styling = (theme: ThemeMode) =>
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'center',
-      position: 'absolute',
-      bottom: 40,
-      left: 20,
-      right: 20,
+      marginTop: 20,
+      marginHorizontal: 20,
+      marginBottom: 40,
     },
     analyzeButtonText: {
       color: colors[theme].WHITE,
@@ -361,6 +372,9 @@ const styling = (theme: ThemeMode) =>
       marginLeft: 12,
       fontSize: 16,
       color: colors[theme].BLACK,
+    },
+    disabledButton: {
+      backgroundColor: colors[theme].GRAY_200,
     },
   });
 
