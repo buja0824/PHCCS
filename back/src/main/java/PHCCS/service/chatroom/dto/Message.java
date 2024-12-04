@@ -18,9 +18,10 @@ public class Message {
 //    private MessageType type;
     // 멤버 아이디 필요 없는거 같은데 왜 다시 넣었는지 기억이 안나
 //    private Long memberId;
+    private String roomName;
     private String message;
     private Long senderId;
     private String senderNickName;
     private LocalDateTime timestamp;
-
+    private Boolean isMe;
 }

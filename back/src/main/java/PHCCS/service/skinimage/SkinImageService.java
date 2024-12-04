@@ -25,6 +25,10 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class SkinImageService {
 
+    public static final String CAT = "고양이";
+    public static final String DOG = "강아지";
+    public static final String SYMPTOM = "유증상";
+    public static final String NON_SYMPTOM = "무증상";
     private final SkinImageRepository repository;
     private final FileStore fileStore;
     private final WebConfig webConfig;
@@ -63,15 +67,15 @@ public class SkinImageService {
 
         final String finalDir = dir;
         final String finalBreed;
-        if(chart.getBreed()) finalBreed = "고양이"; else finalBreed = "강아지";
+        if(chart.getBreed()) finalBreed = CAT; else finalBreed = DOG;
 
         final String finalSymptom;
-        if(chart.getSymptom()) finalSymptom = "유증상"; else finalSymptom = "무증상";
+        if(chart.getSymptom()) finalSymptom = SYMPTOM; else finalSymptom = NON_SYMPTOM;
         return testResult.flatMap(result ->{
             String imgResult;
             try {
                 ImgResultDTO imgResultDTO = objectMapper.readValue(result, ImgResultDTO.class);
-                imgResult = imgResultDTO.getImgResult();
+                imgResult = imgResultDTO.getImgResult();  //구현화면 보여줘에뮬레이터가 없어서 영상 찍은거 보여들ㄹ께여ㅛ
             } catch (JsonProcessingException e) {
                 throw new InternalServerEx("검사결과를 처리하지 못하였습니다.");
             }

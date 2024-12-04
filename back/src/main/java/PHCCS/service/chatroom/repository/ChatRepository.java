@@ -9,7 +9,7 @@ import java.util.List;
 public interface ChatRepository {
     void saveChatRoom(ChatRoom chatRoom);
     void deleteRoom(String roomId);
-    void saveChatLog(String roomId, Message message, Long loggerId);
+    void saveChatLog(String roomName, String roomId, Message message, Long loggerId);
 
     List<Message> getChatLog(Long memberId, String roomId);
 }

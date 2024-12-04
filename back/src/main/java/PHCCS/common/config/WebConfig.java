@@ -32,7 +32,7 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addMapping("/**")  // 모든 경로에 대해 CORS 허용
                 .allowedOrigins("http://localhost:3030")  // 허용할 도메인
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH")  // 허용할 HTTP 메서드(추가 가능)
-                .allowedHeaders("Authorization", "Content-Type", "*")  // 허용할 헤더
+                .allowedHeaders("Authorization", "Content-Type")  // 허용할 헤더
                 .allowCredentials(true);  // 인증 관련 헤더 허용 (예: 쿠키)
     }
 
