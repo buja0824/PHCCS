@@ -12,6 +12,6 @@ public interface ChatMapper {
 
     void saveChatRoom(@Param("room") ChatRoom chatRoom);
     void deleteRoom(String roomId);
-    void saveChatLog(@Param("roomId") String roomId, @Param("message") Message message, @Param("loggerId") Long loggerId);
+    void saveChatLog(@Param("roomName") String roomName, @Param("roomId") String roomId, @Param("message") Message message, @Param("loggerId") Long loggerId);
     List<Message> getChatLog(@Param("memberId") Long memberId, @Param("roomId") String roomId);
 }

@@ -75,7 +75,7 @@ public class SkinImageService {
             String imgResult;
             try {
                 ImgResultDTO imgResultDTO = objectMapper.readValue(result, ImgResultDTO.class);
-                imgResult = imgResultDTO.getImgResult();
+                imgResult = imgResultDTO.getImgResult();  //구현화면 보여줘에뮬레이터가 없어서 영상 찍은거 보여들ㄹ께여ㅛ
             } catch (JsonProcessingException e) {
                 throw new InternalServerEx("검사결과를 처리하지 못하였습니다.");
             }

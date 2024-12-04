@@ -16,8 +16,8 @@
 
     <insert id = "saveChatLog">
         insert into chat_log
-        (room_id, log, logger_id, write_time)
-        values(#{roomId}, #{message.message}, #{loggerId}, #{message.timestamp})
+        (room_id, log, logger_id, write_time, room_name)
+        values(#{roomId}, #{message.message}, #{loggerId}, #{message.timestamp}, #{message.roomName})
     </insert>
 
     <select id="getChatLog" resultType="Message">
