@@ -203,8 +203,6 @@ public class ChatService {
 //        log.info(chatLog.toString());
     }
     private void sendToMessage(Message message, String roomId) {
-//        ChatRoom chatRoom = findRoomById(roomId);
-        // 연결된 세션들에서 해당 채팅방의 세션이 존재 하는지 확인하고 그 세션 전부에게 메시지 전송
         for (BindSenderAndRoom bindSenderAndRoom : sessions.keySet()) {
             String findRoomId = bindSenderAndRoom.getRoomId(); /// 반복문을 돌았으니 2개의 세션이 나올것
             if(findRoomId.equals(roomId)){

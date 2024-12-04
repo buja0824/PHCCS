@@ -20,7 +20,6 @@ public class SSEController {
     private final JwtUtil jwtUtil;
     private final SSEService sseService;
 
-    @CrossOrigin(origins = "http://localhost:3030", allowCredentials = "true")
     @GetMapping(value = "/connect-sse", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter connectSSE(@RequestHeader("Authorization") String token){
         log.info("sse 연결시작");
