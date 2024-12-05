@@ -1,10 +1,7 @@
-package PHCCS.service.post.repository.mapper;
+package PHCCS.service.vet_list.repository.mapper;
 
-import PHCCS.service.post.dto.LikedPostDTO;
-import PHCCS.service.post.dto.MyPostDTO;
-import PHCCS.service.post.Post;
-import PHCCS.service.post.dto.PostHeaderDTO;
-import PHCCS.service.post.dto.PostUpdateDTO;
+import PHCCS.service.vet_list.Vet;
+import PHCCS.service.vet_list.dto.PostUpdateDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -13,9 +10,9 @@ import java.util.List;
 @Mapper
 public interface PostMapper {
 
-    Long save(@Param("category")String category, @Param("post") Post post);
+    Long save(@Param("category")String category, @Param("post") Vet post);
     void insertDir(@Param("category")String category, @Param("id") Long postId, @Param("dir")String dir);
-    Post showPost(@Param("category") String category, @Param("id") Long id);
+    Vet showPost(@Param("category") String category, @Param("id") Long id);
     List<PostHeaderDTO> showAllPost(@Param("category") String category, @Param("searchName") String searchName, @Param("offset") Long offset, @Param("size") Long size);
     void updatePost(@Param("memberId") Long memberId, @Param("postId") Long postId, @Param("dto") PostUpdateDTO dto, @Param("dir") String fileDir);
     void deletePost(@Param("category") String category, @Param("memberId") Long memberId, @Param("postId") Long postId);

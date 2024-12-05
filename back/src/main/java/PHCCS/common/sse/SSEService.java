@@ -3,7 +3,7 @@ package PHCCS.common.sse;
 import PHCCS.service.comment.dto.CommentAddDTO;
 import PHCCS.service.member.Member;
 import PHCCS.service.member.repository.MemberRepository;
-import PHCCS.service.post.repository.PostRepository;
+import PHCCS.service.vet_list.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

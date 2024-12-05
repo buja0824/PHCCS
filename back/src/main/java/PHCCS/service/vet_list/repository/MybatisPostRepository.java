@@ -1,11 +1,8 @@
-package PHCCS.service.post.repository;
+package PHCCS.service.vet_list.repository;
 
-import PHCCS.service.post.dto.LikedPostDTO;
-import PHCCS.service.post.dto.MyPostDTO;
-import PHCCS.service.post.Post;
-import PHCCS.service.post.dto.PostHeaderDTO;
-import PHCCS.service.post.dto.PostUpdateDTO;
-import PHCCS.service.post.repository.mapper.PostMapper;
+import PHCCS.service.vet_list.Vet;
+import PHCCS.service.vet_list.dto.PostUpdateDTO;
+import PHCCS.service.vet_list.repository.mapper.PostMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
@@ -20,7 +17,7 @@ public class MybatisPostRepository implements PostRepository {
     private final PostMapper mapper;
 
     @Override
-    public Long save(String category, Post post) {
+    public Long save(String category, Vet post) {
         return mapper.save(category, post);
     }
 
@@ -30,9 +27,9 @@ public class MybatisPostRepository implements PostRepository {
     }
 
     @Override
-    public Post showPost(String category, Long postId) {
+    public Vet showPost(String category, Long postId) {
         log.info("|se|re|showPost()");
-        Post post = mapper.showPost(category, postId);
+        Vet post = mapper.showPost(category, postId);
         log.info("re post = {}", post);
         return post;
     }

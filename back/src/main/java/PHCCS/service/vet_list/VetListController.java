@@ -1,20 +1,18 @@
-package PHCCS.service.post;
+package PHCCS.service.vet_list;
 
 import PHCCS.common.exception.BadRequestEx;
 import PHCCS.common.response.ApiResponse;
-import PHCCS.common.utility.SecurityUtil;
 import PHCCS.service.member.Member;
 import PHCCS.common.jwt.JwtUtil;
 import PHCCS.common.file.FileDTO;
 
-import PHCCS.service.post.dto.*;
+import PHCCS.service.vet_list.dto.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.*;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,10 +25,10 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/board")
-public class BoardController {
+public class VetListController {
 
     private final JwtUtil jwtUtil;
-    private final PostService service;
+    private final VetListtService service;
     private final ObjectMapper mapper = new ObjectMapper();
     @PostMapping(value = "/post", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> createPost(
@@ -55,7 +53,7 @@ public class BoardController {
         log.info("showPost()");
         Long memberId = jwtUtil.extractSubject(token);
 
-        Post post = service.showPost(category, id);
+        Vet post = service.showPost(category, id);
         return ResponseEntity.ok(post);
     }
 
@@ -93,11 +91,7 @@ public class BoardController {
             @RequestParam(name = "page", defaultValue = "1") Long page,
             @RequestParam(name = "size", defaultValue = "15") Long size){
         log.info("showAllPost() Category: {}, Page: {}, Size: {}", category, page, size);
-//        if(!isLogin(loginMember)){
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인하지 않은 사용자는 접근할 수 없습니다.");
-//        }
         if(category == null || category.isEmpty()) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("잘못된 접근 입니다.");
             throw new BadRequestEx("잘못된 접근 입니다.");
         }
         log.info("searchName = {}", searchName);

@@ -1,19 +1,16 @@
-package PHCCS.service.post.repository;
+package PHCCS.service.vet_list.repository;
 
-import PHCCS.service.post.dto.LikedPostDTO;
-import PHCCS.service.post.dto.MyPostDTO;
-import PHCCS.service.post.Post;
-import PHCCS.service.post.dto.PostHeaderDTO;
-import PHCCS.service.post.dto.PostUpdateDTO;
+import PHCCS.service.vet_list.Vet;
+import PHCCS.service.vet_list.dto.PostUpdateDTO;
 
 import java.util.List;
 
 public interface PostRepository {
-    Long save(String category, Post post);
+    Long save(String category, Vet post);
 
     void insertDir(String category, Long postId, String dir);
 
-    Post showPost(String category, Long postId);
+    Vet showPost(String category, Long postId);
 
     List<PostHeaderDTO> showAllPost(String category, String searchName, Long offset, Long size);
 

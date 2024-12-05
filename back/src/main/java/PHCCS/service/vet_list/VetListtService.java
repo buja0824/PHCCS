@@ -1,4 +1,4 @@
-package PHCCS.service.post;
+package PHCCS.service.vet_list;
 
 import PHCCS.common.exception.BadRequestEx;
 import PHCCS.common.exception.InternalServerEx;
@@ -9,8 +9,8 @@ import PHCCS.common.file.FileDTO;
 
 import PHCCS.common.utility.SecurityUtil;
 import PHCCS.service.member.repository.MemberRepository;
-import PHCCS.service.post.dto.*;
-import PHCCS.service.post.repository.PostRepository;
+import PHCCS.service.vet_list.dto.*;
+import PHCCS.service.vet_list.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,13 +22,12 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.Security;
 import java.util.List;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class PostService {
+public class VetListtService {
     @Value("${file.dir}")
     private String fileDir;
     private final PostRepository repository;
@@ -50,7 +49,7 @@ public class PostService {
 
         try {
             String nickName = memberRepository.findMemberProfileById(memberId).orElseThrow().getNickName();
-            Post post = new Post();
+            Vet post = new Vet();
             post.setMemberId(memberId);
             post.setCategory(dto.getCategory());
             post.setTitle(dto.getTitle());
@@ -99,10 +98,10 @@ public class PostService {
     }
 
     @Transactional
-    public Post showPost(String category, Long id){
+    public Vet showPost(String category, Long id){
         if(category != null && !category.isEmpty() && id != 0L){
             repository.incrementViewCount(category, id);
-            Post post = repository.showPost(category, id);
+            Vet post = repository.showPost(category, id);
             if(post == null){
 //                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("게시글을 찾을 수 없습니다.");
                 throw new BadRequestEx("게시글을 찾을 수 없습니다.");
@@ -155,13 +154,13 @@ public class PostService {
         String findFileDir =
                 repository.findPostDir(category, postId); // 기존 저장 경로
 
-        Post beforePost = repository.showPost(category, postId);
+        Vet beforePost = repository.showPost(category, postId);
         log.info("|se|findFileDir = {}", findFileDir);
         if(!param.getCategory().equals(category)){ // 카테고리가 변경되는 수정일 때
             log.info("카테고리변경");
             log.info("|se|beforePost = {}",beforePost.toString());
 
-            Post afterPost = new Post();
+            Vet afterPost = new Vet();
             afterPost.setMemberId(memberId);
             afterPost.setTitle(param.getTitle());
             afterPost.setContent(param.getContent());
@@ -220,7 +219,7 @@ public class PostService {
         log.info("|se|deletePost()");
         String findFileDir = repository.findPostDir(category, postId);
         log.info("findFileDir = {}", findFileDir);
-        Post post = repository.showPost(category, postId);
+        Vet post = repository.showPost(category, postId);
         if(post == null) throw new BadRequestEx("게시글이 존재하지 않습니다.");
 
         repository.deletePost(category, memberId, postId);

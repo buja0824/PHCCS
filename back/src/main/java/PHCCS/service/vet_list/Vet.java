@@ -1,4 +1,4 @@
-package PHCCS.service.post;
+package PHCCS.service.vet_list;
 
 import lombok.Data;
 
@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
-public class Post { // 회원과 게시판은 1:N 관계일듯
+public class Vet { // 회원과 게시판은 1:N 관계일듯
 
     private Long id; // 게시판의 pk
 
