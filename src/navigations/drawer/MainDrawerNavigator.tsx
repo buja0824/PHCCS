@@ -12,6 +12,7 @@ import useThemeStore from '@/store/useThemeStore';
 import CalendarStackNavigator from '../stack/CalendarStackNavigator';
 import AiStackNavigator from '../stack/AiStackNavigator';
 import PetStackNavigator, { PetStackParamList } from '../stack/PetStackNavigator';
+import VetListScreen from '@/screens/vet/VetListScreen';
 
 export type MainDrawerParamList = {
   [mainNavigations.HOME]: NavigatorScreenParams<MapStackParamList>;
@@ -20,6 +21,7 @@ export type MainDrawerParamList = {
   [mainNavigations.BOARD]: NavigatorScreenParams<BoardStackParamList>;
   [mainNavigations.SETTING]: NavigatorScreenParams<SettingStackParamList>;
   [mainNavigations.PET]: NavigatorScreenParams<PetStackParamList>;
+  [mainNavigations.VET_LIST]: undefined;
 };
 
 const Drawer = createDrawerNavigator<MainDrawerParamList>();
@@ -48,7 +50,10 @@ function DrawerIcons(route: RouteProp<MainDrawerParamList>, focused: boolean) {
       iconName = 'auto-awesome';
       break;
     }
-    
+    case mainNavigations.VET_LIST: {
+      iconName = 'people';
+      break;
+    }
     case mainNavigations.SETTING: {
       iconName = 'settings';
       break;
@@ -64,17 +69,17 @@ function DrawerIcons(route: RouteProp<MainDrawerParamList>, focused: boolean) {
   );
 }
 
-if (global.__fbBatchedBridge) {
-  const origMessageQueue = global.__fbBatchedBridge;
-  const modules = origMessageQueue._remoteModuleTable;
-  const methods = origMessageQueue._remoteMethodTable;
-  global.findModuleByModuleAndMethodIds = (moduleId, methodId) => {
-    console.log(`The problematic line code is in: ${modules[moduleId]}.${methods[moduleId][methodId]}`)
-  }
-}
+// if (global.__fbBatchedBridge) {
+//   const origMessageQueue = global.__fbBatchedBridge;
+//   const modules = origMessageQueue._remoteModuleTable;
+//   const methods = origMessageQueue._remoteMethodTable;
+//   global.findModuleByModuleAndMethodIds = (moduleId, methodId) => {
+//     console.log(`The problematic line code is in: ${modules[moduleId]}.${methods[moduleId][methodId]}`)
+//   }
+// }
 
-global.findModuleByModuleAndMethodIds(4, 4);
-global.findModuleByModuleAndMethodIds(38, 0);
+// global.findModuleByModuleAndMethodIds(4, 4);
+// global.findModuleByModuleAndMethodIds(38, 0);
 
 function MainDrawerNavigator() {
   const { theme } = useThemeStore();
@@ -200,6 +205,19 @@ function MainDrawerNavigator() {
         options={{
           title: '캘린더',
           swipeEnabled: false,
+        }}
+      />
+      <Drawer.Screen
+        name={mainNavigations.VET_LIST}
+        component={VetListScreen}
+        options={{
+          title: '수의사 목록',
+          headerShown: true,
+          headerTitleAlign: 'center',
+          headerTitleStyle: {
+            fontSize: 16,
+            fontWeight: 'bold',
+          },
         }}
       />
       <Drawer.Screen

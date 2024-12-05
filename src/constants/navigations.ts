@@ -5,6 +5,7 @@ const mainNavigations = {
   BOARD: 'Board',
   SETTING: 'Setting',
   PET: 'Pet',
+  VET_LIST: 'VetList',
 } as const;
 
 const authNavigations = {

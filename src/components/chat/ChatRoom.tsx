@@ -6,6 +6,7 @@ import { StackScreenProps } from '@react-navigation/stack';
 import { BoardStackParamList } from '@/navigations/stack/BoardStackNavigator';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { format } from 'date-fns';
+import { checkSSEConnection } from '@/api/sse';
 
 type ChatRoomScreenProps = StackScreenProps<BoardStackParamList, 'ChatRoom'>;
 
@@ -15,8 +16,18 @@ export const ChatRoom = ({ route }: ChatRoomScreenProps) => {
   const [inputMessage, setInputMessage] = useState('');
 
   useEffect(() => {
+    // WebSocket 연결 전에 SSE 연결 상태 확인
+    checkSSEConnection();
+    
+    // WebSocket 연결
     connect(roomId);
-    return () => disconnect();
+
+    // 컴포넌트 언마운트 시
+    return () => {
+      disconnect();
+      // SSE 연결 상태 다시 확인
+      checkSSEConnection();
+    };
   }, [roomId]);
 
   const handleSend = () => {

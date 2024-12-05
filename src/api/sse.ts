@@ -7,6 +7,7 @@ import { colors } from '@/constants';
 
 let eventSource: EventSource | null = null;
 let reconnectTimer: NodeJS.Timeout | null = null;
+let isConnected = false;
 
 type CustomEventType = 'message' | 'error' | 'open' | '새로운 댓들이 등록되었습니다.';
 
@@ -33,7 +34,8 @@ const clearReconnectTimer = () => {
 export const connectSSE = async () => {
   try {
     if (eventSource) {
-      eventSource.close();
+      console.log('SSE already connected, skipping reconnection');
+      return;
     }
 
     clearReconnectTimer();
@@ -54,6 +56,7 @@ export const connectSSE = async () => {
     // 연결 성공 이벤트
     (eventSource as any).addEventListener('open', () => {
       console.log('SSE Connection opened');
+      isConnected = true;
       clearReconnectTimer();
     });
 
@@ -63,9 +66,10 @@ export const connectSSE = async () => {
       console.log('Message:', event.data);
     });
 
-    // 에러 이벤트
+    // 에러 이벤트 
     (eventSource as any).addEventListener('error', (event: ErrorEvent) => {
       console.error('SSE connection error:', event.error);
+      isConnected = false;
       eventSource?.close();
       eventSource = null;
       reconnectTimer = setTimeout(connectSSE, 5000);
@@ -117,6 +121,7 @@ export const connectSSE = async () => {
 
   } catch (error: unknown) {
     console.error('SSE Connection Error:', error);
+    isConnected = false;
     reconnectTimer = setTimeout(connectSSE, 5000);
   }
 };
@@ -126,13 +131,15 @@ export const disconnectSSE = () => {
   if (eventSource) {
     eventSource.close();
     eventSource = null;
+    isConnected = false;
   }
 };
 
 export const checkSSEConnection = () => {
-  console.log('Checking SSE connection status...');
-  if (!eventSource) {
-    console.log('SSE connection is null, attempting to reconnect...');
+  console.log('Checking SSE connection status...', { isConnected });
+  if (!isConnected || !eventSource) {
+    console.log('SSE connection is not active, attempting to reconnect...');
     connectSSE();
   }
+  return isConnected;
 }; 

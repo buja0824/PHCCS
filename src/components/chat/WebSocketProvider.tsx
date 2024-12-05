@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import axiosInstance from '@/api/axios';
 import { Platform } from 'react-native';
 import useAuth from '@/hooks/queries/useAuth';
+import { checkSSEConnection } from '@/api/sse';
 
 interface Message {
   message: string;
@@ -27,6 +28,8 @@ export const WebSocketProvider: React.FC<{children: React.ReactNode}> = ({ child
   const { data: userProfile } = getProfileQuery;
 
   const connect = (roomId: string) => {
+    checkSSEConnection();
+    
     const token = axiosInstance.defaults.headers.common['Authorization'];
     
     if (!token) {
@@ -46,6 +49,7 @@ export const WebSocketProvider: React.FC<{children: React.ReactNode}> = ({ child
     
     socket.onopen = () => {
       console.log('WebSocket Connected');
+      checkSSEConnection();
     };
 
     socket.onmessage = (e) => {
@@ -72,6 +76,7 @@ export const WebSocketProvider: React.FC<{children: React.ReactNode}> = ({ child
 
     socket.onclose = (event) => {
       console.log('WebSocket closed:', event.code, event.reason);
+      checkSSEConnection();
     };
 
     setWs(socket);
@@ -82,6 +87,7 @@ export const WebSocketProvider: React.FC<{children: React.ReactNode}> = ({ child
       ws.close();
       setWs(null);
       setMessages([]);
+      checkSSEConnection();
     }
   };
 

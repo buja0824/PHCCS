@@ -283,6 +283,7 @@ function MyPostsScreen({ navigation }: Props) {
               }}
               category={item.category || ''}
               postId={Number(item.postId)}
+              navigation={navigation}
               onPress={() => navigation.navigate('PostDetail', { 
                 id: item.postId?.toString(), 
                 category: item.category 
