@@ -33,7 +33,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(whitelistRequestMatcher()).permitAll() // 화이트리스트
                         .requestMatchers("/example-restricted/**").hasAnyRole("ADMIN", "VET") // 일반회원 접근 불가능 URL
-                        .requestMatchers("/auth/reRequest").hasAnyRole("ADMIN", "MEMBER") // 수의사 접근 불가능 URL
+                        .requestMatchers("/auth/reRequest").hasAnyRole("MEMBER") // 수의사 접근 불가능 URL
                         .requestMatchers("/admin/**").hasRole("ADMIN") // 어드민만 접근 가능 URL
                         .requestMatchers("/auth/logout").authenticated() // 인증 객체만 있으면 접근 가능
                         .anyRequest().hasAnyRole("MEMBER", "VET", "ADMIN") // 나머지 URL은 모두 접근 가능
