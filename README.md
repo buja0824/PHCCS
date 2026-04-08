@@ -4,6 +4,26 @@
 
 ## 📺 시연 영상
 
+### 회원가입
+https://github.com/user-attachments/assets/d609cd8c-10b4-4ce3-b757-7cdba0313aad
+
+### AI 진단
+https://github.com/user-attachments/assets/24c2adbf-ff4d-4719-be44-2d15129a7b27
+
+### 게시글 작성 및 댓글 알림
+https://github.com/user-attachments/assets/562b9eed-0403-4f08-a27b-1519c90d4575
+
+### 채팅
+https://github.com/user-attachments/assets/ef7b1d46-4898-425e-b360-50b0a0334f1d
+
+### 지도
+https://github.com/user-attachments/assets/df496833-d0aa-4fc3-a434-ba22578082c0
+
+###  건강관리
+https://github.com/user-attachments/assets/6da24b5c-aca1-42f2-bbb5-6504b5c10d8f
+
+### 설정
+https://github.com/user-attachments/assets/e068b333-1a96-48a8-af76-f0081ff83123
 
 
 ## 📂 디렉토리 구조
