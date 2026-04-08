@@ -17,7 +17,7 @@ https://github.com/user-attachments/assets/562b9eed-0403-4f08-a27b-1519c90d4575
 https://github.com/user-attachments/assets/ef7b1d46-4898-425e-b360-50b0a0334f1d
 
 ### 지도
-https://github.com/user-attachments/assets/ba6cc26a-7e57-48c3-a277-cadf2760cd93
+https://github.com/user-attachments/assets/971ed42e-2a82-4e61-b285-7202e8555cbc
 
 ###  건강관리
 https://github.com/user-attachments/assets/6da24b5c-aca1-42f2-bbb5-6504b5c10d8f
